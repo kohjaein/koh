@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
         
         :root {
             --bg-color: #F9F8F4;
@@ -26,104 +26,108 @@
         .serif-font { font-family: 'Cinzel', serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* 매끄러운 애니메이션 정의 */
-        .fade-in { animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-        .slide-up { animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
+        /* Silky Animations */
+        .fade-in { animation: fadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .slide-up { animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 입력창 밑줄 오류 수정 및 텍스트 밀착 */
-        textarea, input { line-height: 1.4 !important; padding-bottom: 4px !important; }
+        /* Input Fixes */
+        textarea, input { line-height: 1.2 !important; }
+        .step-content { transition: all 0.5s ease-in-out; }
         
-        /* 스테퍼 전환 애니메이션 */
-        .step-exit { transform: translateX(-20px); opacity: 0; transition: all 0.4s ease-in; }
-        .step-enter { transform: translateX(20px); opacity: 0; animation: stepEnter 0.5s forwards 0.2s; }
-        @keyframes stepEnter { to { transform: translateX(0); opacity: 1; } }
-
         .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
         .vibe-active { color: var(--accent) !important; font-weight: 800; border-bottom: 2px solid var(--accent) !important; }
+
+        /* New Record Button Layout */
+        .center-btn {
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 40px;
+        }
     </style>
 </head>
 <body class="overflow-hidden">
 
     <div id="pin-gate" class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#F9F8F4] px-10 text-center fade-in">
-        <div class="w-full max-w-[320px] border-t border-b border-black/10 py-20 relative">
-             <span class="absolute top-[-10px] left-1/2 -translate-x-1/2 bg-[#F9F8F4] px-4 text-[9px] tracking-[0.4em] text-slate-400 serif-font">EST. 2026</span>
+        <div class="w-full max-w-[300px] py-20 relative border-t border-b border-black/5">
+            <span class="absolute top-[-10px] left-1/2 -translate-x-1/2 bg-[#F9F8F4] px-4 text-[8px] tracking-[0.5em] text-slate-400 serif-font">PRIVATE ACCESS</span>
             
-            <p class="text-[10px] tracking-[0.5em] text-slate-400 mb-4 serif-font">THE PRIVATE ARCHIVE OF</p>
-            <h2 class="serif-font text-5xl mb-14 tracking-tight leading-none">고재인</h2>
+            <p class="text-[9px] tracking-[0.6em] text-slate-400 mb-6 serif-font font-bold">THE ARCHIVE OF</p>
+            <h2 class="serif-font text-3xl mb-16 tracking-[0.2em] font-bold">고재인</h2>
             
-            <div class="flex flex-col items-center gap-8">
-                <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                    class="bg-transparent text-center serif-font text-5xl w-full py-2 outline-none tracking-[0.4em] border-b border-black/5 focus:border-black transition-all mb-4" placeholder="0000">
-                <button onclick="unlock()" class="text-[10px] tracking-[0.6em] border border-black/20 px-12 py-4 uppercase hover:bg-black hover:text-white transition-all duration-700">Identify</button>
-            </div>
+            <input type="text" id="pin" maxlength="4" inputmode="numeric" 
+                class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none tracking-[0.4em] border-b border-black/5 focus:border-black transition-all mb-12 rounded-none" placeholder="0000">
+            
+            <button onclick="unlock()" class="text-[10px] tracking-[0.6em] border border-black/20 px-12 py-5 uppercase hover:bg-black hover:text-white transition-all duration-700">Enter Field</button>
         </div>
     </div>
 
     <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative bg-white/50">
-        <header class="p-10 pt-24 pb-12 border-b border-black/5 slide-up">
-            <p class="text-[11px] tracking-[0.6em] text-[#C04A3A] font-bold serif-font mb-5">PRESENCE LOG</p>
-            <h1 class="serif-font text-6xl mb-3 tracking-tighter">Archive</h1>
-            <p class="serif-font text-xl italic opacity-30 text-slate-600">curated by Koh Jaein</p>
+        <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
+            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">Presence Journal</p>
+            <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
+            <p class="serif-font text-lg italic opacity-40 text-slate-500 font-bold">by Koh Jaein</p>
         </header>
 
-        <main id="feed" class="flex-1 overflow-y-auto px-8 py-12 space-y-16 no-scrollbar pb-48">
+        <main id="feed" class="flex-1 overflow-y-auto px-8 py-12 space-y-16 no-scrollbar pb-52">
             </main>
 
-        <button id="trigger-btn" onclick="openStepper()" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-black text-white px-12 py-5 rounded-full text-[10px] tracking-[0.4em] shadow-2xl z-50 transition-transform active:scale-90 slide-up" style="animation-delay: 0.5s;">
-            NEW RECORD
-        </button>
+        <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
+            <button onclick="openStepper()" class="bg-black text-white px-14 py-5 rounded-full text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up" style="animation-delay: 0.6s;">
+                NEW RECORD
+            </button>
+        </div>
     </div>
 
     <div id="stepper" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col p-12 overflow-hidden">
         <div class="flex justify-between items-center mb-24">
             <span id="step-num" class="serif-font text-sm opacity-20 tracking-widest">01 / 04</span>
-            <button onclick="closeStepper()" class="text-3xl font-light opacity-40 hover:opacity-100 transition-opacity">×</button>
+            <button onclick="closeStepper()" class="text-3xl font-light opacity-30">×</button>
         </div>
 
         <div id="step-container" class="flex-1 relative">
-            <div id="step1" class="step-content space-y-16">
+            <div id="step1" class="step-content space-y-20">
                 <div class="slide-up">
-                    <h3 class="serif-font text-4xl mb-8 tracking-tight">ROLE.</h3>
+                    <h3 class="serif-font text-4xl mb-8 tracking-tight font-bold">ROLE.</h3>
                     <div class="flex gap-2">
-                        <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-4 text-[10px] tracking-[0.2em] flex-1 transition-all">PRESS</button>
-                        <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-4 text-[10px] tracking-[0.2em] flex-1 transition-all">PARTNER</button>
-                        <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-4 text-[10px] tracking-[0.2em] flex-1 transition-all">CREW</button>
+                        <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1">PRESS</button>
+                        <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1">PARTNER</button>
+                        <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1">CREW</button>
                     </div>
                 </div>
                 <div class="slide-up" style="animation-delay: 0.2s;">
-                    <h3 class="serif-font text-4xl mb-8 tracking-tight">VIBE.</h3>
+                    <h3 class="serif-font text-4xl mb-8 tracking-tight font-bold">VIBE.</h3>
                     <div class="flex border-b border-black/5">
-                        <button onclick="setVibe('LUNCH', this)" class="vibe-btn flex-1 py-5 text-[10px] tracking-[0.2em] text-slate-300">LUNCH</button>
-                        <button onclick="setVibe('DINNER', this)" class="vibe-btn flex-1 py-5 text-[10px] tracking-[0.2em] text-slate-300">DINNER</button>
-                        <button onclick="setVibe('ALL-DAY', this)" class="vibe-btn flex-1 py-5 text-[10px] tracking-[0.2em] text-slate-300">ALL-DAY</button>
+                        <button onclick="setVibe('LUNCH', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.3em] text-slate-300">LUNCH</button>
+                        <button onclick="setVibe('DINNER', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.3em] text-slate-300">DINNER</button>
+                        <button onclick="setVibe('ALL-DAY', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.3em] text-slate-300">ALL-DAY</button>
                     </div>
                 </div>
             </div>
 
             <div id="step2" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight">WHO.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-widest">나를 설명할 이니셜과 소속</p>
-                <input type="text" id="input-who" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none" placeholder="KJI / 소속">
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHO.</h3>
+                <p class="text-[11px] text-slate-400 mb-16 tracking-[0.2em]">나를 설명할 이니셜과 소속</p>
+                <input type="text" id="input-who" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none font-bold" placeholder="KJI / 소속">
             </div>
 
             <div id="step3" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight">WHERE.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-widest">고재인과 함께한 장소</p>
-                <input type="text" id="input-where" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none" placeholder="성수동">
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHERE.</h3>
+                <p class="text-[11px] text-slate-400 mb-16 tracking-[0.2em]">고재인과 함께한 장소</p>
+                <input type="text" id="input-where" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none font-bold" placeholder="장소 입력">
             </div>
 
             <div id="step4" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight">MESSAGE.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-widest">전하고 싶은 한 줄 기록</p>
-                <textarea id="input-msg" rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" class="w-full bg-transparent border-b-2 border-black/10 text-3xl outline-none focus:border-black transition-all resize-none rounded-none overflow-hidden" placeholder="기록을 남기세요"></textarea>
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">MESSAGE.</h3>
+                <p class="text-[11px] text-slate-400 mb-16 tracking-[0.2em]">전하고 싶은 한 줄 기록</p>
+                <textarea id="input-msg" rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" class="w-full bg-transparent border-b-2 border-black/10 text-3xl outline-none focus:border-black transition-all resize-none rounded-none overflow-hidden font-bold" placeholder="메시지 작성"></textarea>
             </div>
         </div>
 
-        <div class="py-12">
-            <button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.6em] uppercase active:scale-[0.98] transition-all">Next Step</button>
+        <div class="py-14">
+            <button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase">Next Step</button>
         </div>
     </div>
 
@@ -134,23 +138,19 @@
         const FORMSPREE_ID = "mgolwdqo";
 
         function unlock() {
-            const val = document.getElementById('pin').value;
-            if(val === PIN) {
+            if(document.getElementById('pin').value === PIN) {
                 const gate = document.getElementById('pin-gate');
-                gate.style.transition = 'all 1s cubic-bezier(0.22, 1, 0.36, 1)';
                 gate.style.opacity = '0';
-                gate.style.transform = 'scale(1.1)';
+                gate.style.transform = 'translateY(-20px)';
                 setTimeout(() => {
                     gate.style.display = 'none';
                     document.getElementById('main-content').classList.remove('hidden');
-                }, 1000);
+                }, 800);
             } else { alert('Access Denied.'); document.getElementById('pin').value = ''; }
         }
 
         function openStepper() {
-            const stepper = document.getElementById('stepper');
-            stepper.classList.remove('hidden');
-            stepper.classList.add('fade-in');
+            document.getElementById('stepper').classList.remove('hidden');
             resetStepper();
         }
 
@@ -159,8 +159,7 @@
         }
 
         function resetStepper() {
-            currentStep = 1;
-            updateStepView();
+            currentStep = 1; updateStepView();
             data = { role: '', vibe: '', who: '', where: '', msg: '' };
             document.querySelectorAll('.role-btn, .vibe-btn').forEach(b => b.classList.remove('btn-active', 'vibe-active'));
             document.querySelectorAll('input, textarea').forEach(i => i.value = '');
@@ -180,29 +179,22 @@
         }
 
         function updateStepView() {
-            const container = document.getElementById('step-container');
             document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden'));
-            
-            const nextContent = document.getElementById(`step${currentStep}`);
-            nextContent.classList.remove('hidden');
-            nextContent.classList.add('step-enter');
-            
+            const active = document.getElementById(`step${currentStep}`);
+            active.classList.remove('hidden');
+            active.classList.add('slide-up');
             document.getElementById('step-num').innerText = `0${currentStep} / 04`;
         }
 
         function nextStep() {
-            if (currentStep === 1 && (!data.role || !data.vibe)) return alert('Role과 Vibe를 선택해 주세요.');
+            if (currentStep === 1 && (!data.role || !data.vibe)) return alert('선택이 필요합니다.');
             if (currentStep === 2) data.who = document.getElementById('input-who').value;
             if (currentStep === 3) data.where = document.getElementById('input-where').value;
             
             if (currentStep < 4) {
-                const currentContent = document.getElementById(`step${currentStep}`);
-                currentContent.classList.add('step-exit');
-                setTimeout(() => {
-                    currentStep++;
-                    updateStepView();
-                    if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Record";
-                }, 300);
+                currentStep++;
+                updateStepView();
+                if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive";
             } else {
                 data.msg = document.getElementById('input-msg').value;
                 submitRecord();
@@ -211,28 +203,25 @@
 
         async function submitRecord() {
             const sendBtn = document.getElementById('next-btn');
-            sendBtn.disabled = true;
-            sendBtn.innerText = "Archiving...";
-
-            const initial = data.who.split('/')[0].trim();
-            const affiliation = data.who.split('/')[1]?.trim() || '';
+            sendBtn.innerText = "Processing...";
+            
+            const [initial, affiliation] = data.who.split('/').map(s => s?.trim() || '');
 
             const html = `
-                <div class="log-card relative pl-12 before:content-[''] before:absolute before:left-0 before:top-2 before:w-[1px] before:h-16 before:bg-[#C04A3A]">
+                <div class="log-card relative pl-12 before:content-[''] before:absolute before:left-0 before:top-2 before:w-[1px] before:h-16 before:bg-[#C04A3A] slide-up">
                     <div class="flex items-baseline gap-5 mb-5">
-                        <span class="serif-font text-4xl font-black tracking-tighter">${initial}.</span>
+                        <span class="serif-font text-4xl font-bold tracking-tighter">${initial}.</span>
                         <div class="flex-1 border-b border-black/5 pb-2">
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] tracking-[0.2em] uppercase font-bold text-slate-400">${data.role} | <span class="text-slate-900">${affiliation}</span></span>
-                                <span class="text-[10px] tracking-[0.2em] uppercase text-[#C04A3A] serif-font font-bold italic">${data.vibe}</span>
+                                <span class="text-[9px] tracking-[0.3em] uppercase text-[#C04A3A] serif-font font-bold italic">${data.vibe}</span>
                             </div>
                         </div>
                     </div>
-                    <p class="text-[18px] leading-relaxed text-[#222] font-medium tracking-tight mb-3">${data.msg}</p>
-                    <p class="text-[11px] text-slate-300 italic serif-font tracking-widest">at ${data.where}</p>
+                    <p class="text-[17px] leading-relaxed text-[#1A1A1A] font-medium tracking-tight mb-3">${data.msg}</p>
+                    <p class="text-[10px] text-slate-300 italic serif-font tracking-[0.2em]">at ${data.where}</p>
                 </div>
             `;
-
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
             
             try {
@@ -243,8 +232,7 @@
                 });
             } catch (e) {}
 
-            setTimeout(() => closeStepper(), 500);
-            sendBtn.disabled = false;
+            setTimeout(() => closeStepper(), 600);
         }
     </script>
 </body>
