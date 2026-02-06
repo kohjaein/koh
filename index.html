@@ -86,7 +86,6 @@
         
         /* Small Description Style */
         .input-sub-desc { font-size: 11px; color: #999; margin-top: 4px; letter-spacing: -0.01em; font-weight: 500; }
-        .optional-label { font-size: 10px; letter-spacing: 0.1em; opacity: 0.3; margin-left: 8px; font-weight: 400; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -138,30 +137,29 @@
                 <div>
                     <div class="flex items-baseline">
                         <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Who.</h3>
-                        <p class="input-sub-desc ml-4">영문 이니셜</p>
+                        <p class="input-sub-desc ml-4">영문 이니셜 (ex. KJI)</p>
                     </div>
-                    <input type="text" id="input-who" oninput="validateInitial(this)" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="INITIAL (ex. KJI)">
+                    <input type="text" id="input-who" oninput="validateInitial(this)" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="INITIAL">
                 </div>
                 <div>
                     <div class="flex items-baseline">
                         <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Company.</h3>
-                        <span class="serif-font optional-label italic">(Optional)</span>
-                        <p class="input-sub-desc ml-4">선택 사항</p>
+                        <p class="input-sub-desc ml-4">선택사항</p>
                     </div>
-                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold opacity-70" placeholder="COMPANY (ex. DAEBO)">
+                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold opacity-70" placeholder="ex. 대보">
                 </div>
             </div>
 
             <div id="step3" class="step-content hidden">
                 <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Where.</h3>
                 <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">함께한 장소</p>
-                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="LOCATION (ex. SEOUL)">
+                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="ex. 광화문">
             </div>
 
             <div id="step4" class="step-content hidden">
                 <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Message.</h3>
                 <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">기록할 메시지</p>
-                <textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed transition-all" placeholder="MESSAGE (ex. GOOD LUCK)"></textarea>
+                <textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed transition-all" placeholder="자유롭게 작성해주세요"></textarea>
             </div>
         </div>
 
