@@ -47,19 +47,20 @@
 
         /* Inputs */
         #input-who { text-transform: uppercase; }
-        ::placeholder { text-transform: none !important; color: #CCC !important; font-weight: 400; font-size: 0.8em; }
-        input { border-bottom: 1px solid rgba(0,0,0,0.08) !important; padding: 12px 0; transition: all 0.3s ease; width: 100%; background: transparent; outline: none; font-weight: 700; font-size: 1.25rem; }
+        ::placeholder { text-transform: none !important; color: #CCC !important; font-weight: 400; font-size: 0.85em; }
+        input { border-bottom: 1px solid rgba(0,0,0,0.08) !important; padding: 12px 0; transition: all 0.3s ease; width: 100%; background: transparent; outline: none; font-weight: 700; font-size: 1.3rem; }
         input:focus { border-color: var(--text-main) !important; }
 
         textarea {
             border: 1px solid rgba(0,0,0,0.08) !important;
-            padding: 16px;
+            padding: 20px;
             background: rgba(255,255,255,0.5);
             border-radius: 0;
             width: 100%;
             outline: none;
             font-weight: 600;
             resize: none;
+            font-size: 1.1rem;
         }
         textarea:focus { border-color: var(--text-main) !important; background: white; }
 
@@ -78,64 +79,65 @@
             top: 50%;
             transform: translateY(-50%);
             width: 3px;
-            height: 40px;
+            height: 44px;
             background-color: var(--accent);
         }
 
-        /* Role Buttons (Pills) */
-        .role-btn { border: 1px solid rgba(0,0,0,0.1); padding: 10px 0; text-align: center; font-size: 9px; letter-spacing: 0.2em; transition: all 0.4s; }
+        /* Role Buttons (가독성 개선: 9px -> 11px) */
+        .role-btn { border: 1px solid rgba(0,0,0,0.1); padding: 12px 0; text-align: center; font-size: 11px; letter-spacing: 0.2em; transition: all 0.4s; font-weight: 600; }
         .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
         
-        .section-label { font-size: 11px; color: #999; font-weight: 600; margin-bottom: 4px; display: block; }
-        .section-sub { font-size: 10px; color: #CCC; margin-left: 6px; font-weight: 400; }
+        /* Labels (가독성 개선: 11px -> 13px) */
+        .section-label { font-size: 13px; color: #999; font-weight: 700; margin-bottom: 6px; display: block; }
+        .section-sub { font-size: 11px; color: #CCC; margin-left: 8px; font-weight: 400; }
     </style>
 </head>
 <body class="overflow-hidden">
 
     <div id="pin-gate" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4] fade-in">
         <div class="flex flex-col items-center w-full max-w-sm px-10">
-            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-10 serif-font slide-up">THE PRIVATE ARCHIVE</p>
+            <p class="text-[9px] tracking-[0.8em] text-slate-400 mb-10 serif-font slide-up">THE PRIVATE ARCHIVE</p>
             <h2 class="serif-font text-3xl mb-32 opacity-90 cinematic-reveal font-bold">고재인</h2>
             <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
                 <input type="text" id="pin" maxlength="4" inputmode="numeric" 
                     class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none border-black/5 focus:border-black mb-16 rounded-none font-bold" style="letter-spacing: 0.4em; padding-left: 0.4em;" placeholder="0000">
-                <button onclick="unlock()" class="text-[9px] tracking-[0.6em] border border-black/20 px-16 py-5 uppercase rounded-none hover:bg-black hover:text-white transition-all">Identify</button>
+                <button onclick="unlock()" class="text-[10px] tracking-[0.6em] border border-black/20 px-16 py-5 uppercase rounded-none hover:bg-black hover:text-white transition-all">Identify</button>
             </div>
         </div>
     </div>
 
     <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative bg-white/50">
         <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
-            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
+            <p class="text-[11px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
             <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
-            <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
+            <p class="serif-font text-xl italic opacity-30 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
         </header>
 
         <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-10 no-scrollbar pb-52">
             </main>
 
         <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
-            <button onclick="openForm()" class="bg-black text-white px-14 py-5 rounded-none text-[9px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
+            <button onclick="openForm()" class="bg-black text-white px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
         </div>
     </div>
 
     <div id="record-form" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col overflow-y-auto no-scrollbar">
-        <div class="p-10 flex justify-between items-center border-b border-black/5">
-            <span class="serif-font text-[10px] tracking-[0.3em] font-bold">NEW RECORD SLIP</span>
-            <button onclick="closeForm()" class="text-3xl font-light opacity-30">×</button>
+        <div class="p-10 flex justify-between items-center border-b border-black/5 bg-white/30 backdrop-blur-sm sticky top-0 z-20">
+            <span class="serif-font text-[11px] tracking-[0.3em] font-bold">NEW RECORD SLIP</span>
+            <button onclick="closeForm()" class="text-4xl font-light opacity-30">×</button>
         </div>
 
-        <div class="p-10 space-y-12 pb-32">
+        <div class="p-10 space-y-14 pb-40">
             <div>
                 <label class="serif-font section-label uppercase">Role</label>
-                <div class="grid grid-cols-3 gap-2">
+                <div class="grid grid-cols-3 gap-3">
                     <button onclick="setRole('PRESS', this)" class="role-btn">PRESS</button>
                     <button onclick="setRole('PARTNER', this)" class="role-btn">PARTNER</button>
                     <button onclick="setRole('CREW', this)" class="role-btn">CREW</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-8">
+            <div class="grid grid-cols-2 gap-10">
                 <div>
                     <label class="serif-font section-label uppercase">Who. <span class="unified-font section-sub">영문 이니셜</span></label>
                     <input type="text" id="input-who" oninput="this.value = this.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '')" placeholder="ex. KJI">
@@ -152,13 +154,13 @@
             </div>
 
             <div>
-                <label class="serif-font section-label uppercase font-bold">Message.</label>
-                <textarea id="input-msg" rows="4" placeholder="자유롭게 작성해주세요"></textarea>
+                <label class="serif-font section-label uppercase">Message. <span class="unified-font section-sub">자유로운 기록</span></label>
+                <textarea id="input-msg" rows="5" placeholder="자유롭게 작성해주세요"></textarea>
             </div>
         </div>
 
-        <div class="fixed bottom-0 left-0 w-full p-8 bg-gradient-to-t from-[#F9F8F4] via-[#F9F8F4] to-transparent">
-            <button id="submit-btn" onclick="submitRecord()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none shadow-2xl">Complete Archive</button>
+        <div class="fixed bottom-0 left-0 w-full p-8 bg-gradient-to-t from-[#F9F8F4] via-[#F9F8F4] to-transparent z-10">
+            <button id="submit-btn" onclick="submitRecord()" class="w-full bg-black text-white py-8 text-[11px] tracking-[0.7em] uppercase rounded-none shadow-2xl font-bold">Complete Archive</button>
         </div>
     </div>
 
@@ -194,15 +196,15 @@
                         <span class="serif-font text-4xl font-bold tracking-tighter">${data.who}.</span>
                         <div class="flex-1 border-b border-black/5 pb-2">
                             <div class="flex justify-between items-center">
-                                <span class="unified-font text-[11px] tracking-[0.1em] font-bold text-slate-400 uppercase">
+                                <span class="unified-font text-[13px] tracking-[0.05em] font-bold text-slate-400 uppercase">
                                     ${data.role} | <span class="text-slate-900">${data.aff}</span>
                                 </span>
                             </div>
                         </div>
                     </div>
                     <p class="unified-font text-[17px] leading-relaxed text-[#1A1A1A] font-medium tracking-tight mb-4 pl-4">${data.msg}</p>
-                    <p class="unified-font text-[11px] text-slate-500 pl-4 font-medium flex items-center">
-                        <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 13px; opacity: 0.7; margin-right: 6px;">at</span> ${data.where}
+                    <p class="unified-font text-[13px] text-slate-500 pl-4 font-medium flex items-center">
+                        <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 14px; opacity: 0.7; margin-right: 6px;">at</span> ${data.where}
                     </p>
                 </div>
             `;
