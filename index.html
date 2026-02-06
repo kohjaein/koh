@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>고재인 | The Private Archive</title>
+    <title>고재인 | The Archive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* 폰트 및 기본 설정 */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
         
@@ -26,40 +27,69 @@
         .serif-font { font-family: 'Cinzel', serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
+        /* 고품격 애니메이션 정의 */
         .fade-in { animation: fadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
         .slide-up { animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
         
+        /* 입구 '고재인' 전용 시네마틱 애니메이션 */
+        .cinematic-reveal {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            animation: cinematicReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.3s; /* 주변 요소보다 조금 늦게 등장 */
+        }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes cinematicReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                letter-spacing: 0.5em; /* 등장하며 자간이 넓어지는 효과 */
+            }
+        }
 
+        /* 버튼 및 입력창 스타일 */
         .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
         .vibe-active { color: var(--accent) !important; font-weight: 800; border-bottom: 2px solid var(--accent) !important; }
+        
+        /* 스테퍼 전환 효과 */
+        .step-content { transition: all 0.5s ease-in-out; }
+        
+        /* 키보드 가림 방지 레이아웃 */
+        #step-container { min-height: 400px; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 40px; }
+        
+        /* 입력창 통일성 부여 */
+        input, textarea { border-bottom-width: 2px !important; border-color: rgba(0,0,0,0.1); }
+        input:focus, textarea:focus { border-color: var(--text-main) !important; }
+        ::placeholder { color: #DDD; font-weight: 400; }
     </style>
 </head>
 <body class="overflow-hidden">
 
     <div id="pin-gate" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4] px-10 fade-in">
-        <div class="w-full max-w-[300px] flex flex-col items-center">
-            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-2 serif-font">THE PRIVATE ARCHIVE</p>
-            <h2 class="serif-font text-xl mb-24 tracking-[0.4em] opacity-80">고재인</h2>
+        <div class="w-full max-w-[300px] flex flex-col items-center text-center">
+            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-8 serif-font slide-up">THE PRIVATE ARCHIVE</p>
             
-            <div class="w-full flex flex-col items-center">
+            <h2 class="serif-font text-2xl mb-36 tracking-[0.2em] opacity-90 cinematic-reveal">고재인</h2>
+            
+            <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 0.5s;">
                 <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none tracking-[0.4em] border-b border-black/5 focus:border-black transition-all mb-16 rounded-none" placeholder="0000">
+                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none tracking-[0.4em] border-b-2 border-black/5 focus:border-black transition-all mb-20 rounded-none" placeholder="0000">
                 
-                <button onclick="unlock()" class="text-[9px] tracking-[0.6em] border border-black/20 px-12 py-5 uppercase hover:bg-black hover:text-white transition-all duration-700">Identify</button>
+                <button onclick="unlock()" class="text-[9px] tracking-[0.6em] border border-black/20 px-14 py-5 uppercase rounded-none hover:bg-black hover:text-white transition-all duration-700">Identify</button>
             </div>
         </div>
     </div>
 
     <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative bg-white/50">
         <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
-            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">PERSPECTIVES</p>
+            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
             <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
             <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold">by Koh Jaein</p>
         </header>
 
-        <main id="feed" class="flex-1 overflow-y-auto px-8 py-12 space-y-16 no-scrollbar pb-52">
+        <main id="feed" class="flex-1 overflow-y-auto px-8 py-12 space-y-20 no-scrollbar pb-52">
             </main>
 
         <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
@@ -70,58 +100,64 @@
     </div>
 
     <div id="stepper" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col p-12 overflow-hidden">
-        <div class="flex justify-between items-center mb-24">
-            <span id="step-num" class="serif-font text-sm opacity-20 tracking-widest">01 / 04</span>
+        <div class="flex justify-between items-center mb-8">
+            <span id="step-num" class="serif-font text-[10px] opacity-30 tracking-[0.3em]">01 / 05</span>
             <button onclick="closeStepper()" class="text-3xl font-light opacity-30">×</button>
         </div>
 
-        <div id="step-container" class="flex-1 relative">
-            <div id="step1" class="step-content space-y-20">
-                <div class="slide-up">
+        <div id="step-container" class="flex-1">
+            <div id="step1" class="step-content space-y-16">
+                <div>
                     <h3 class="serif-font text-4xl mb-8 tracking-tight font-bold">ROLE.</h3>
                     <div class="flex gap-2">
-                        <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1 rounded-none">PRESS</button>
-                        <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1 rounded-none">PARTNER</button>
-                        <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1 rounded-none">CREW</button>
+                        <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.2em] flex-1 rounded-none">PRESS</button>
+                        <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.2em] flex-1 rounded-none">PARTNER</button>
+                        <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.2em] flex-1 rounded-none">CREW</button>
                     </div>
                 </div>
-                <div class="slide-up" style="animation-delay: 0.2s;">
+                <div>
                     <h3 class="serif-font text-4xl mb-8 tracking-tight font-bold">VIBE.</h3>
                     <div class="flex border-b border-black/5">
-                        <button onclick="setVibe('LUNCH', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.3em] text-slate-300">LUNCH</button>
-                        <button onclick="setVibe('DINNER', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.3em] text-slate-300">DINNER</button>
-                        <button onclick="setVibe('ALL-DAY', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.3em] text-slate-300">ALL-DAY</button>
+                        <button onclick="setVibe('LUNCH', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.2em] text-slate-300">LUNCH</button>
+                        <button onclick="setVibe('DINNER', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.2em] text-slate-300">DINNER</button>
+                        <button onclick="setVibe('ALL-DAY', this)" class="vibe-btn flex-1 py-5 text-[9px] tracking-[0.2em] text-slate-300">ALL-DAY</button>
                     </div>
                 </div>
             </div>
 
             <div id="step2" class="step-content hidden">
                 <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHO.</h3>
-                <p class="text-[11px] text-slate-400 mb-16 tracking-[0.2em]">나를 설명할 이니셜과 소속</p>
-                <input type="text" id="input-who" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none font-bold" placeholder="KJI / 소속">
+                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">성함의 이니셜을 알려주세요</p>
+                <input type="text" id="input-who" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none font-bold" placeholder="KJI">
             </div>
 
             <div id="step3" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHERE.</h3>
-                <p class="text-[11px] text-slate-400 mb-16 tracking-[0.2em]">고재인과 함께한 장소</p>
-                <input type="text" id="input-where" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none font-bold" placeholder="장소 입력">
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">COMPANY.</h3>
+                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">당신이 소속된 회사를 알려주세요</p>
+                <input type="text" id="input-aff" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none font-bold" placeholder="회사명 입력">
             </div>
 
             <div id="step4" class="step-content hidden">
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHERE.</h3>
+                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">오늘 우리가 함께한 장소</p>
+                <input type="text" id="input-where" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-3xl outline-none focus:border-black transition-all rounded-none font-bold" placeholder="장소 입력">
+            </div>
+
+            <div id="step5" class="step-content hidden">
                 <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">MESSAGE.</h3>
-                <p class="text-[11px] text-slate-400 mb-16 tracking-[0.2em]">전하고 싶은 한 줄 기록</p>
-                <textarea id="input-msg" rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" class="w-full bg-transparent border-b-2 border-black/10 text-3xl outline-none focus:border-black transition-all resize-none rounded-none overflow-hidden font-bold" placeholder="메시지 작성"></textarea>
+                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">전하고 싶은 기록 (2줄 내외)</p>
+                <textarea id="input-msg" rows="2" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-2xl outline-none focus:border-black transition-all resize-none rounded-none font-bold leading-relaxed" placeholder="메시지를 입력하세요"></textarea>
             </div>
         </div>
 
-        <div class="py-14">
-            <button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none">Next Step</button>
+        <div class="pb-10 pt-8">
+            <button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none active:scale-[0.99] transition-transform">Next Step</button>
         </div>
     </div>
 
     <script>
         let currentStep = 1;
-        let data = { role: '', vibe: '', who: '', where: '', msg: '' };
+        let data = { role: '', vibe: '', who: '', aff: '', where: '', msg: '' };
         const PIN = "2026";
         const FORMSPREE_ID = "mgolwdqo";
 
@@ -129,11 +165,11 @@
             if(document.getElementById('pin').value === PIN) {
                 const gate = document.getElementById('pin-gate');
                 gate.style.opacity = '0';
-                gate.style.transform = 'translateY(-20px)';
+                gate.style.transform = 'translateY(-30px) scale(1.05)'; /* 잠금 해제 시 고급스러운 퇴장 효과 */
                 setTimeout(() => {
                     gate.style.display = 'none';
                     document.getElementById('main-content').classList.remove('hidden');
-                }, 800);
+                }, 1000);
             } else { alert('Access Denied.'); document.getElementById('pin').value = ''; }
         }
 
@@ -148,7 +184,7 @@
 
         function resetStepper() {
             currentStep = 1; updateStepView();
-            data = { role: '', vibe: '', who: '', where: '', msg: '' };
+            data = { role: '', vibe: '', who: '', aff: '', where: '', msg: '' };
             document.querySelectorAll('.role-btn, .vibe-btn').forEach(b => b.classList.remove('btn-active', 'vibe-active'));
             document.querySelectorAll('input, textarea').forEach(i => i.value = '');
             document.getElementById('next-btn').innerText = "Next Step";
@@ -170,19 +206,20 @@
             document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden'));
             const active = document.getElementById(`step${currentStep}`);
             active.classList.remove('hidden');
-            active.classList.add('slide-up');
-            document.getElementById('step-num').innerText = `0${currentStep} / 04`;
+            active.classList.add('fade-in');
+            document.getElementById('step-num').innerText = `0${currentStep} / 05`;
         }
 
         function nextStep() {
             if (currentStep === 1 && (!data.role || !data.vibe)) return alert('선택이 필요합니다.');
             if (currentStep === 2) data.who = document.getElementById('input-who').value;
-            if (currentStep === 3) data.where = document.getElementById('input-where').value;
+            if (currentStep === 3) data.aff = document.getElementById('input-aff').value;
+            if (currentStep === 4) data.where = document.getElementById('input-where').value;
             
-            if (currentStep < 4) {
+            if (currentStep < 5) {
                 currentStep++;
                 updateStepView();
-                if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive";
+                if(currentStep === 5) document.getElementById('next-btn').innerText = "Complete Archive";
             } else {
                 data.msg = document.getElementById('input-msg').value;
                 submitRecord();
@@ -192,15 +229,14 @@
         async function submitRecord() {
             const sendBtn = document.getElementById('next-btn');
             sendBtn.innerText = "Processing...";
-            const [initial, affiliation] = data.who.split('/').map(s => s?.trim() || '');
 
             const html = `
                 <div class="log-card relative pl-12 before:content-[''] before:absolute before:left-0 before:top-2 before:w-[1px] before:h-16 before:bg-[#C04A3A] slide-up">
                     <div class="flex items-baseline gap-5 mb-5">
-                        <span class="serif-font text-4xl font-bold tracking-tighter">${initial}.</span>
+                        <span class="serif-font text-4xl font-bold tracking-tighter">${data.who}.</span>
                         <div class="flex-1 border-b border-black/5 pb-2">
                             <div class="flex justify-between items-center">
-                                <span class="text-[11px] tracking-[0.2em] uppercase font-bold text-slate-400">${data.role} | <span class="text-slate-900">${affiliation}</span></span>
+                                <span class="text-[11px] tracking-[0.2em] uppercase font-bold text-slate-400">${data.role} | <span class="text-slate-900">${data.aff}</span></span>
                                 <span class="text-[9px] tracking-[0.3em] uppercase text-[#C04A3A] serif-font font-bold italic">${data.vibe}</span>
                             </div>
                         </div>
@@ -210,6 +246,7 @@
                 </div>
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
+            
             try {
                 await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
                     method: 'POST',
@@ -217,6 +254,7 @@
                     body: JSON.stringify(data)
                 });
             } catch (e) {}
+
             setTimeout(() => closeStepper(), 600);
         }
     </script>
