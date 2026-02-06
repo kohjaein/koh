@@ -12,7 +12,8 @@
         :root {
             --bg-color: #F9F8F4;
             --text-main: #1A1A1A;
-            --accent: #C04A3A;
+            /* 수정됨: 톤다운된 딥 브릭 컬러 적용 */
+            --accent: #A83F32;
             --mobile-width: 480px;
         }
 
@@ -234,7 +235,7 @@
             const html = `
                 <div class="log-card slide-up">
                     <div class="flex justify-between items-baseline mb-8 pl-4">
-                        <span class="serif-font text-5xl font-bold tracking-tighter">${who}.</span>
+                        <span class="serif-font text-5xl font-bold tracking-tighter">${who}</span>
                         <div class="flex-1 text-right border-b border-black/5 pb-3">
                             <span class="unified-font text-[15px] font-bold text-slate-400 uppercase">
                                 ${currentRole} | <span class="text-slate-900">${aff}</span>
