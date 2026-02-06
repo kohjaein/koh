@@ -3,159 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>고재인 | The Private Archive</title>
+    <title>고재인 | The Archive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 디자이너들이 가장 사랑하는 Pretendard 폰트 & Cinzel 조합 */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
         
         :root {
             --bg-color: #F9F8F4;
             --text-main: #1A1A1A;
-            --text-sub: #666055;
-            --accent-color: #C04A3A;
-            --border-color: rgba(0,0,0,0.06);
+            --accent: #C04A3A;
         }
 
         body { 
-            /* 기본 한글 폰트를 Pretendard로 고정하여 압도적인 깔끔함 제공 */
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Pretendard', sans-serif; 
+            background-color: var(--bg-color); 
             color: var(--text-main);
-            margin: 0; padding: 0; 
             -webkit-font-smoothing: antialiased;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
         }
 
         .serif-font { font-family: 'Cinzel', serif; }
-
-        .editorial-card { 
-            background: #FFFFFF;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-        }
-
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        .log-card { animation: slideUpElegant 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
-        @keyframes slideUpElegant { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .step-transition { transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+        .log-card { animation: slideUp 0.8s ease-out forwards; opacity: 0; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        input:focus { outline: none; }
-        #main-content.hidden { display: none; }
-
-        /* 입력창 폰트 최적화 */
-        #msg-input { font-family: 'Pretendard', sans-serif; font-weight: 500; letter-spacing: -0.02em; }
+        /* 활성화 버튼 스타일 */
+        .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
+        .vibe-active { color: var(--accent) !important; font-weight: 800; border-bottom: 2px solid var(--accent) !important; }
     </style>
 </head>
 <body class="overflow-hidden">
 
-    <div id="pin-gate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#F9F8F4] px-12 text-center">
-        <div class="w-full max-w-[280px] border-t border-b border-black/10 py-16 relative">
-             <span class="absolute top-[-10px] left-1/2 -translate-x-1/2 bg-[#F9F8F4] px-4 text-[10px] tracking-[0.3em] text-[#666055] serif-font">PRIVATE LOG</span>
-            <h2 class="serif-font text-4xl text-[#1A1A1A] mb-10 tracking-wide">고재인</h2>
-            <p class="text-[#666055] text-[11px] font-medium mb-12 tracking-[0.2em] leading-relaxed">IDENTIFY YOURSELF</p>
-            
-            <input type="text" id="pin" maxlength="4" inputmode="numeric"
-                class="bg-transparent text-center serif-font text-5xl w-36 py-2 outline-none tracking-[0.4em] border-b border-black/20 focus:border-[#C04A3A] transition-all text-[#1A1A1A] mb-14" 
-                placeholder="0000">
-            
-            <button onclick="unlock()" class="text-[10px] uppercase tracking-[0.5em] text-[#1A1A1A] border border-black/20 px-10 py-4 hover:bg-[#1A1A1A] hover:text-white transition-all duration-500">Access</button>
+    <div id="pin-gate" class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#F9F8F4] px-10 text-center">
+        <div class="w-full max-w-[300px] border-t border-b border-black/10 py-16">
+            <h2 class="serif-font text-4xl mb-12 tracking-wide">고재인</h2>
+            <input type="text" id="pin" maxlength="4" inputmode="numeric" 
+                class="bg-transparent text-center serif-font text-5xl w-full py-2 outline-none tracking-[0.3em] border-b border-black/10 focus:border-black transition-all mb-12" placeholder="0000">
+            <button onclick="unlock()" class="text-[10px] tracking-[0.5em] border border-black/20 px-10 py-4 uppercase">Enter</button>
         </div>
     </div>
 
-    <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative overflow-hidden bg-white/50">
-        
-        <header class="relative z-10 p-10 pt-20 pb-12">
-            <div class="border-b-2 border-black/10 pb-8">
-                <p class="text-[10px] tracking-[0.5em] text-[#C04A3A] uppercase mb-5 serif-font font-bold">Field Notes</p>
-                <h1 class="serif-font text-5xl text-[#1A1A1A] leading-none mb-3">Archive</h1>
-                <p class="serif-font text-xl text-[#666055] italic opacity-60">by Koh Jaein</p>
-            </div>
+    <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative bg-white/50">
+        <header class="p-10 pt-20 pb-10 border-b border-black/5">
+            <p class="text-[11px] tracking-[0.5em] text-[#C04A3A] font-bold serif-font mb-4">FIELD NOTES</p>
+            <h1 class="serif-font text-5xl mb-2">Archive</h1>
+            <p class="serif-font text-xl italic opacity-40 text-slate-500">by Koh Jaein</p>
         </header>
 
-        <main id="feed" class="relative z-10 flex-1 px-8 space-y-10 pb-64 overflow-y-auto no-scrollbar pt-4">
+        <main id="feed" class="flex-1 overflow-y-auto px-8 py-10 space-y-12 no-scrollbar pb-40">
             </main>
 
-        <footer class="fixed bottom-0 w-full max-w-md z-20 bg-gradient-to-t from-[#F9F8F4] via-[#F9F8F4] to-transparent pt-12 pb-12 px-8">
-            <div class="editorial-card rounded-none border-none bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.03)] p-8">
-                
-                <div class="flex mb-8 border-b border-black/5 pb-5">
-                    <button onclick="setRole('PRESS', '#374151', this)" class="role-btn flex-1 text-[10px] tracking-[0.3em] text-[#CCC] transition-all hover:text-[#1A1A1A]">PRESS</button>
-                    <button onclick="setRole('PARTNER', '#374151', this)" class="role-btn flex-1 text-[10px] tracking-[0.3em] text-[#CCC] transition-all hover:text-[#1A1A1A]">PARTNER</button>
-                    <button onclick="setRole('TEAM', '#374151', this)" class="role-btn flex-1 text-[10px] tracking-[0.3em] text-[#CCC] transition-all hover:text-[#1A1A1A]">TEAM</button>
-                </div>
+        <button onclick="openStepper()" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-black text-white px-10 py-5 rounded-full text-[11px] tracking-[0.3em] shadow-2xl z-50">ADD RECORD</button>
+    </div>
 
-                <div class="relative flex items-end">
-                    <input type="text" id="msg-input" 
-                        class="w-full bg-transparent py-4 pr-12 text-[16px] text-[#1A1A1A] placeholder-[#DDD] border-b-2 border-black/5 focus:border-[#C04A3A] transition-all rounded-none"
-                        placeholder="이니셜 / 장소 / 메시지">
-                    <button id="send-btn" onclick="post()" class="absolute right-0 bottom-4 w-10 h-10 flex items-center justify-center hover:opacity-50 transition-all">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C04A3A" stroke-width="1.2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
-                    </button>
+    <div id="stepper" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col p-10 step-transition">
+        <div class="flex justify-between items-center mb-20">
+            <span id="step-num" class="serif-font text-sm opacity-30">01 / 04</span>
+            <button onclick="closeStepper()" class="text-2xl font-light">×</button>
+        </div>
+
+        <div id="step-container" class="flex-1">
+            <div id="step1" class="step-content space-y-12">
+                <div>
+                    <h3 class="serif-font text-4xl mb-6">ROLE.</h3>
+                    <div class="flex gap-2">
+                        <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-5 py-3 text-[10px] tracking-widest flex-1">PRESS</button>
+                        <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-5 py-3 text-[10px] tracking-widest flex-1">PARTNER</button>
+                        <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-5 py-3 text-[10px] tracking-widest flex-1">CREW</button>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="serif-font text-4xl mb-6">VIBE.</h3>
+                    <div class="flex border-b border-black/5">
+                        <button onclick="setVibe('LUNCH', this)" class="vibe-btn flex-1 py-4 text-[10px] tracking-widest text-slate-300">LUNCH</button>
+                        <button onclick="setVibe('DINNER', this)" class="vibe-btn flex-1 py-4 text-[10px] tracking-widest text-slate-300">DINNER</button>
+                        <button onclick="setVibe('ALL-DAY', this)" class="vibe-btn flex-1 py-4 text-[10px] tracking-widest text-slate-300">ALL-DAY</button>
+                    </div>
                 </div>
             </div>
-        </footer>
+
+            <div id="step2" class="step-content hidden">
+                <h3 class="serif-font text-5xl mb-4">WHO.</h3>
+                <p class="text-[11px] text-slate-400 mb-10">나를 설명할 이니셜과 소속</p>
+                <input type="text" id="input-who" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-2xl outline-none focus:border-black transition-all" placeholder="KJI / 소속">
+            </div>
+
+            <div id="step3" class="step-content hidden">
+                <h3 class="serif-font text-5xl mb-4">WHERE.</h3>
+                <p class="text-[11px] text-slate-400 mb-10">고재인과 함께한 장소</p>
+                <input type="text" id="input-where" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-2xl outline-none focus:border-black transition-all" placeholder="성수동">
+            </div>
+
+            <div id="step4" class="step-content hidden">
+                <h3 class="serif-font text-5xl mb-4">MESSAGE.</h3>
+                <p class="text-[11px] text-slate-400 mb-10">전하고 싶은 한 줄 기록</p>
+                <textarea id="input-msg" rows="3" class="w-full bg-transparent border-b-2 border-black/10 py-4 text-2xl outline-none focus:border-black transition-all resize-none" placeholder="기록을 남기세요"></textarea>
+            </div>
+        </div>
+
+        <div class="py-10">
+            <button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-6 text-[11px] tracking-[0.5em] uppercase">Next Step</button>
+        </div>
     </div>
 
     <script>
-        let curRole = ''; const PIN = "2026"; const FORMSPREE_ID = "mgolwdqo"; 
+        let currentStep = 1;
+        let data = { role: '', vibe: '', who: '', where: '', msg: '' };
+        const PIN = "2026";
+        const FORMSPREE_ID = "mgolwdqo";
 
         function unlock() {
             if(document.getElementById('pin').value === PIN) {
-                document.getElementById('pin-gate').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('pin-gate').style.display = 'none';
-                    document.getElementById('main-content').classList.remove('hidden');
-                }, 500);
-            } else { alert('인증 실패'); document.getElementById('pin').value = ''; }
+                document.getElementById('pin-gate').style.display = 'none';
+                document.getElementById('main-content').classList.remove('hidden');
+            } else { alert('Access Denied'); document.getElementById('pin').value = ''; }
         }
 
-        function setRole(role, color, elem) {
-            curRole = role;
-            document.querySelectorAll('.role-btn').forEach(b => {
-                b.style.color = '#CCC'; b.style.fontWeight = 'normal'; b.style.borderBottom = 'none';
-            });
-            elem.style.color = '#C04A3A'; elem.style.fontWeight = 'bold';
-            elem.style.borderBottom = '1px solid #C04A3A';
+        function openStepper() {
+            document.getElementById('stepper').classList.remove('hidden');
+            resetStepper();
         }
 
-        function getTimeVibe() {
-            if (curRole === 'TEAM') return "Connection";
-            const h = new Date().getHours();
-            if(h >= 11 && h <= 14) return "Midday";
-            if(h >= 17 && h <= 22) return "Evening";
-            return "Record";
+        function closeStepper() {
+            document.getElementById('stepper').classList.add('hidden');
         }
 
-        async function post() {
-            const input = document.getElementById('msg-input');
-            if(!input.value || !curRole) return alert('그룹과 내용을 확인하세요.');
-            const [ini, loc, txt] = input.value.split('/').map(s => s?.trim());
-            if(!txt) return alert('이니셜 / 장소 / 메시지 형식을 지켜주세요.');
+        function resetStepper() {
+            currentStep = 1;
+            updateStepView();
+            data = { role: '', vibe: '', who: '', where: '', msg: '' };
+            document.querySelectorAll('.role-btn, .vibe-btn').forEach(b => b.classList.remove('btn-active', 'vibe-active'));
+            document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+            document.getElementById('next-btn').innerText = "Next Step";
+        }
 
-            const vibe = getTimeVibe();
-            const sendBtn = document.getElementById('send-btn');
+        function setRole(role, elem) {
+            data.role = role;
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active'));
+            elem.classList.add('btn-active');
+        }
+
+        function setVibe(vibe, elem) {
+            data.vibe = vibe;
+            document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('vibe-active'));
+            elem.classList.add('vibe-active');
+        }
+
+        function updateStepView() {
+            document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            document.getElementById('step-num').innerText = `0${currentStep} / 04`;
+        }
+
+        function nextStep() {
+            if (currentStep === 1 && (!data.role || !data.vibe)) return alert('Role과 Vibe를 선택하세요.');
+            if (currentStep === 2) data.who = document.getElementById('input-who').value;
+            if (currentStep === 3) data.where = document.getElementById('input-where').value;
+            
+            if (currentStep < 4) {
+                currentStep++;
+                updateStepView();
+                if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Record";
+            } else {
+                data.msg = document.getElementById('input-msg').value;
+                submitRecord();
+            }
+        }
+
+        async function submitRecord() {
+            const sendBtn = document.getElementById('next-btn');
             sendBtn.disabled = true;
+            sendBtn.innerText = "Archiving...";
 
             const html = `
-                <div class="log-card relative pl-10 before:content-[''] before:absolute before:left-0 before:top-2 before:w-[2px] before:h-12 before:bg-[#C04A3A]/60">
+                <div class="log-card relative pl-10 before:content-[''] before:absolute before:left-0 before:top-2 before:w-[2px] before:h-12 before:bg-[#C04A3A]">
                     <div class="flex items-baseline gap-4 mb-4">
-                        <span class="serif-font text-3xl font-bold text-[#1A1A1A]">${ini.substring(0,2).toUpperCase()}.</span>
+                        <span class="serif-font text-3xl font-bold">${data.who.split('/')[0].trim()}.</span>
                         <div class="flex-1 border-b border-black/5 pb-2">
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] tracking-[0.2em] uppercase text-[#999] font-bold">${curRole} <span class="mx-2 text-[#DDD]">|</span> ${loc}</span>
-                                <span class="text-[9px] tracking-[0.2em] uppercase text-[#C04A3A] serif-font italic font-bold">${vibe}</span>
+                                <span class="text-[10px] tracking-[0.2em] uppercase font-bold text-slate-400">${data.role} | <span class="text-slate-900">${data.who.split('/')[1]?.trim() || ''}</span></span>
+                                <span class="text-[9px] tracking-[0.2em] uppercase text-[#C04A3A] serif-font font-bold italic">${data.vibe}</span>
                             </div>
                         </div>
                     </div>
-                    <p class="text-[16px] leading-8 text-[#444] font-medium tracking-tight">${txt}</p>
+                    <p class="text-[16px] leading-8 text-[#333] font-medium tracking-tight mb-2">${data.msg}</p>
+                    <p class="text-[10px] text-slate-300 italic">at ${data.where}</p>
                 </div>
             `;
-            document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
 
-            try { await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ role: curRole, initial: ini, location: loc, message: txt, vibe: vibe }) }); } catch (e) {}
-            input.value = ''; sendBtn.disabled = false;
+            document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
+            
+            try {
+                await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (e) {}
+
+            closeStepper();
+            sendBtn.disabled = false;
         }
     </script>
 </body>
