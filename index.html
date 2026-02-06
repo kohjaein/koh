@@ -27,7 +27,7 @@
         .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate Reveal Animation (3.5s Slow Reveal) */
+        /* Gate Reveal (3.5s Slow) */
         .cinematic-reveal {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -53,7 +53,7 @@
         input { border-bottom: 2px solid rgba(0,0,0,0.1) !important; transition: all 0.3s ease; }
         input:focus { border-color: var(--text-main) !important; }
 
-        /* Message Box: Square Style */
+        /* Message Box */
         #input-msg {
             border: 1px solid rgba(0,0,0,0.15) !important;
             padding: 20px;
@@ -63,7 +63,7 @@
         }
         #input-msg:focus { border-color: var(--text-main) !important; background: white; }
 
-        /* Log Card Chunk */
+        /* Log Card */
         .log-card {
             background-color: white;
             padding: 32px;
@@ -83,6 +83,9 @@
         }
 
         .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
+        
+        /* Optional Label Style */
+        .optional-tag { font-size: 10px; letter-spacing: 0.1em; opacity: 0.3; margin-left: 10px; font-weight: 400; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -132,25 +135,24 @@
 
             <div id="step2" class="step-content hidden space-y-16">
                 <div>
-                    <h3 class="serif-font text-4xl mb-4 tracking-tight font-bold">WHO.</h3>
-                    <input type="text" id="input-who" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="INITIAL">
+                    <h3 class="serif-font text-4xl mb-4 tracking-tight font-bold uppercase">Who.</h3>
+                    <input type="text" id="input-who" oninput="validateInitial(this)" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="INITIAL (ex. KJI)">
                 </div>
                 <div>
-                    <h3 class="serif-font text-4xl mb-4 tracking-tight font-bold">COMPANY.</h3>
-                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="COMPANY">
+                    <h3 class="serif-font text-4xl mb-4 tracking-tight font-bold uppercase inline-block">Company.</h3>
+                    <span class="serif-font optional-tag italic">(Optional)</span>
+                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold opacity-70" placeholder="COMPANY (ex. SAMSUNG)">
                 </div>
             </div>
 
             <div id="step3" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHERE.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">함께한 장소</p>
-                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="LOCATION">
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Where.</h3>
+                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="LOCATION (ex. SEOUL)">
             </div>
 
             <div id="step4" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">MESSAGE.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">기록할 메시지</p>
-                <textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed" placeholder="MESSAGE"></textarea>
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Message.</h3>
+                <textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed" placeholder="MESSAGE (ex. GOOD LUCK)"></textarea>
             </div>
         </div>
 
@@ -181,20 +183,21 @@
             document.getElementById('step-num').innerText = `0${currentStep} / 04`; 
         }
 
+        // 이니셜 한글 입력 방지 로직
+        function validateInitial(input) {
+            input.value = input.value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '');
+        }
+
         function nextStep() { 
             if (currentStep === 1 && !data.role) return alert('Select Role.'); 
             if (currentStep === 2) {
                 data.who = document.getElementById('input-who').value.toUpperCase();
-                data.aff = document.getElementById('input-aff').value;
-                if(!data.who || !data.aff) return alert('Fill all fields.');
+                data.aff = document.getElementById('input-aff').value || '-'; // 미입력 시 하이픈 처리
+                if(!data.who) return alert('WHO(Initial) is required.');
             }
             if (currentStep === 3) data.where = document.getElementById('input-where').value; 
             
-            if (currentStep < 4) { 
-                currentStep++; 
-                updateStepView(); 
-                if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive"; 
-            } 
+            if (currentStep < 4) { currentStep++; updateStepView(); if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive"; } 
             else { data.msg = document.getElementById('input-msg').value; submitRecord(); } 
         }
 
