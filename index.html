@@ -27,7 +27,7 @@
         .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate Reveal Animation: 시간을 3.5초로 늘려 훨씬 천천히 흐르듯 연출 */
+        /* Gate Reveal Animation (3.5s Slow Reveal) */
         .cinematic-reveal {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -37,7 +37,6 @@
         }
         @keyframes cinematicReveal {
             0% { opacity: 0; transform: translateY(30px); filter: blur(12px); letter-spacing: 0.1em; }
-            40% { opacity: 0.4; filter: blur(4px); }
             100% { opacity: 1; transform: translateY(0); filter: blur(0); letter-spacing: 0.4em; }
         }
 
@@ -46,7 +45,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* PIN Precision Alignment */
+        /* PIN Precision Center */
         #pin { letter-spacing: 0.4em; padding-left: 0.4em; }
 
         /* Input Styles */
@@ -64,7 +63,7 @@
         }
         #input-msg:focus { border-color: var(--text-main) !important; background: white; }
 
-        /* Log Card: Unified Chunk */
+        /* Log Card Chunk */
         .log-card {
             background-color: white;
             padding: 32px;
@@ -104,7 +103,7 @@
         <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
             <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
             <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
-            <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold">by Koh Jae인</p>
+            <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold">by KOH JAEIN</p>
         </header>
 
         <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-10 no-scrollbar pb-52">
@@ -117,7 +116,7 @@
 
     <div id="stepper" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col p-12 overflow-hidden">
         <div class="flex justify-between items-center mb-8">
-            <span id="step-num" class="serif-font text-[10px] opacity-30 tracking-[0.3em]">01 / 05</span>
+            <span id="step-num" class="serif-font text-[10px] opacity-30 tracking-[0.3em]">01 / 04</span>
             <button onclick="closeStepper()" class="text-3xl font-light opacity-30">×</button>
         </div>
 
@@ -130,10 +129,29 @@
                     <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-6 text-[10px] tracking-[0.3em] rounded-none">CREW</button>
                 </div>
             </div>
-            <div id="step2" class="step-content hidden"><h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHO.</h3><p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">이니셜</p><input type="text" id="input-who" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="KJI"></div>
-            <div id="step3" class="step-content hidden"><h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">COMPANY.</h3><p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">소속 조직</p><input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="COMPANY"></div>
-            <div id="step4" class="step-content hidden"><h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHERE.</h3><p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">함께한 장소</p><input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="LOCATION"></div>
-            <div id="step5" class="step-content hidden"><h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">MESSAGE.</h3><p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">기록할 메시지</p><textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed" placeholder="MESSAGE"></textarea></div>
+
+            <div id="step2" class="step-content hidden space-y-16">
+                <div>
+                    <h3 class="serif-font text-4xl mb-4 tracking-tight font-bold">WHO.</h3>
+                    <input type="text" id="input-who" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="INITIAL">
+                </div>
+                <div>
+                    <h3 class="serif-font text-4xl mb-4 tracking-tight font-bold">COMPANY.</h3>
+                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="COMPANY">
+                </div>
+            </div>
+
+            <div id="step3" class="step-content hidden">
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">WHERE.</h3>
+                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">함께한 장소</p>
+                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="LOCATION">
+            </div>
+
+            <div id="step4" class="step-content hidden">
+                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold">MESSAGE.</h3>
+                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">기록할 메시지</p>
+                <textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed" placeholder="MESSAGE"></textarea>
+            </div>
         </div>
 
         <div class="pb-10 pt-8"><button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none">Next Step</button></div>
@@ -154,13 +172,29 @@
         function closeStepper() { document.getElementById('stepper').classList.add('hidden'); }
         function resetStepper() { currentStep = 1; updateStepView(); data = { role: '', who: '', aff: '', where: '', msg: '' }; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); document.querySelectorAll('input, textarea').forEach(i => i.value = ''); document.getElementById('next-btn').innerText = "Next Step"; }
         function setRole(role, elem) { data.role = role; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); elem.classList.add('btn-active'); }
-        function updateStepView() { document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden')); const active = document.getElementById(`step${currentStep}`); active.classList.remove('hidden'); active.classList.add('fade-in'); document.getElementById('step-num').innerText = `0${currentStep} / 05`; }
+        
+        function updateStepView() { 
+            document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden')); 
+            const active = document.getElementById(`step${currentStep}`); 
+            active.classList.remove('hidden'); 
+            active.classList.add('fade-in'); 
+            document.getElementById('step-num').innerText = `0${currentStep} / 04`; 
+        }
+
         function nextStep() { 
             if (currentStep === 1 && !data.role) return alert('Select Role.'); 
-            if (currentStep === 2) data.who = document.getElementById('input-who').value.toUpperCase(); 
-            if (currentStep === 3) data.aff = document.getElementById('input-aff').value; 
-            if (currentStep === 4) data.where = document.getElementById('input-where').value; 
-            if (currentStep < 5) { currentStep++; updateStepView(); if(currentStep === 5) document.getElementById('next-btn').innerText = "Complete Archive"; } 
+            if (currentStep === 2) {
+                data.who = document.getElementById('input-who').value.toUpperCase();
+                data.aff = document.getElementById('input-aff').value;
+                if(!data.who || !data.aff) return alert('Fill all fields.');
+            }
+            if (currentStep === 3) data.where = document.getElementById('input-where').value; 
+            
+            if (currentStep < 4) { 
+                currentStep++; 
+                updateStepView(); 
+                if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive"; 
+            } 
             else { data.msg = document.getElementById('input-msg').value; submitRecord(); } 
         }
 
