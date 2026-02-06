@@ -27,7 +27,7 @@
         .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate Reveal (3.5s Slow Cinematic) */
+        /* Gate Reveal Animation */
         .cinematic-reveal {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -53,7 +53,7 @@
         input { border-bottom: 2px solid rgba(0,0,0,0.1) !important; transition: all 0.3s ease; }
         input:focus { border-color: var(--text-main) !important; }
 
-        /* Message Box: Square Design */
+        /* Message Box */
         #input-msg {
             border: 1px solid rgba(0,0,0,0.15) !important;
             padding: 20px;
@@ -83,8 +83,6 @@
         }
 
         .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
-        
-        /* Small Description Style */
         .input-sub-desc { font-size: 11px; color: #999; margin-top: 4px; letter-spacing: -0.01em; font-weight: 500; }
     </style>
 </head>
@@ -137,9 +135,9 @@
                 <div>
                     <div class="flex items-baseline">
                         <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Who.</h3>
-                        <p class="input-sub-desc ml-4">영문 이니셜 (ex. KJI)</p>
+                        <p class="input-sub-desc ml-4">영문 이니셜</p>
                     </div>
-                    <input type="text" id="input-who" oninput="validateInitial(this)" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="INITIAL">
+                    <input type="text" id="input-who" oninput="validateInitial(this)" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="ex. KJI">
                 </div>
                 <div>
                     <div class="flex items-baseline">
@@ -181,18 +179,8 @@
         function closeStepper() { document.getElementById('stepper').classList.add('hidden'); }
         function resetStepper() { currentStep = 1; updateStepView(); data = { role: '', who: '', aff: '', where: '', msg: '' }; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); document.querySelectorAll('input, textarea').forEach(i => i.value = ''); document.getElementById('next-btn').innerText = "Next Step"; }
         function setRole(role, elem) { data.role = role; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); elem.classList.add('btn-active'); }
-        
-        function updateStepView() { 
-            document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden')); 
-            const active = document.getElementById(`step${currentStep}`); 
-            active.classList.remove('hidden'); 
-            active.classList.add('fade-in'); 
-            document.getElementById('step-num').innerText = `0${currentStep} / 04`; 
-        }
-
-        function validateInitial(input) {
-            input.value = input.value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '');
-        }
+        function updateStepView() { document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden')); const active = document.getElementById(`step${currentStep}`); active.classList.remove('hidden'); active.classList.add('fade-in'); document.getElementById('step-num').innerText = `0${currentStep} / 04`; }
+        function validateInitial(input) { input.value = input.value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, ''); }
 
         function nextStep() { 
             if (currentStep === 1 && !data.role) return alert('Select Role.'); 
