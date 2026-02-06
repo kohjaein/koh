@@ -26,56 +26,44 @@
         .serif-font { font-family: 'Cinzel', serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Silky Animations */
         .fade-in { animation: fadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
         .slide-up { animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Input Fixes */
-        textarea, input { line-height: 1.2 !important; }
-        .step-content { transition: all 0.5s ease-in-out; }
-        
         .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
         .vibe-active { color: var(--accent) !important; font-weight: 800; border-bottom: 2px solid var(--accent) !important; }
-
-        /* New Record Button Layout */
-        .center-btn {
-            left: 50%;
-            transform: translateX(-50%);
-            bottom: 40px;
-        }
     </style>
 </head>
 <body class="overflow-hidden">
 
-    <div id="pin-gate" class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#F9F8F4] px-10 text-center fade-in">
-        <div class="w-full max-w-[300px] py-20 relative border-t border-b border-black/5">
-            <span class="absolute top-[-10px] left-1/2 -translate-x-1/2 bg-[#F9F8F4] px-4 text-[8px] tracking-[0.5em] text-slate-400 serif-font">PRIVATE ACCESS</span>
+    <div id="pin-gate" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4] px-10 fade-in">
+        <div class="w-full max-w-[300px] flex flex-col items-center">
+            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-2 serif-font">THE PRIVATE ARCHIVE</p>
+            <h2 class="serif-font text-xl mb-24 tracking-[0.4em] opacity-80">고재인</h2>
             
-            <p class="text-[9px] tracking-[0.6em] text-slate-400 mb-6 serif-font font-bold">THE ARCHIVE OF</p>
-            <h2 class="serif-font text-3xl mb-16 tracking-[0.2em] font-bold">고재인</h2>
-            
-            <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none tracking-[0.4em] border-b border-black/5 focus:border-black transition-all mb-12 rounded-none" placeholder="0000">
-            
-            <button onclick="unlock()" class="text-[10px] tracking-[0.6em] border border-black/20 px-12 py-5 uppercase hover:bg-black hover:text-white transition-all duration-700">Enter Field</button>
+            <div class="w-full flex flex-col items-center">
+                <input type="text" id="pin" maxlength="4" inputmode="numeric" 
+                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none tracking-[0.4em] border-b border-black/5 focus:border-black transition-all mb-16 rounded-none" placeholder="0000">
+                
+                <button onclick="unlock()" class="text-[9px] tracking-[0.6em] border border-black/20 px-12 py-5 uppercase hover:bg-black hover:text-white transition-all duration-700">Identify</button>
+            </div>
         </div>
     </div>
 
     <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative bg-white/50">
         <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
-            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">Presence Journal</p>
+            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">PERSPECTIVES</p>
             <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
-            <p class="serif-font text-lg italic opacity-40 text-slate-500 font-bold">by Koh Jaein</p>
+            <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold">by Koh Jaein</p>
         </header>
 
         <main id="feed" class="flex-1 overflow-y-auto px-8 py-12 space-y-16 no-scrollbar pb-52">
             </main>
 
         <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
-            <button onclick="openStepper()" class="bg-black text-white px-14 py-5 rounded-full text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up" style="animation-delay: 0.6s;">
+            <button onclick="openStepper()" class="bg-black text-white px-14 py-5 rounded-none text-[9px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up" style="animation-delay: 0.6s;">
                 NEW RECORD
             </button>
         </div>
@@ -92,9 +80,9 @@
                 <div class="slide-up">
                     <h3 class="serif-font text-4xl mb-8 tracking-tight font-bold">ROLE.</h3>
                     <div class="flex gap-2">
-                        <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1">PRESS</button>
-                        <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1">PARTNER</button>
-                        <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1">CREW</button>
+                        <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1 rounded-none">PRESS</button>
+                        <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1 rounded-none">PARTNER</button>
+                        <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-4 text-[9px] tracking-[0.3em] flex-1 rounded-none">CREW</button>
                     </div>
                 </div>
                 <div class="slide-up" style="animation-delay: 0.2s;">
@@ -127,7 +115,7 @@
         </div>
 
         <div class="py-14">
-            <button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase">Next Step</button>
+            <button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none">Next Step</button>
         </div>
     </div>
 
@@ -204,7 +192,6 @@
         async function submitRecord() {
             const sendBtn = document.getElementById('next-btn');
             sendBtn.innerText = "Processing...";
-            
             const [initial, affiliation] = data.who.split('/').map(s => s?.trim() || '');
 
             const html = `
@@ -223,7 +210,6 @@
                 </div>
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
-            
             try {
                 await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
                     method: 'POST',
@@ -231,7 +217,6 @@
                     body: JSON.stringify(data)
                 });
             } catch (e) {}
-
             setTimeout(() => closeStepper(), 600);
         }
     </script>
