@@ -27,7 +27,7 @@
         .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate Reveal Animation (3.5s Slow Cinematic) */
+        /* Gate Reveal Animation */
         .cinematic-reveal {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -40,34 +40,30 @@
             100% { opacity: 1; transform: translateY(0); filter: blur(0); letter-spacing: 0.4em; }
         }
 
-        .fade-in { animation: fadeIn 1.5s ease-out forwards; }
+        .fade-in { animation: fadeIn 1s ease-out forwards; }
         .slide-up { animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* PIN Precision Alignment */
-        #pin { letter-spacing: 0.4em; padding-left: 0.4em; }
-
-        /* Input Styles */
-        #input-who { text-transform: uppercase; } /* 사용자 입력은 시각적으로 대문자 고정 */
-        
-        /* Placeholder는 소문자 'ex. KJI'를 유지하도록 폰트 케이스 해제 */
-        ::placeholder { text-transform: none !important; color: #DDD !important; }
-
-        input { border-bottom: 2px solid rgba(0,0,0,0.1) !important; transition: all 0.3s ease; }
+        /* Inputs */
+        #input-who { text-transform: uppercase; }
+        ::placeholder { text-transform: none !important; color: #CCC !important; font-weight: 400; font-size: 0.8em; }
+        input { border-bottom: 1px solid rgba(0,0,0,0.08) !important; padding: 12px 0; transition: all 0.3s ease; width: 100%; background: transparent; outline: none; font-weight: 700; font-size: 1.25rem; }
         input:focus { border-color: var(--text-main) !important; }
 
-        /* Message Box */
-        #input-msg {
-            border: 1px solid rgba(0,0,0,0.15) !important;
-            padding: 20px;
-            background: rgba(255,255,255,0.3);
+        textarea {
+            border: 1px solid rgba(0,0,0,0.08) !important;
+            padding: 16px;
+            background: rgba(255,255,255,0.5);
             border-radius: 0;
             width: 100%;
+            outline: none;
+            font-weight: 600;
+            resize: none;
         }
-        #input-msg:focus { border-color: var(--text-main) !important; background: white; }
+        textarea:focus { border-color: var(--text-main) !important; background: white; }
 
-        /* Log Card Chunk */
+        /* Log Card Style */
         .log-card {
             background-color: white;
             padding: 32px;
@@ -86,8 +82,12 @@
             background-color: var(--accent);
         }
 
+        /* Role Buttons (Pills) */
+        .role-btn { border: 1px solid rgba(0,0,0,0.1); padding: 10px 0; text-align: center; font-size: 9px; letter-spacing: 0.2em; transition: all 0.4s; }
         .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
-        .input-sub-desc { font-size: 11px; color: #999; margin-top: 4px; letter-spacing: -0.01em; font-weight: 500; }
+        
+        .section-label { font-size: 11px; color: #999; font-weight: 600; margin-bottom: 4px; display: block; }
+        .section-sub { font-size: 10px; color: #CCC; margin-left: 6px; font-weight: 400; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -98,7 +98,7 @@
             <h2 class="serif-font text-3xl mb-32 opacity-90 cinematic-reveal font-bold">고재인</h2>
             <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
                 <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none border-black/5 focus:border-black mb-16 rounded-none" placeholder="0000">
+                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none border-black/5 focus:border-black mb-16 rounded-none font-bold" style="letter-spacing: 0.4em; padding-left: 0.4em;" placeholder="0000">
                 <button onclick="unlock()" class="text-[9px] tracking-[0.6em] border border-black/20 px-16 py-5 uppercase rounded-none hover:bg-black hover:text-white transition-all">Identify</button>
             </div>
         </div>
@@ -115,64 +115,55 @@
             </main>
 
         <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
-            <button onclick="openStepper()" class="bg-black text-white px-14 py-5 rounded-none text-[9px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
+            <button onclick="openForm()" class="bg-black text-white px-14 py-5 rounded-none text-[9px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
         </div>
     </div>
 
-    <div id="stepper" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col p-12 overflow-hidden">
-        <div class="flex justify-between items-center mb-8">
-            <span id="step-num" class="serif-font text-[10px] opacity-30 tracking-[0.3em]">01 / 04</span>
-            <button onclick="closeStepper()" class="text-3xl font-light opacity-30">×</button>
+    <div id="record-form" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col overflow-y-auto no-scrollbar">
+        <div class="p-10 flex justify-between items-center border-b border-black/5">
+            <span class="serif-font text-[10px] tracking-[0.3em] font-bold">NEW RECORD SLIP</span>
+            <button onclick="closeForm()" class="text-3xl font-light opacity-30">×</button>
         </div>
 
-        <div id="step-container" class="flex-1 flex flex-col justify-start pt-10">
-            <div id="step1" class="step-content">
-                <h3 class="serif-font text-4xl mb-12 tracking-tight font-bold">ROLE.</h3>
-                <div class="flex flex-col gap-4">
-                    <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-6 text-[10px] tracking-[0.3em] rounded-none">PRESS</button>
-                    <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-6 text-[10px] tracking-[0.3em] rounded-none">PARTNER</button>
-                    <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-6 text-[10px] tracking-[0.3em] rounded-none">CREW</button>
+        <div class="p-10 space-y-12 pb-32">
+            <div>
+                <label class="serif-font section-label uppercase">Role</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setRole('PRESS', this)" class="role-btn">PRESS</button>
+                    <button onclick="setRole('PARTNER', this)" class="role-btn">PARTNER</button>
+                    <button onclick="setRole('CREW', this)" class="role-btn">CREW</button>
                 </div>
             </div>
 
-            <div id="step2" class="step-content hidden space-y-16">
+            <div class="grid grid-cols-2 gap-8">
                 <div>
-                    <div class="flex items-baseline">
-                        <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Who.</h3>
-                        <p class="input-sub-desc ml-4">영문 이니셜</p>
-                    </div>
-                    <input type="text" id="input-who" 
-                        oninput="this.value = this.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '')" 
-                        class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" 
-                        placeholder="ex. KJI">
+                    <label class="serif-font section-label uppercase">Who. <span class="unified-font section-sub">영문 이니셜</span></label>
+                    <input type="text" id="input-who" oninput="this.value = this.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '')" placeholder="ex. KJI">
                 </div>
                 <div>
-                    <div class="flex items-baseline">
-                        <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Company.</h3>
-                        <p class="input-sub-desc ml-4">선택사항</p>
-                    </div>
-                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold opacity-70" placeholder="ex. 대보">
+                    <label class="serif-font section-label uppercase">Company. <span class="unified-font section-sub">선택사항</span></label>
+                    <input type="text" id="input-aff" placeholder="ex. 대보">
                 </div>
             </div>
 
-            <div id="step3" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Where.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">함께한 장소</p>
-                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="ex. 광화문">
+            <div>
+                <label class="serif-font section-label uppercase">Where. <span class="unified-font section-sub">장소</span></label>
+                <input type="text" id="input-where" placeholder="ex. 광화문">
             </div>
 
-            <div id="step4" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Message.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">기록할 메시지</p>
-                <textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed transition-all" placeholder="자유롭게 작성해주세요"></textarea>
+            <div>
+                <label class="serif-font section-label uppercase font-bold">Message.</label>
+                <textarea id="input-msg" rows="4" placeholder="자유롭게 작성해주세요"></textarea>
             </div>
         </div>
 
-        <div class="pb-10 pt-8"><button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none">Next Step</button></div>
+        <div class="fixed bottom-0 left-0 w-full p-8 bg-gradient-to-t from-[#F9F8F4] via-[#F9F8F4] to-transparent">
+            <button id="submit-btn" onclick="submitRecord()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none shadow-2xl">Complete Archive</button>
+        </div>
     </div>
 
     <script>
-        let currentStep = 1; let data = { role: '', who: '', aff: '', where: '', msg: '' };
+        let data = { role: '', who: '', aff: '', where: '', msg: '' };
         const PIN = "2026"; const FORMSPREE_ID = "mgolwdqo";
 
         function unlock() {
@@ -182,26 +173,21 @@
             } else { alert('Denied.'); document.getElementById('pin').value = ''; }
         }
 
-        function openStepper() { document.getElementById('stepper').classList.remove('hidden'); resetStepper(); }
-        function closeStepper() { document.getElementById('stepper').classList.add('hidden'); }
-        function resetStepper() { currentStep = 1; updateStepView(); data = { role: '', who: '', aff: '', where: '', msg: '' }; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); document.querySelectorAll('input, textarea').forEach(i => i.value = ''); document.getElementById('next-btn').innerText = "Next Step"; }
+        function openForm() { document.getElementById('record-form').classList.remove('hidden'); resetForm(); }
+        function closeForm() { document.getElementById('record-form').classList.add('hidden'); }
+        function resetForm() { data = { role: '', who: '', aff: '', where: '', msg: '' }; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); document.querySelectorAll('input, textarea').forEach(i => i.value = ''); document.getElementById('submit-btn').innerText = "Complete Archive"; }
         function setRole(role, elem) { data.role = role; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); elem.classList.add('btn-active'); }
-        function updateStepView() { document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden')); const active = document.getElementById(`step${currentStep}`); active.classList.remove('hidden'); active.classList.add('fade-in'); document.getElementById('step-num').innerText = `0${currentStep} / 04`; }
-
-        function nextStep() { 
-            if (currentStep === 1 && !data.role) return alert('Select Role.'); 
-            if (currentStep === 2) {
-                data.who = document.getElementById('input-who').value;
-                data.aff = document.getElementById('input-aff').value || '-';
-                if(!data.who) return alert('WHO(Initial) is required.');
-            }
-            if (currentStep === 3) data.where = document.getElementById('input-where').value; 
-            if (currentStep < 4) { currentStep++; updateStepView(); if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive"; } 
-            else { data.msg = document.getElementById('input-msg').value; submitRecord(); } 
-        }
 
         async function submitRecord() {
-            const sendBtn = document.getElementById('next-btn'); sendBtn.innerText = "Processing...";
+            data.who = document.getElementById('input-who').value;
+            data.aff = document.getElementById('input-aff').value || '-';
+            data.where = document.getElementById('input-where').value;
+            data.msg = document.getElementById('input-msg').value;
+
+            if (!data.role || !data.who || !data.where || !data.msg) return alert('모든 항목을 입력해 주세요.');
+
+            const sendBtn = document.getElementById('submit-btn'); sendBtn.innerText = "Processing...";
+            
             const html = `
                 <div class="log-card slide-up">
                     <div class="flex items-baseline gap-5 mb-5 pl-4">
@@ -222,7 +208,7 @@
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
             try { await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch (e) {}
-            setTimeout(() => closeStepper(), 600);
+            setTimeout(() => closeForm(), 600);
         }
     </script>
 </body>
