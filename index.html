@@ -7,111 +7,61 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap');
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif; 
-            background: #080a0f; 
-            color: #ffffff;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* 글래스모피즘 핵심 스타일 */
-        .glass { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(15px) saturate(180%);
-            -webkit-backdrop-filter: blur(15px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .pulse-orb { 
-            filter: blur(80px); 
-            opacity: 0.4;
-            transition: all 2s ease;
-            position: fixed;
-            z-index: 0;
-        }
-
+        body { font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif; background: #080a0f; color: #ffffff; margin: 0; padding: 0; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .pulse-orb { filter: blur(80px); opacity: 0.3; position: fixed; z-index: 0; transition: all 2s ease; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        .log-card { 
-            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
-        }
-
-        @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(30px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        input:focus { outline: none; }
+        .log-card { animation: slideUp 0.6s ease-out forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #main-content.hidden { display: none; }
     </style>
 </head>
-<body class="overflow-hidden">
+<body class="overflow-hidden bg-[#080a0f]">
 
     <div id="pin-gate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#080a0f] px-10 text-center">
-        <div class="glass w-20 h-20 mb-10 rounded-[2rem] flex items-center justify-center">
-            <div class="w-3 h-3 bg-white rounded-full animate-pulse shadow-[0_0_15px_rgba(255,255,255,0.8)]"></div>
+        <div class="glass w-20 h-20 mb-8 rounded-[2rem] flex items-center justify-center">
+            <div class="w-2 h-2 bg-white rounded-full animate-pulse shadow-[0_0_15px_white]"></div>
         </div>
         <h2 class="text-[10px] font-black tracking-[0.5em] text-white/40 mb-3 uppercase">Identity Verification</h2>
-        <p class="text-white text-xl font-bold mb-12">비밀번호 4자리를<br>입력해 주세요</p>
-        <input type="password" id="pin" maxlength="4" 
-            class="bg-transparent text-center text-5xl w-full py-4 outline-none tracking-[0.8em] mb-16 text-white border-b border-white/10 focus:border-white/40 transition-all font-light" 
-            placeholder="••••">
-        <button onclick="unlock()" class="w-full max-w-xs py-5 glass rounded-2xl font-bold text-xs tracking-widest hover:bg-white/10 active:scale-95 transition-all uppercase">Enter Field</button>
+        <p class="text-white text-xl font-bold mb-10">비밀번호 4자리를<br>입력해 주세요</p>
+        <input type="password" id="pin" maxlength="4" class="bg-transparent text-center text-5xl w-full py-4 outline-none tracking-[0.5em] mb-12 text-white border-b border-white/10 font-light" placeholder="••••">
+        <button onclick="unlock()" class="w-full max-w-xs py-5 glass rounded-2xl font-bold text-xs tracking-widest hover:bg-white/10 active:scale-95 transition-all">ENTER FIELD</button>
     </div>
 
     <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative overflow-hidden">
-        
-        <div id="orb-1" class="pulse-orb top-[-100px] right-[-50px] w-96 h-96 bg-indigo-500 rounded-full"></div>
-        <div id="orb-2" class="pulse-orb bottom-20 left-[-100px] w-[500px] h-[500px] bg-purple-600 rounded-full"></div>
+        <div id="orb-1" class="pulse-orb top-[-100px] right-[-50px] w-80 h-80 bg-indigo-500 rounded-full"></div>
+        <div id="orb-2" class="pulse-orb bottom-20 left-[-100px] w-96 h-96 bg-purple-600 rounded-full"></div>
 
-        <header class="relative z-10 p-8 pt-14 pb-6 flex flex-col gap-10">
+        <header class="relative z-10 p-8 pt-12 pb-6 flex flex-col gap-8">
             <div class="flex justify-between items-start">
                 <div>
-                    <h1 class="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase mb-2">PR Presence Archive</h1>
-                    <p class="text-4xl font-black tracking-tight text-white">고재인<span class="text-purple-500">.</span></p>
+                    <h1 class="text-[9px] font-black tracking-[0.3em] text-white/30 uppercase mb-2">PR Archive</h1>
+                    <p class="text-4xl font-black tracking-tight">고재인<span class="text-purple-500">.</span></p>
                 </div>
-                <div class="text-right">
-                    <span class="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] block mb-2">Vibe Status</span>
-                    <div class="glass px-3 py-1.5 rounded-full inline-flex items-center gap-2">
-                        <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-                        <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter">Live</span>
-                    </div>
+                <div class="glass px-3 py-1.5 rounded-full inline-flex items-center gap-2">
+                    <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span class="text-[9px] font-bold text-emerald-400 uppercase">Live</span>
                 </div>
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="glass p-5 rounded-[2.5rem]">
-                    <p class="text-[9px] font-black text-white/30 uppercase tracking-widest mb-3">Active Hub</p>
-                    <p id="top-hub" class="text-sm font-bold text-white italic tracking-tight">Searching...</p>
-                </div>
-                <div class="glass p-5 rounded-[2.5rem] flex flex-col justify-between">
-                    <p class="text-[9px] font-black text-white/30 uppercase tracking-widest mb-3">Intensity</p>
-                    <div class="flex gap-1.5" id="intensity-meter">
-                        <div class="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                            <div id="intensity-bar" class="w-0 h-full bg-white/60 transition-all duration-1000"></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass p-5 rounded-[2rem]"><p class="text-[8px] font-black text-white/30 uppercase mb-2">Active Hub</p><p id="top-hub" class="text-xs font-bold italic">Waiting...</p></div>
+                <div class="glass p-5 rounded-[2rem]"><p class="text-[8px] font-black text-white/30 uppercase mb-2">Intensity</p><div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden"><div id="intensity-bar" class="w-0 h-full bg-white/40 transition-all duration-1000"></div></div></div>
             </div>
         </header>
 
-        <main id="feed" class="relative z-10 flex-1 px-8 space-y-6 pb-56 overflow-y-auto no-scrollbar">
-            </main>
+        <main id="feed" class="relative z-10 flex-1 px-8 space-y-5 pb-56 overflow-y-auto no-scrollbar"></main>
 
-        <footer class="fixed bottom-0 w-full max-w-md p-6 pb-12 z-20">
-            <div class="glass rounded-[3rem] p-4 flex flex-col gap-4">
-                <div class="flex gap-2 px-1">
-                    <button onclick="setRole('PRESS', '#60a5fa')" class="role-btn flex-1 py-3 text-[9px] font-black rounded-full bg-white/5 text-white/30 transition-all">PRESS</button>
-                    <button onclick="setRole('PARTNER', '#34d399')" class="role-btn flex-1 py-3 text-[9px] font-black rounded-full bg-white/5 text-white/30 transition-all">PARTNER</button>
-                    <button onclick="setRole('TEAM', '#a78bfa')" class="role-btn flex-1 py-3 text-[9px] font-black rounded-full bg-white/5 text-white/30 transition-all">TEAM</button>
+        <footer class="fixed bottom-0 w-full max-w-md p-6 pb-10 z-20">
+            <div class="glass rounded-[2.5rem] p-3 flex flex-col gap-3">
+                <div class="flex gap-2 px-1" id="role-container">
+                    <button onclick="setRole('PRESS', '#60a5fa', this)" class="role-btn flex-1 py-3 text-[8px] font-black rounded-full bg-white/5 text-white/30 transition-all">PRESS</button>
+                    <button onclick="setRole('PARTNER', '#34d399', this)" class="role-btn flex-1 py-3 text-[8px] font-black rounded-full bg-white/5 text-white/30 transition-all">PARTNER</button>
+                    <button onclick="setRole('TEAM', '#a78bfa', this)" class="role-btn flex-1 py-3 text-[8px] font-black rounded-full bg-white/5 text-white/30 transition-all">TEAM</button>
                 </div>
                 <div class="relative flex items-center">
-                    <input type="text" id="msg-input" 
-                        class="w-full bg-white/5 rounded-full py-5 pl-7 pr-16 text-[13px] font-medium text-white placeholder-white/20 border border-white/5 focus:bg-white/10 transition-all"
-                        placeholder="이니셜/장소/메시지">
-                    <button id="send-btn" onclick="post()" class="absolute right-2 w-12 h-12 bg-white text-black rounded-full flex items-center justify-center active:scale-90 transition-all shadow-xl">
-                        <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg>
+                    <input type="text" id="msg-input" class="w-full bg-white/5 rounded-full py-4 pl-6 pr-14 text-xs text-white placeholder-white/20 border border-white/5" placeholder="이니셜/장소/메시지">
+                    <button id="send-btn" onclick="post()" class="absolute right-1.5 w-11 h-11 bg-white text-black rounded-full flex items-center justify-center active:scale-90 transition-all">
+                        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg>
                     </button>
                 </div>
             </div>
@@ -119,30 +69,23 @@
     </div>
 
     <script>
-        let curRole = ''; let curColor = ''; 
-        const PIN = "2026"; 
-        const FORMSPREE_ID = "mgolwdqo"; 
+        let curRole = ''; let curColor = '';
+        const PIN = "2026";
+        const FORMSPREE_ID = "mgolwdqo";
 
         function unlock() {
             if(document.getElementById('pin').value === PIN) {
-                document.getElementById('pin-gate').classList.add('hidden');
+                document.getElementById('pin-gate').style.display = 'none';
                 document.getElementById('main-content').classList.remove('hidden');
-            } else { 
-                alert('ACCESS DENIED'); 
-                document.getElementById('pin').value = ''; 
-            }
+            } else { alert('ACCESS DENIED'); document.getElementById('pin').value = ''; }
         }
 
-        function setRole(role, color) {
+        function setRole(role, color, elem) {
             curRole = role; curColor = color;
             document.querySelectorAll('.role-btn').forEach(b => {
-                b.style.background = 'rgba(255,255,255,0.05)';
-                b.style.color = 'rgba(255,255,255,0.3)';
-                b.style.boxShadow = 'none';
+                b.style.background = 'rgba(255,255,255,0.05)'; b.style.color = 'rgba(255,255,255,0.3)';
             });
-            event.target.style.background = 'rgba(255,255,255,0.15)';
-            event.target.style.color = 'white';
-            event.target.style.boxShadow = `0 0 20px ${color}44`;
+            elem.style.background = color + '33'; elem.style.color = 'white';
         }
 
         function getTimeVibe() {
@@ -155,32 +98,29 @@
 
         async function post() {
             const input = document.getElementById('msg-input');
-            if(!input.value || !curRole) return alert('입력값과 그룹을 확인하세요.');
-            
+            if(!input.value || !curRole) return alert('내용과 그룹을 확인하세요.');
             const [ini, loc, txt] = input.value.split('/').map(s => s?.trim());
-            if(!txt) return alert('이니셜/장소/메시지 형식을 지켜주세요.');
+            if(!txt) return alert('이니셜/장소/메시지 형식을 맞춰주세요.');
 
             const vibe = getTimeVibe();
-            const sendBtn = document.getElementById('send-btn');
-            sendBtn.disabled = true;
-
             const html = `
-                <div class="log-card glass p-7 rounded-[2.5rem] relative overflow-hidden">
-                    <div class="flex items-center gap-4 mb-5">
-                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-lg shadow-2xl" style="background:${curColor}dd">${ini.substring(0,2).toUpperCase()}</div>
+                <div class="log-card glass p-6 rounded-[2rem] relative overflow-hidden">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-sm" style="background:${curColor}">${ini.substring(0,2).toUpperCase()}</div>
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[9px] font-black tracking-tighter px-2 py-0.5 rounded-full bg-white/10 text-white/80">${curRole}</span>
-                                <span class="text-[9px] font-bold text-white/40 italic">at ${loc}</span>
+                                <span class="text-[8px] font-black px-2 py-0.5 rounded-full bg-white/10">${curRole}</span>
+                                <span class="text-[8px] font-bold text-white/30 italic">at ${loc}</span>
                             </div>
-                            <p class="text-[8px] font-black text-white/20 tracking-[0.2em] uppercase">${vibe}</p>
+                            <p class="text-[8px] font-black text-white/20 tracking-widest uppercase">${vibe}</p>
                         </div>
                     </div>
-                    <p class="text-[14px] leading-relaxed text-white/90 font-medium">${txt}</p>
-                </div>
-            `;
+                    <p class="text-xs leading-relaxed text-white/80 font-medium">${txt}</p>
+                </div>`;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
-            updateVisuals(loc);
+            document.getElementById('top-hub').innerText = loc;
+            document.getElementById('intensity-bar').style.width = '100%';
+            input.value = '';
 
             try {
                 await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
@@ -188,17 +128,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ role: curRole, initial: ini, location: loc, message: txt, vibe: vibe })
                 });
-            } catch (e) { console.error("전송 오류", e); }
-
-            input.value = '';
-            sendBtn.disabled = false;
-        }
-
-        function updateVisuals(loc) {
-            const count = document.getElementById('feed').children.length;
-            document.getElementById('top-hub').innerText = loc;
-            document.getElementById('intensity-bar').style.width = Math.min(count * 20, 100) + '%';
-            document.getElementById('orb-1').style.transform = `translate(${count * 10}px, ${count * 5}px) scale(${1 + count * 0.05})`;
+            } catch (e) { console.error(e); }
         }
     </script>
 </body>
