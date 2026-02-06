@@ -21,32 +21,32 @@
             background-color: var(--bg-color); 
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
+            /* 배경 노이즈 효과 */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
         }
 
         .serif-font { font-family: 'Cinzel', serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* 고품격 애니메이션 정의 */
+        /* 기본 애니메이션 */
         .fade-in { animation: fadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
         .slide-up { animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
         
-        /* 입구 '고재인' 전용 시네마틱 애니메이션 */
+        /* 고품격 시네마틱 리빌 (입구 이름) */
         .cinematic-reveal {
             opacity: 0;
-            transform: translateY(40px) scale(0.95);
-            animation: cinematicReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            animation-delay: 0.3s; /* 주변 요소보다 조금 늦게 등장 */
+            transform: translateY(30px) scale(0.9);
+            filter: blur(10px);
+            animation: cinematicReveal 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.5s; /* 주변 요소보다 늦게 등장 */
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes cinematicReveal {
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                letter-spacing: 0.5em; /* 등장하며 자간이 넓어지는 효과 */
-            }
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); letter-spacing: 0em; }
+            50% { opacity: 0.5; transform: translateY(0) scale(1.05); filter: blur(2px); letter-spacing: 0.3em; color: var(--accent); } /* 중간에 살짝 강조 */
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); letter-spacing: 0.2em; color: var(--text-main); }
         }
 
         /* 버튼 및 입력창 스타일 */
@@ -63,19 +63,39 @@
         input, textarea { border-bottom-width: 2px !important; border-color: rgba(0,0,0,0.1); }
         input:focus, textarea:focus { border-color: var(--text-main) !important; }
         ::placeholder { color: #DDD; font-weight: 400; }
+
+        /* 로그 카드 스타일 (통일감 부여) */
+        .log-card {
+            background-color: rgba(255, 255, 255, 0.6); /* 아주 연한 배경색 */
+            backdrop-filter: blur(10px); /* 블러 효과 */
+            border: 1px solid rgba(0, 0, 0, 0.05); /* 미세한 테두리 */
+            padding: 24px; /* 내부 여백 */
+            position: relative; /* 세로줄 배치를 위해 */
+        }
+        /* 로그 카드 왼쪽 붉은 세로줄 (중앙 정렬) */
+        .log-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%; /* 상단에서 50% 위치 */
+            transform: translateY(-50%); /* 자신의 높이만큼 위로 이동하여 중앙 정렬 */
+            width: 2px;
+            height: 60%; /* 카드 높이의 60% */
+            background-color: var(--accent);
+        }
     </style>
 </head>
 <body class="overflow-hidden">
 
     <div id="pin-gate" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4] px-10 fade-in">
-        <div class="w-full max-w-[300px] flex flex-col items-center text-center">
-            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-8 serif-font slide-up">THE PRIVATE ARCHIVE</p>
+        <div class="flex flex-col items-center text-center">
+            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-12 serif-font slide-up">THE PRIVATE ARCHIVE</p>
             
-            <h2 class="serif-font text-2xl mb-36 tracking-[0.2em] opacity-90 cinematic-reveal">고재인</h2>
+            <h2 class="serif-font text-3xl mb-40 tracking-[0.2em] opacity-90 cinematic-reveal font-bold">고재인</h2>
             
-            <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 0.5s;">
+            <div class="w-full max-w-[240px] flex flex-col items-center slide-up" style="animation-delay: 0.8s;">
                 <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none tracking-[0.4em] border-b-2 border-black/5 focus:border-black transition-all mb-20 rounded-none" placeholder="0000">
+                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none tracking-[0.4em] border-b-2 border-black/5 focus:border-black transition-all mb-16 rounded-none" placeholder="0000">
                 
                 <button onclick="unlock()" class="text-[9px] tracking-[0.6em] border border-black/20 px-14 py-5 uppercase rounded-none hover:bg-black hover:text-white transition-all duration-700">Identify</button>
             </div>
@@ -89,7 +109,7 @@
             <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold">by Koh Jaein</p>
         </header>
 
-        <main id="feed" class="flex-1 overflow-y-auto px-8 py-12 space-y-20 no-scrollbar pb-52">
+        <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-52">
             </main>
 
         <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
@@ -165,7 +185,7 @@
             if(document.getElementById('pin').value === PIN) {
                 const gate = document.getElementById('pin-gate');
                 gate.style.opacity = '0';
-                gate.style.transform = 'translateY(-30px) scale(1.05)'; /* 잠금 해제 시 고급스러운 퇴장 효과 */
+                gate.style.transform = 'translateY(-30px) scale(1.05)';
                 setTimeout(() => {
                     gate.style.display = 'none';
                     document.getElementById('main-content').classList.remove('hidden');
@@ -230,9 +250,10 @@
             const sendBtn = document.getElementById('next-btn');
             sendBtn.innerText = "Processing...";
 
+            // 로그 카드 HTML 생성 (통일감 부여, 세로줄 중앙 정렬, 장소 표시 가독성 개선)
             const html = `
-                <div class="log-card relative pl-12 before:content-[''] before:absolute before:left-0 before:top-2 before:w-[1px] before:h-16 before:bg-[#C04A3A] slide-up">
-                    <div class="flex items-baseline gap-5 mb-5">
+                <div class="log-card slide-up">
+                    <div class="flex items-baseline gap-5 mb-5 pl-6">
                         <span class="serif-font text-4xl font-bold tracking-tighter">${data.who}.</span>
                         <div class="flex-1 border-b border-black/5 pb-2">
                             <div class="flex justify-between items-center">
@@ -241,8 +262,8 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-[17px] leading-relaxed text-[#1A1A1A] font-medium tracking-tight mb-3">${data.msg}</p>
-                    <p class="text-[10px] text-slate-300 italic serif-font tracking-[0.2em]">at ${data.where}</p>
+                    <p class="text-[17px] leading-relaxed text-[#1A1A1A] font-medium tracking-tight mb-4 pl-6">${data.msg}</p>
+                    <p class="text-[11px] text-slate-500 italic serif-font tracking-[0.2em] pl-6 font-medium">at ${data.where}</p>
                 </div>
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
