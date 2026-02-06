@@ -12,7 +12,6 @@
         :root {
             --bg-color: #F9F8F4;
             --text-main: #1A1A1A;
-            /* 수정됨: 톤다운된 딥 브릭 컬러 적용 */
             --accent: #A83F32;
             --mobile-width: 480px;
         }
@@ -41,7 +40,6 @@
         .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate: 3.5s Slow Reveal & PIN Precision */
         .cinematic-reveal {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -61,7 +59,6 @@
 
         #pin { letter-spacing: 0.4em; padding-left: 0.4em; border-bottom: 2px solid rgba(0,0,0,0.05) !important; }
 
-        /* Drafting Interaction */
         .draft-container {
             opacity: 0;
             transform: scale(0.98);
@@ -85,7 +82,6 @@
             font-weight: 400 !important; 
         }
 
-        /* Log Card Design */
         .log-card {
             background-color: white;
             padding: 40px;
@@ -105,7 +101,6 @@
             background-color: var(--accent);
         }
 
-        /* Button 감성 컬러 적용 (Accent) */
         .btn-accent { background-color: var(--accent); color: white; transition: all 0.3s; }
         .btn-accent:active { transform: scale(0.95); filter: brightness(0.9); }
 
@@ -184,7 +179,7 @@
                 </div>
                 
                 <div class="relative">
-                    <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">Your Company</p>
+                    <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">Your Company(선택사항)</p>
                     <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
                 </div>
             </div>
