@@ -20,209 +20,204 @@
             background-color: var(--bg-color); 
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            overflow: hidden;
         }
 
         .serif-font { font-family: 'Cinzel', serif; }
-        .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate Reveal Animation (3.5s Slow Cinematic) */
+        /* Gate Reveal Animation */
         .cinematic-reveal {
             opacity: 0;
-            transform: translateY(30px) scale(0.98);
-            filter: blur(12px);
+            transform: translateY(20px);
+            filter: blur(15px);
             animation: cinematicReveal 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             animation-delay: 0.6s;
         }
         @keyframes cinematicReveal {
-            0% { opacity: 0; transform: translateY(30px); filter: blur(12px); letter-spacing: 0.1em; }
-            100% { opacity: 1; transform: translateY(0); filter: blur(0); letter-spacing: 0.4em; }
+            0% { opacity: 0; transform: translateY(20px); filter: blur(15px); letter-spacing: 0.1em; }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); letter-spacing: 0.5em; }
         }
 
-        .fade-in { animation: fadeIn 1.5s ease-out forwards; }
-        .slide-up { animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        /* Focus Stack Logic */
+        .form-section {
+            opacity: 0.1;
+            filter: blur(4px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .form-section.active {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+            pointer-events: auto;
+        }
 
-        /* PIN Precision Alignment */
-        #pin { letter-spacing: 0.4em; padding-left: 0.4em; }
-
-        /* Input Styles */
-        #input-who { text-transform: uppercase; } /* 사용자 입력은 시각적으로 대문자 고정 */
-        
-        /* Placeholder는 소문자 'ex. KJI'를 유지하도록 폰트 케이스 해제 */
-        ::placeholder { text-transform: none !important; color: #DDD !important; }
-
-        input { border-bottom: 2px solid rgba(0,0,0,0.1) !important; transition: all 0.3s ease; }
-        input:focus { border-color: var(--text-main) !important; }
-
-        /* Message Box */
-        #input-msg {
-            border: 1px solid rgba(0,0,0,0.15) !important;
-            padding: 20px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 0;
+        input { 
+            border-bottom: 1px solid rgba(0,0,0,0.1) !important; 
+            padding: 12px 0; 
+            background: transparent; 
+            outline: none; 
+            font-weight: 700; 
+            font-size: 1.8rem;
             width: 100%;
         }
-        #input-msg:focus { border-color: var(--text-main) !important; background: white; }
+        ::placeholder { text-transform: none !important; color: #DDD !important; font-size: 0.7em; letter-spacing: 0; }
 
-        /* Log Card Chunk */
+        textarea {
+            border: 1px solid rgba(0,0,0,0.1) !important;
+            padding: 24px;
+            background: white;
+            width: 100%;
+            outline: none;
+            font-size: 1.2rem;
+            resize: none;
+        }
+
+        .label-text { font-size: 10px; letter-spacing: 0.2em; color: #999; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        .sub-desc { font-size: 11px; color: #BBB; font-weight: 500; margin-left: 8px; }
+
+        .role-btn { border: 1px solid rgba(0,0,0,0.1); padding: 14px 0; font-size: 10px; letter-spacing: 0.2em; transition: 0.4s; }
+        .role-active { background: var(--text-main); color: white; border-color: var(--text-main); }
+
         .log-card {
-            background-color: white;
-            padding: 32px;
-            position: relative;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            background: white;
+            padding: 40px;
+            border-left: 3px solid var(--accent);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.02);
         }
-        .log-card::before {
-            content: '';
-            position: absolute;
-            left: -1px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 40px;
-            background-color: var(--accent);
-        }
-
-        .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
-        .input-sub-desc { font-size: 11px; color: #999; margin-top: 4px; letter-spacing: -0.01em; font-weight: 500; }
     </style>
 </head>
-<body class="overflow-hidden">
+<body>
 
-    <div id="pin-gate" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4] fade-in">
-        <div class="flex flex-col items-center w-full max-w-sm px-10">
-            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-10 serif-font slide-up">THE PRIVATE ARCHIVE</p>
-            <h2 class="serif-font text-3xl mb-32 opacity-90 cinematic-reveal font-bold">고재인</h2>
-            <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
-                <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none border-black/5 focus:border-black mb-16 rounded-none" placeholder="0000">
-                <button onclick="unlock()" class="text-[9px] tracking-[0.6em] border border-black/20 px-16 py-5 uppercase rounded-none hover:bg-black hover:text-white transition-all">Identify</button>
-            </div>
+    <div id="pin-gate" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4]">
+        <div class="flex flex-col items-center w-full max-w-sm px-10 text-center">
+            <p class="text-[9px] tracking-[0.8em] text-slate-400 mb-12 serif-font">THE PRIVATE ARCHIVE</p>
+            <h2 class="serif-font text-4xl mb-32 font-bold cinematic-reveal">고재인</h2>
+            <input type="text" id="pin" maxlength="4" inputmode="numeric" 
+                class="text-center text-5xl w-full py-6 mb-16 font-bold serif-font border-b-2 border-black/5 outline-none" style="letter-spacing: 0.5em; padding-left: 0.5em;" placeholder="0000">
+            <button onclick="unlock()" class="text-[10px] tracking-[0.7em] border border-black/20 px-20 py-6 uppercase hover:bg-black hover:text-white transition-all">Identify</button>
         </div>
     </div>
 
-    <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative bg-white/50">
-        <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
-            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
-            <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
-            <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
+    <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col bg-[#F9F8F4]">
+        <header class="p-12 pt-32 pb-16">
+            <p class="text-[11px] tracking-[0.8em] text-[#C04A3A] font-bold serif-font mb-8">RELATIONS</p>
+            <h1 class="serif-font text-7xl mb-6 tracking-tighter font-bold">Archive</h1>
+            <p class="serif-font text-xl italic opacity-20 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
         </header>
 
-        <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-10 no-scrollbar pb-52">
+        <main id="feed" class="flex-1 overflow-y-auto px-8 pb-60 space-y-12 no-scrollbar">
             </main>
 
         <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
-            <button onclick="openStepper()" class="bg-black text-white px-14 py-5 rounded-none text-[9px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
+            <button onclick="openForm()" class="bg-black text-white px-20 py-7 text-[10px] tracking-[0.6em] shadow-2xl active:scale-95 transition-transform">NEW RECORD</button>
         </div>
     </div>
 
-    <div id="stepper" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col p-12 overflow-hidden">
-        <div class="flex justify-between items-center mb-8">
-            <span id="step-num" class="serif-font text-[10px] opacity-30 tracking-[0.3em]">01 / 04</span>
-            <button onclick="closeStepper()" class="text-3xl font-light opacity-30">×</button>
+    <div id="record-form" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden overflow-y-auto no-scrollbar scroll-smooth">
+        <div class="sticky top-0 p-10 flex justify-between items-center bg-[#F9F8F4]/80 backdrop-blur-md z-30">
+            <span class="serif-font text-[11px] tracking-[0.4em] font-bold">CREDENTIAL SLIP</span>
+            <button onclick="closeForm()" class="text-4xl font-light opacity-20 hover:opacity-100 transition-opacity">×</button>
         </div>
 
-        <div id="step-container" class="flex-1 flex flex-col justify-start pt-10">
-            <div id="step1" class="step-content">
-                <h3 class="serif-font text-4xl mb-12 tracking-tight font-bold">ROLE.</h3>
-                <div class="flex flex-col gap-4">
-                    <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-6 text-[10px] tracking-[0.3em] rounded-none">PRESS</button>
-                    <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-6 text-[10px] tracking-[0.3em] rounded-none">PARTNER</button>
-                    <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-6 text-[10px] tracking-[0.3em] rounded-none">CREW</button>
+        <div id="stack-container" class="px-10 pt-20 pb-60 space-y-40">
+            <section class="form-section active" id="sec-1">
+                <label class="serif-font label-text">01. Role Selection</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="setRole('PRESS', this)" class="role-btn">PRESS</button>
+                    <button onclick="setRole('PARTNER', this)" class="role-btn">PARTNER</button>
+                    <button onclick="setRole('CREW', this)" class="role-btn">CREW</button>
                 </div>
-            </div>
+            </section>
 
-            <div id="step2" class="step-content hidden space-y-16">
-                <div>
-                    <div class="flex items-baseline">
-                        <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Who.</h3>
-                        <p class="input-sub-desc ml-4">영문 이니셜</p>
-                    </div>
-                    <input type="text" id="input-who" 
-                        oninput="this.value = this.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '')" 
-                        class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" 
-                        placeholder="ex. KJI">
-                </div>
-                <div>
-                    <div class="flex items-baseline">
-                        <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Company.</h3>
-                        <p class="input-sub-desc ml-4">선택사항</p>
-                    </div>
-                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold opacity-70" placeholder="ex. 대보">
-                </div>
-            </div>
+            <section class="form-section" id="sec-2">
+                <label class="serif-font label-text">02. Who. <span class="unified-font sub-desc">영문 이니셜</span></label>
+                <input type="text" id="input-who" oninput="handleWhoInput(this)" placeholder="ex. KJI">
+            </section>
 
-            <div id="step3" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Where.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">함께한 장소</p>
-                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-3xl outline-none rounded-none font-bold" placeholder="ex. 광화문">
-            </div>
+            <section class="form-section" id="sec-3">
+                <label class="serif-font label-text">03. Company. <span class="unified-font sub-desc">선택사항</span></label>
+                <input type="text" id="input-aff" onkeydown="handleEnter(event, 4)" placeholder="ex. 대보">
+            </section>
 
-            <div id="step4" class="step-content hidden">
-                <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Message.</h3>
-                <p class="text-[11px] text-slate-400 mb-14 tracking-[0.2em]">기록할 메시지</p>
-                <textarea id="input-msg" rows="3" class="outline-none font-bold leading-relaxed transition-all" placeholder="자유롭게 작성해주세요"></textarea>
-            </div>
+            <section class="form-section" id="sec-4">
+                <label class="serif-font label-text">04. Where. <span class="unified-font sub-desc">장소</span></label>
+                <input type="text" id="input-where" onkeydown="handleEnter(event, 5)" placeholder="ex. 광화문">
+            </section>
+
+            <section class="form-section" id="sec-5">
+                <label class="serif-font label-text">05. Message. <span class="unified-font sub-desc">자유로운 기록</span></label>
+                <textarea id="input-msg" rows="5" placeholder="자유롭게 작성해주세요"></textarea>
+                <button onclick="submitRecord()" class="w-full bg-black text-white py-8 mt-12 text-[11px] tracking-[0.8em] font-bold">ARCHIVE DATA</button>
+            </section>
         </div>
-
-        <div class="pb-10 pt-8"><button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-7 text-[10px] tracking-[0.7em] uppercase rounded-none">Next Step</button></div>
     </div>
 
     <script>
-        let currentStep = 1; let data = { role: '', who: '', aff: '', where: '', msg: '' };
+        let data = { role: '', who: '', aff: '', where: '', msg: '' };
         const PIN = "2026"; const FORMSPREE_ID = "mgolwdqo";
 
         function unlock() {
             if(document.getElementById('pin').value === PIN) {
-                const gate = document.getElementById('pin-gate'); gate.style.opacity = '0';
-                setTimeout(() => { gate.style.display = 'none'; document.getElementById('main-content').classList.remove('hidden'); }, 800);
-            } else { alert('Denied.'); document.getElementById('pin').value = ''; }
+                document.getElementById('pin-gate').style.opacity = '0';
+                setTimeout(() => { document.getElementById('pin-gate').style.display = 'none'; document.getElementById('main-content').classList.remove('hidden'); }, 800);
+            }
         }
 
-        function openStepper() { document.getElementById('stepper').classList.remove('hidden'); resetStepper(); }
-        function closeStepper() { document.getElementById('stepper').classList.add('hidden'); }
-        function resetStepper() { currentStep = 1; updateStepView(); data = { role: '', who: '', aff: '', where: '', msg: '' }; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); document.querySelectorAll('input, textarea').forEach(i => i.value = ''); document.getElementById('next-btn').innerText = "Next Step"; }
-        function setRole(role, elem) { data.role = role; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); elem.classList.add('btn-active'); }
-        function updateStepView() { document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden')); const active = document.getElementById(`step${currentStep}`); active.classList.remove('hidden'); active.classList.add('fade-in'); document.getElementById('step-num').innerText = `0${currentStep} / 04`; }
+        function openForm() { document.getElementById('record-form').classList.remove('hidden'); }
+        function closeForm() { document.getElementById('record-form').classList.add('hidden'); }
 
-        function nextStep() { 
-            if (currentStep === 1 && !data.role) return alert('Select Role.'); 
-            if (currentStep === 2) {
-                data.who = document.getElementById('input-who').value;
-                data.aff = document.getElementById('input-aff').value || '-';
-                if(!data.who) return alert('WHO(Initial) is required.');
+        function focusStep(stepNum) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(`sec-${stepNum}`);
+            target.classList.add('active');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            const input = target.querySelector('input, textarea');
+            if(input) setTimeout(() => input.focus(), 800);
+        }
+
+        function setRole(role, elem) {
+            data.role = role;
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('role-active'));
+            elem.classList.add('role-active');
+            setTimeout(() => focusStep(2), 400);
+        }
+
+        function handleWhoInput(el) {
+            el.value = el.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '');
+            if(el.value.length >= 3) setTimeout(() => focusStep(3), 800);
+        }
+
+        function handleEnter(e, nextStep) {
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                focusStep(nextStep);
             }
-            if (currentStep === 3) data.where = document.getElementById('input-where').value; 
-            if (currentStep < 4) { currentStep++; updateStepView(); if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive"; } 
-            else { data.msg = document.getElementById('input-msg').value; submitRecord(); } 
         }
 
         async function submitRecord() {
-            const sendBtn = document.getElementById('next-btn'); sendBtn.innerText = "Processing...";
+            data.who = document.getElementById('input-who').value;
+            data.aff = document.getElementById('input-aff').value || '-';
+            data.where = document.getElementById('input-where').value;
+            data.msg = document.getElementById('input-msg').value;
+
             const html = `
                 <div class="log-card slide-up">
-                    <div class="flex items-baseline gap-5 mb-5 pl-4">
-                        <span class="serif-font text-4xl font-bold tracking-tighter">${data.who}.</span>
-                        <div class="flex-1 border-b border-black/5 pb-2">
-                            <div class="flex justify-between items-center">
-                                <span class="unified-font text-[11px] tracking-[0.1em] font-bold text-slate-400 uppercase">
-                                    ${data.role} | <span class="text-slate-900">${data.aff}</span>
-                                </span>
-                            </div>
+                    <div class="flex items-baseline gap-6 mb-8">
+                        <span class="serif-font text-5xl font-bold tracking-tighter">${data.who}.</span>
+                        <div class="flex-1 border-b border-black/5 pb-3">
+                            <span class="unified-font text-[13px] font-bold text-slate-400 uppercase">${data.role} | <span class="text-slate-900">${data.aff}</span></span>
                         </div>
                     </div>
-                    <p class="unified-font text-[17px] leading-relaxed text-[#1A1A1A] font-medium tracking-tight mb-4 pl-4">${data.msg}</p>
-                    <p class="unified-font text-[11px] text-slate-500 pl-4 font-medium flex items-center">
-                        <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 13px; opacity: 0.7; margin-right: 6px;">at</span> ${data.where}
-                    </p>
+                    <p class="unified-font text-[18px] leading-relaxed mb-6">${data.msg}</p>
+                    <p class="unified-font text-[13px] text-slate-400 italic font-medium"><span class="serif-font lowercase text-[15px] opacity-60 mr-2">at</span>${data.where}</p>
                 </div>
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
-            try { await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch (e) {}
-            setTimeout(() => closeStepper(), 600);
+            setTimeout(() => closeForm(), 600);
         }
     </script>
 </body>
