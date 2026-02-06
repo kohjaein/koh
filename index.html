@@ -13,20 +13,18 @@
             --bg-color: #F9F8F4;
             --text-main: #1A1A1A;
             --accent: #C04A3A;
-            --mobile-width: 480px; /* PC 접속 시 고정될 너비 */
+            --mobile-width: 480px;
         }
 
-        /* 2. PC 접속 시 모바일창처럼 출력되게 설정 */
         body { 
             font-family: 'Pretendard', sans-serif; 
-            background-color: #E2E1DD; /* 배경 여백 색상 */
+            background-color: #E2E1DD; 
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
             display: flex;
             justify-content: center;
         }
 
-        /* 전체 컨테이너를 모바일 사이즈로 강제 고정 */
         .app-wrapper {
             width: 100%;
             max-width: var(--mobile-width);
@@ -79,7 +77,6 @@
         }
         .live-input:focus { border-bottom-color: var(--accent); }
         
-        /* 1. 플레이스홀더 폰트 및 문구 수정 */
         ::placeholder { 
             font-family: 'Pretendard', sans-serif !important;
             color: #DDD !important; 
@@ -87,6 +84,7 @@
             font-weight: 400 !important; 
         }
 
+        /* Log Card Design */
         .log-card {
             background-color: white;
             padding: 40px;
@@ -106,6 +104,10 @@
             background-color: var(--accent);
         }
 
+        /* Button 감성 컬러 적용 (Accent) */
+        .btn-accent { background-color: var(--accent); color: white; transition: all 0.3s; }
+        .btn-accent:active { transform: scale(0.95); filter: brightness(0.9); }
+
         .role-pill { 
             border: 1px solid rgba(0,0,0,0.1); 
             padding: 12px 0; 
@@ -114,7 +116,7 @@
             font-weight: 700;
             transition: all 0.3s;
         }
-        .pill-active { background: var(--text-main); color: white; border-color: var(--text-main); }
+        .pill-active { background: var(--accent) !important; color: white !important; border-color: var(--accent) !important; }
     </style>
 </head>
 <body>
@@ -127,7 +129,7 @@
                 <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
                     <input type="text" id="pin" maxlength="4" inputmode="numeric" 
                         class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none font-bold" placeholder="0000">
-                    <button onclick="unlock()" class="text-[10px] tracking-[0.7em] border border-black/20 px-16 py-6 mt-12 uppercase hover:bg-black hover:text-white transition-all">Identify</button>
+                    <button onclick="unlock()" class="btn-accent text-[10px] tracking-[0.7em] border border-transparent px-16 py-6 mt-12 uppercase">Identify</button>
                 </div>
             </div>
         </div>
@@ -143,7 +145,7 @@
             </main>
 
             <div class="absolute bottom-12 left-0 w-full flex justify-center z-50">
-                <button onclick="openDraft()" class="bg-black text-white px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
+                <button onclick="openDraft()" class="btn-accent px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl slide-up">NEW RECORD</button>
             </div>
         </div>
 
@@ -181,12 +183,12 @@
                 </div>
                 
                 <div class="relative">
-                    <p class="text-[12px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">Your Company</p>
+                    <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">Your Company</p>
                     <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
                 </div>
             </div>
 
-            <button onclick="finalizeRecord()" class="w-full bg-black text-white py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE DATA</button>
+            <button onclick="finalizeRecord()" class="w-full btn-accent py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE DATA</button>
         </div>
     </div>
 
@@ -231,18 +233,20 @@
 
             const html = `
                 <div class="log-card slide-up">
-                    <div class="flex items-baseline gap-6 mb-8 pl-4">
+                    <div class="flex justify-between items-baseline mb-8 pl-4">
                         <span class="serif-font text-5xl font-bold tracking-tighter">${who}.</span>
-                        <div class="flex-1 border-b border-black/5 pb-3">
-                            <div class="flex justify-between items-center">
-                                <span class="unified-font text-[13px] font-bold text-slate-400 uppercase">${currentRole} | <span class="text-slate-900">${aff}</span></span>
-                            </div>
+                        <div class="flex-1 text-right border-b border-black/5 pb-3">
+                            <span class="unified-font text-[15px] font-bold text-slate-400 uppercase">
+                                ${currentRole} | <span class="text-slate-900">${aff}</span>
+                            </span>
                         </div>
                     </div>
                     <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4">${msg}</p>
-                    <p class="unified-font text-[13px] text-slate-500 pl-4 font-medium italic flex items-center">
-                        <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 15px; opacity: 0.6; margin-right: 8px;">at</span> ${where}
-                    </p>
+                    <div class="text-right">
+                        <p class="unified-font text-[15px] text-slate-500 pl-4 font-medium italic inline-flex items-center">
+                            <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 17px; opacity: 0.6; margin-right: 8px;">at</span> ${where}
+                        </p>
+                    </div>
                 </div>
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
