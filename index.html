@@ -1,3 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>고재인 | Relations Archive</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
+:root {
+--bg-color: #F9F8F4;
+--text-main: #1A1A1A;
+--accent: #C04A3A;
+}
+
+body { 
+font-family: 'Pretendard', sans-serif; 
+background-color: var(--bg-color); 
+color: var(--text-main);
+-webkit-font-smoothing: antialiased;
+background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+.serif-font { font-family: 'Cinzel', serif; }
 .unified-font { font-family: 'Pretendard', sans-serif; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
@@ -19,7 +45,7 @@ transform: translateY(30px) scale(0.98);
 input { border-bottom: 2px solid rgba(0,0,0,0.1) !important; transition: all 0.3s ease; }
 input:focus { border-color: var(--text-main) !important; }
 
-@@ -137,7 +141,10 @@ <h3 class="serif-font text-4xl mb-12 tracking-tight font-bold">ROLE.</h3>
+@@ -137,7 +141,10 @@
 <h3 class="serif-font text-4xl mb-1 tracking-tight font-bold uppercase">Who.</h3>
 <p class="input-sub-desc ml-4">영문 이니셜</p>
 </div>
@@ -31,7 +57,7 @@ input:focus { border-color: var(--text-main) !important; }
 </div>
 <div>
 <div class="flex items-baseline">
-@@ -180,12 +187,11 @@ <h3 class="serif-font text-5xl mb-6 tracking-tight font-bold uppercase">Message.
+@@ -180,44 +187,43 @@
 function resetStepper() { currentStep = 1; updateStepView(); data = { role: '', who: '', aff: '', where: '', msg: '' }; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); document.querySelectorAll('input, textarea').forEach(i => i.value = ''); document.getElementById('next-btn').innerText = "Next Step"; }
 function setRole(role, elem) { data.role = role; document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); elem.classList.add('btn-active'); }
 function updateStepView() { document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden')); const active = document.getElementById(`step${currentStep}`); active.classList.remove('hidden'); active.classList.add('fade-in'); document.getElementById('step-num').innerText = `0${currentStep} / 04`; }
@@ -45,3 +71,35 @@ if (currentStep === 2) {
 data.aff = document.getElementById('input-aff').value || '-';
 if(!data.who) return alert('WHO(Initial) is required.');
 }
+if (currentStep === 3) data.where = document.getElementById('input-where').value; 
+if (currentStep < 4) { currentStep++; updateStepView(); if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive"; } 
+else { data.msg = document.getElementById('input-msg').value; submitRecord(); } 
+}
+
+async function submitRecord() {
+const sendBtn = document.getElementById('next-btn'); sendBtn.innerText = "Processing...";
+const html = `
+               <div class="log-card slide-up">
+                   <div class="flex items-baseline gap-5 mb-5 pl-4">
+                       <span class="serif-font text-4xl font-bold tracking-tighter">${data.who}.</span>
+                       <div class="flex-1 border-b border-black/5 pb-2">
+                           <div class="flex justify-between items-center">
+                               <span class="unified-font text-[11px] tracking-[0.1em] font-bold text-slate-400 uppercase">
+                                   ${data.role} | <span class="text-slate-900">${data.aff}</span>
+                               </span>
+                           </div>
+                       </div>
+                   </div>
+                   <p class="unified-font text-[17px] leading-relaxed text-[#1A1A1A] font-medium tracking-tight mb-4 pl-4">${data.msg}</p>
+                   <p class="unified-font text-[11px] text-slate-500 pl-4 font-medium flex items-center">
+                       <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 13px; opacity: 0.7; margin-right: 6px;">at</span> ${data.where}
+                   </p>
+               </div>
+           `;
+document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
+try { await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch (e) {}
+setTimeout(() => closeStepper(), 600);
+}
+</script>
+</body>
+</html>
