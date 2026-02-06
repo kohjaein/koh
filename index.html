@@ -27,7 +27,7 @@
         .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate: 3.5s Slow Reveal & Precision Center */
+        /* Gate: 3.5s Slow Reveal & Precision Center Alignment */
         .cinematic-reveal {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -45,28 +45,30 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* PIN Precision: Optical Center Compensation */
-        #pin { letter-spacing: 0.4em; padding-left: 0.4em; }
+        /* PIN Optical Center Alignment */
+        #pin { letter-spacing: 0.4em; padding-left: 0.4em; border-bottom: 2px solid rgba(0,0,0,0.05) !important; }
 
-        /* Step Motion: Page-turning Feel */
-        .step-content { transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; transform: translateY(20px); }
-        .step-active { opacity: 1; transform: translateY(0); }
-
-        input { border-bottom: 2px solid rgba(0,0,0,0.1) !important; transition: all 0.3s ease; }
-        input:focus { border-color: var(--text-main) !important; }
-        ::placeholder { text-transform: none !important; color: #DDD !important; }
-
-        /* Message Box: Fixed Square Design */
-        #input-msg {
-            border: 1px solid rgba(0,0,0,0.15) !important;
-            padding: 24px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 0;
-            width: 100%;
-            font-size: 1.1rem;
+        /* Innovation: Live Drafting Form */
+        .draft-container {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .draft-active { opacity: 1; transform: scale(1); }
 
-        /* Log Card Chunk */
+        .draft-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: auto;
+            display: inline-block;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: border-color 0.3s;
+        }
+        .draft-input:focus { border-color: var(--accent); }
+        ::placeholder { color: #DDD !important; text-transform: none !important; }
+
+        /* Log Card Design (Final Unity) */
         .log-card {
             background-color: white;
             padding: 40px;
@@ -85,8 +87,15 @@
             background-color: var(--accent);
         }
 
-        .btn-active { background: var(--text-main) !important; color: white !important; border-color: var(--text-main) !important; }
-        .sub-desc { font-size: 11px; color: #999; margin-left: 8px; font-weight: 500; }
+        .role-pill { 
+            border: 1px solid rgba(0,0,0,0.1); 
+            padding: 10px 18px; 
+            font-size: 10px; 
+            letter-spacing: 0.2em; 
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .pill-active { background: var(--text-main); color: white; border-color: var(--text-main); }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -97,8 +106,8 @@
             <h2 class="serif-font text-3xl mb-32 font-bold cinematic-reveal">고재인</h2>
             <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
                 <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none border-black/5 focus:border-black mb-16 rounded-none font-bold" placeholder="0000">
-                <button onclick="unlock()" class="text-[10px] tracking-[0.6em] border border-black/20 px-16 py-6 uppercase hover:bg-black hover:text-white transition-all">Identify</button>
+                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none font-bold" placeholder="0000">
+                <button onclick="unlock()" class="text-[10px] tracking-[0.7em] border border-black/20 px-16 py-6 mt-12 uppercase hover:bg-black hover:text-white transition-all">Identify</button>
             </div>
         </div>
     </div>
@@ -114,136 +123,127 @@
             </main>
 
         <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
-            <button onclick="openStepper()" class="bg-black text-white px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
+            <button onclick="openDraft()" class="bg-black text-white px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
         </div>
     </div>
 
-    <div id="stepper" class="fixed inset-0 z-[150] bg-[#F9F8F4] hidden flex flex-col p-12 overflow-hidden">
-        <div class="flex justify-between items-center mb-8">
-            <span id="step-num" class="serif-font text-[10px] opacity-30 tracking-[0.3em]">01 / 04</span>
-            <button onclick="closeStepper()" class="text-4xl font-light opacity-30">×</button>
-        </div>
-
-        <div id="step-container" class="flex-1 flex flex-col justify-start pt-10">
-            <div id="step1" class="step-content step-active">
-                <h3 class="serif-font text-4xl mb-12 tracking-tight font-bold">01. ROLE.</h3>
-                <div class="flex flex-col gap-4">
-                    <button onclick="setRole('PRESS', this)" class="role-btn border border-black/10 px-4 py-6 text-[11px] tracking-[0.3em] font-bold">PRESS</button>
-                    <button onclick="setRole('PARTNER', this)" class="role-btn border border-black/10 px-4 py-6 text-[11px] tracking-[0.3em] font-bold">PARTNER</button>
-                    <button onclick="setRole('CREW', this)" class="role-btn border border-black/10 px-4 py-6 text-[11px] tracking-[0.3em] font-bold">CREW</button>
-                </div>
+    <div id="draft-overlay" class="fixed inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex items-center justify-center p-8">
+        <div class="w-full max-w-md draft-container" id="draft-box">
+            <div class="flex justify-between items-center mb-16">
+                <span class="serif-font text-[10px] tracking-[0.4em] font-bold opacity-30">DRAFTING RECORD</span>
+                <button onclick="closeDraft()" class="text-4xl font-light opacity-20">×</button>
             </div>
 
-            <div id="step2" class="step-content hidden space-y-20">
-                <div>
-                    <div class="flex items-baseline mb-4">
-                        <h3 class="serif-font text-4xl tracking-tight font-bold uppercase">02. Who.</h3>
-                        <span class="unified-font sub-desc">영문 이니셜</span>
+            <div class="log-card mb-16">
+                <div class="flex items-baseline gap-4 mb-6">
+                    <input type="text" id="d-who" oninput="validateWho(this)" 
+                        class="serif-font text-4xl font-bold tracking-tighter w-24 bg-transparent outline-none border-b border-black/5" 
+                        placeholder="ex. KJI">
+                    <div class="flex-1 border-b border-black/5 pb-2">
+                        <div class="flex justify-between items-center">
+                            <span class="unified-font text-[11px] font-bold text-slate-400 uppercase">
+                                <span id="d-role-display">ROLE</span> | 
+                                <input type="text" id="d-aff" class="bg-transparent outline-none text-slate-900 w-20" placeholder="선택사항 (ex. 대보)">
+                            </span>
+                        </div>
                     </div>
-                    <input type="text" id="input-who" oninput="this.value = this.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '')" class="w-full bg-transparent py-4 text-4xl outline-none font-bold" placeholder="ex. KJI">
                 </div>
-                <div>
-                    <div class="flex items-baseline mb-4">
-                        <h3 class="serif-font text-4xl tracking-tight font-bold uppercase">03. Company.</h3>
-                        <span class="unified-font sub-desc">선택사항</span>
-                    </div>
-                    <input type="text" id="input-aff" class="w-full bg-transparent py-4 text-4xl outline-none font-bold opacity-60" placeholder="ex. 대보">
+
+                <textarea id="d-msg" rows="3" 
+                    class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium w-full bg-transparent outline-none resize-none mb-6 border-b border-black/5" 
+                    placeholder="자유롭게 작성해주세요"></textarea>
+
+                <p class="unified-font text-[11px] text-slate-500 font-medium flex items-center">
+                    <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 15px; opacity: 0.6; margin-right: 8px;">at</span>
+                    <input type="text" id="d-where" class="bg-transparent outline-none w-32 border-b border-black/5" placeholder="ex. 광화문">
+                </p>
+            </div>
+
+            <div class="space-y-4 mb-12">
+                <p class="serif-font text-[10px] tracking-[0.2em] text-slate-400 uppercase">Step 01. Select Role</p>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="setDraftRole('PRESS', this)" class="role-pill">PRESS</button>
+                    <button onclick="setDraftRole('PARTNER', this)" class="role-pill">PARTNER</button>
+                    <button onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
                 </div>
             </div>
 
-            <div id="step3" class="step-content hidden">
-                <div class="flex items-baseline mb-4">
-                    <h3 class="serif-font text-4xl tracking-tight font-bold uppercase">04. Where.</h3>
-                    <span class="unified-font sub-desc">장소</span>
-                </div>
-                <input type="text" id="input-where" class="w-full bg-transparent py-4 text-4xl outline-none font-bold" placeholder="ex. 광화문">
-            </div>
-
-            <div id="step4" class="step-content hidden">
-                <div class="flex items-baseline mb-4">
-                    <h3 class="serif-font text-4xl tracking-tight font-bold uppercase">05. Message.</h3>
-                </div>
-                <textarea id="input-msg" rows="5" class="outline-none font-bold leading-relaxed" placeholder="자유롭게 작성해주세요"></textarea>
-            </div>
+            <button onclick="finalizeRecord()" class="w-full bg-black text-white py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE THIS MOMENT</button>
         </div>
-
-        <div class="pb-10 pt-8"><button id="next-btn" onclick="nextStep()" class="w-full bg-black text-white py-8 text-[11px] tracking-[0.7em] uppercase rounded-none font-bold">Next Step</button></div>
     </div>
 
     <script>
-        let currentStep = 1; let data = { role: '', who: '', aff: '', where: '', msg: '' };
-        const PIN = "2026"; const FORMSPREE_ID = "mgolwdqo";
+        let currentRole = '';
+        const PIN = "2026";
+        const FORMSPREE_ID = "mgolwdqo";
 
         function unlock() {
             if(document.getElementById('pin').value === PIN) {
-                const gate = document.getElementById('pin-gate'); gate.style.opacity = '0';
-                setTimeout(() => { gate.style.display = 'none'; document.getElementById('main-content').classList.remove('hidden'); }, 800);
+                document.getElementById('pin-gate').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('pin-gate').style.display = 'none';
+                    document.getElementById('main-content').classList.remove('hidden');
+                }, 800);
             }
         }
 
-        function openStepper() { document.getElementById('stepper').classList.remove('hidden'); resetStepper(); }
-        function closeStepper() { document.getElementById('stepper').classList.add('hidden'); }
-        function resetStepper() { 
-            currentStep = 1; updateStepView(); 
-            data = { role: '', who: '', aff: '', where: '', msg: '' }; 
-            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active'));
-            document.querySelectorAll('input, textarea').forEach(i => i.value = '');
-            document.getElementById('next-btn').innerText = "Next Step";
+        function openDraft() {
+            document.getElementById('draft-overlay').classList.remove('hidden');
+            setTimeout(() => document.getElementById('draft-box').classList.add('draft-active'), 10);
         }
 
-        function setRole(role, elem) { 
-            data.role = role; 
-            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('btn-active')); 
-            elem.classList.add('btn-active'); 
+        function closeDraft() {
+            document.getElementById('draft-box').classList.remove('draft-active');
+            setTimeout(() => document.getElementById('draft-overlay').classList.add('hidden'), 500);
         }
 
-        function updateStepView() {
-            document.querySelectorAll('.step-content').forEach(s => { s.classList.add('hidden'); s.classList.remove('step-active'); });
-            const active = document.getElementById(`step${currentStep}`);
-            active.classList.remove('hidden');
-            setTimeout(() => active.classList.add('step-active'), 10);
-            document.getElementById('step-num').innerText = `0${currentStep} / 04`;
+        function validateWho(el) {
+            el.value = el.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '');
         }
 
-        function nextStep() {
-            if (currentStep === 1 && !data.role) return alert('Select Role.');
-            if (currentStep === 2) {
-                data.who = document.getElementById('input-who').value;
-                data.aff = document.getElementById('input-aff').value || '-';
-                if(!data.who) return alert('Who(Initial) is required.');
-            }
-            if (currentStep === 3) data.where = document.getElementById('input-where').value;
-            
-            if (currentStep < 4) {
-                currentStep++; updateStepView();
-                if(currentStep === 4) document.getElementById('next-btn').innerText = "Complete Archive";
-            } else {
-                data.msg = document.getElementById('input-msg').value;
-                submitRecord();
-            }
+        function setDraftRole(role, el) {
+            currentRole = role;
+            document.getElementById('d-role-display').innerText = role;
+            document.querySelectorAll('.role-pill').forEach(b => b.classList.remove('pill-active'));
+            el.classList.add('pill-active');
         }
 
-        async function submitRecord() {
-            const sendBtn = document.getElementById('next-btn'); sendBtn.innerText = "Processing...";
+        async function finalizeRecord() {
+            const who = document.getElementById('d-who').value;
+            const aff = document.getElementById('d-aff').value || '-';
+            const where = document.getElementById('d-where').value;
+            const msg = document.getElementById('d-msg').value;
+
+            if(!currentRole || !who || !where || !msg) return alert('모든 정보를 채워주세요.');
+
             const html = `
                 <div class="log-card slide-up">
                     <div class="flex items-baseline gap-6 mb-8 pl-4">
-                        <span class="serif-font text-5xl font-bold tracking-tighter">${data.who}.</span>
+                        <span class="serif-font text-5xl font-bold tracking-tighter">${who}.</span>
                         <div class="flex-1 border-b border-black/5 pb-3">
                             <div class="flex justify-between items-center">
-                                <span class="unified-font text-[13px] font-bold text-slate-400 uppercase">${data.role} | <span class="text-slate-900">${data.aff}</span></span>
+                                <span class="unified-font text-[13px] font-bold text-slate-400 uppercase">${currentRole} | <span class="text-slate-900">${aff}</span></span>
                             </div>
                         </div>
                     </div>
-                    <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4">${data.msg}</p>
+                    <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4">${msg}</p>
                     <p class="unified-font text-[13px] text-slate-500 pl-4 font-medium italic flex items-center">
-                        <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 15px; opacity: 0.6; margin-right: 8px;">at</span> ${data.where}
+                        <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 15px; opacity: 0.6; margin-right: 8px;">at</span> ${where}
                     </p>
                 </div>
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
-            try { await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch (e) {}
-            setTimeout(() => closeStepper(), 600);
+            
+            // Formspree 전송 로직
+            try {
+                await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: currentRole, who, aff, where, msg })
+                });
+            } catch (e) {}
+
+            closeDraft();
         }
     </script>
 </body>
