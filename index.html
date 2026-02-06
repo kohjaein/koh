@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KOH JAEIN | Field Log</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #050507; color: #e2e8f0; -webkit-font-smoothing: antialiased; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .pulse-orb { filter: blur(60px); transition: all 1.5s ease; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .log-card { animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.98) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        input:focus { outline: none; }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+    <div id="pin-gate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#050507] px-10 text-center">
+        <div class="w-16 h-16 mb-8 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+            <div class="w-2 h-2 bg-indigo-500 rounded-full animate-ping"></div>
+        </div>
+        <h2 class="text-xs font-black tracking-[0.4em] text-white mb-2 uppercase">Verified Access</h2>
+        <p class="text-slate-500 text-[10px] mb-12 leading-relaxed tracking-wider">ENTER THE PIN FROM THE BUSINESS CARD</p>
+        <input type="password" id="pin" maxlength="4" class="bg-transparent text-center text-5xl w-full py-4 outline-none tracking-[0.8em] mb-16 text-white border-b border-white/5 focus:border-indigo-500 transition-all font-light" placeholder="••••">
+        <button onclick="unlock()" class="w-full max-w-xs py-5 bg-white text-black rounded-full font-black text-[11px] tracking-[0.2em] hover:bg-slate-200 active:scale-95 transition-all">AUTHENTICATE</button>
+    </div>
+
+    <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative overflow-hidden">
+        
+        <div id="pulse-bg" class="pulse-orb fixed top-[-100px] left-[-100px] w-80 h-80 bg-indigo-600/10 rounded-full z-0"></div>
+        <div class="pulse-orb fixed bottom-40 right-[-100px] w-96 h-96 bg-emerald-600/5 rounded-full z-0"></div>
+
+        <header class="relative z-10 p-8 pt-12 pb-6 flex flex-col gap-8">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-[10px] font-black tracking-[0.4em] text-indigo-400 uppercase mb-2">Presence Intelligence</h1>
+                    <p class="text-4xl font-extrabold tracking-tighter text-white">KOH JAEIN<span class="text-indigo-500">.</span></p>
+                </div>
+                <div class="flex flex-col items-end gap-1.5">
+                    <span class="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em]">Field Intensity</span>
+                    <div class="flex gap-1" id="intensity-meter">
+                        <div class="w-1.5 h-4 bg-white/5 rounded-full transition-all duration-700"></div>
+                        <div class="w-1.5 h-4 bg-white/5 rounded-full transition-all duration-700"></div>
+                        <div class="w-1.5 h-4 bg-white/5 rounded-full transition-all duration-700"></div>
+                        <div class="w-1.5 h-4 bg-white/5 rounded-full transition-all duration-700"></div>
+                        <div class="w-1.5 h-4 bg-white/5 rounded-full transition-all duration-700"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass p-5 rounded-[2rem]">
+                    <p class="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-2">Top Hub</p>
+                    <p id="top-hub" class="text-sm font-bold text-white tracking-tight italic">Waiting...</p>
+                    <div class="w-full h-[2px] bg-white/5 rounded-full mt-4 overflow-hidden">
+                        <div id="hub-heat" class="w-0 h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-1000"></div>
+                    </div>
+                </div>
+                <div class="glass p-5 rounded-[2rem]">
+                    <p class="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-2">Status</p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                        <p id="status-text" class="text-sm font-bold text-white tracking-tight">Active Now</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="feed" class="relative z-10 flex-1 px-8 space-y-6 pb-52 overflow-y-auto no-scrollbar">
+            </main>
+
+        <footer class="fixed bottom-0 w-full max-w-md p-6 pb-12 z-20">
+            <div class="glass rounded-[3rem] p-4 flex flex-col gap-4 shadow-2xl">
+                <div class="flex gap-1.5 px-1">
+                    <button onclick="setRole('PRESS', '#3b82f6')" class="role-btn flex-1 py-2.5 text-[9px] font-black rounded-full bg-white/5 text-slate-500 transition-all border border-transparent">PRESS</button>
+                    <button onclick="setRole('PARTNER', '#10b981')" class="role-btn flex-1 py-2.5 text-[9px] font-black rounded-full bg-white/5 text-slate-500 transition-all border border-transparent">PARTNER</button>
+                    <button onclick="setRole('TEAM', '#8b5cf6')" class="role-btn flex-1 py-2.5 text-[9px] font-black rounded-full bg-white/5 text-slate-500 transition-all border border-transparent">TEAM</button>
+                </div>
+                <div class="relative flex items-center">
+                    <input type="text" id="msg-input" 
+                        class="w-full bg-white/5 rounded-full py-5 pl-7 pr-16 text-[13px] font-medium text-white placeholder-slate-600 border border-white/5 focus:bg-white/10 transition-all"
+                        placeholder="이니셜/장소/메시지">
+                    <button id="send-btn" onclick="post()" class="absolute right-2 w-12 h-12 bg-white rounded-full flex items-center justify-center active:scale-90 transition-all shadow-xl">
+                        <svg viewBox="0 0 24 24" class="w-5 h-5 fill-black"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let curRole = ''; let curColor = ''; 
+        const PIN = "2026"; 
+        const FORMSPREE_ID = "mgolwdqo"; 
+
+        function unlock() {
+            if(document.getElementById('pin').value === PIN) {
+                document.getElementById('pin-gate').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            } else { alert('INVALID PIN'); document.getElementById('pin').value = ''; }
+        }
+
+        function setRole(role, color) {
+            curRole = role; curColor = color;
+            document.querySelectorAll('.role-btn').forEach(b => {
+                b.style.background = 'rgba(255,255,255,0.05)';
+                b.style.color = '#64748b'; b.style.borderColor = 'transparent';
+            });
+            event.target.style.background = color + '22';
+            event.target.style.color = color;
+            event.target.style.borderColor = color + '44';
+        }
+
+        function getTimeVibe() {
+            if (curRole === 'TEAM') return "ALL-DAY CONNECTION";
+            const h = new Date().getHours();
+            if(h >= 11 && h <= 15) return "LUNCH NETWORKING";
+            if(h >= 17 && h <= 23) return "DINNER VIBE";
+            return "FIELD ACTIVITY";
+        }
+
+        async function post() {
+            const input = document.getElementById('msg-input');
+            const val = input.value;
+            if(!val || !curRole) return alert('그룹과 내용을 확인해주세요.');
+            
+            const [ini, loc, txt] = val.split('/').map(s => s?.trim());
+            if(!txt) return alert('이니셜/장소/메시지 형식으로 써주세요!');
+
+            const vibe = getTimeVibe();
+            const sendBtn = document.getElementById('send-btn');
+            sendBtn.disabled = true;
+
+            // 1. UI 즉시 업데이트
+            const html = `
+                <div class="log-card glass p-7 rounded-[2.5rem] relative overflow-hidden border-l-4" style="border-left-color: ${curColor}">
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-black text-white text-lg shadow-2xl" style="background:${curColor}">${ini.substring(0,2).toUpperCase()}</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[9px] font-black tracking-tighter px-2 py-0.5 rounded bg-white/5" style="color:${curColor}">${curRole}</span>
+                                <span class="text-[9px] font-bold text-indigo-400 italic">@ ${loc}</span>
+                            </div>
+                            <p class="text-[8px] font-black text-slate-500 tracking-[0.2em] uppercase">${vibe}</p>
+                        </div>
+                    </div>
+                    <p class="text-[13px] leading-relaxed text-slate-200 font-medium">${txt}</p>
+                </div>
+            `;
+            document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
+            updateVisuals(loc);
+
+            // 2. Formspree 실제 전송
+            try {
+                await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: curRole, initial: ini, location: loc, message: txt, vibe: vibe })
+                });
+            } catch (e) { console.error("전송 오류", e); }
+
+            input.value = '';
+            sendBtn.disabled = false;
+        }
+
+        function updateVisuals(loc) {
+            const count = document.getElementById('feed').children.length;
+            const dots = document.getElementById('intensity-meter').children;
+            for(let i=0; i < Math.min(count, 5); i++) { 
+                dots[i].style.background = '#6366f1'; 
+                dots[i].style.boxShadow = '0 0 15px #6366f1'; 
+            }
+            document.getElementById('top-hub').innerText = loc;
+            document.getElementById('hub-heat').style.width = Math.min(count * 20, 100) + '%';
+            document.getElementById('pulse-bg').style.transform = `scale(${1 + count*0.1})`;
+        }
+    </script>
+</body>
+</html>
