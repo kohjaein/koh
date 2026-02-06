@@ -13,13 +13,28 @@
             --bg-color: #F9F8F4;
             --text-main: #1A1A1A;
             --accent: #C04A3A;
+            --mobile-width: 480px; /* PC 접속 시 고정될 너비 */
         }
 
+        /* 2. PC 접속 시 모바일창처럼 출력되게 설정 */
         body { 
             font-family: 'Pretendard', sans-serif; 
-            background-color: var(--bg-color); 
+            background-color: #E2E1DD; /* 배경 여백 색상 */
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 전체 컨테이너를 모바일 사이즈로 강제 고정 */
+        .app-wrapper {
+            width: 100%;
+            max-width: var(--mobile-width);
+            height: 100vh;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 100px rgba(0,0,0,0.1);
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
         }
 
@@ -27,7 +42,7 @@
         .unified-font { font-family: 'Pretendard', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Gate: 3.5s Slow Reveal & Precision Center Alignment */
+        /* Gate: 3.5s Slow Reveal & PIN Precision */
         .cinematic-reveal {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -45,7 +60,6 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* PIN Precision Center (0.4em) */
         #pin { letter-spacing: 0.4em; padding-left: 0.4em; border-bottom: 2px solid rgba(0,0,0,0.05) !important; }
 
         /* Drafting Interaction */
@@ -56,7 +70,6 @@
         }
         .draft-active { opacity: 1; transform: scale(1); }
 
-        /* Input Elements */
         .live-input {
             background: transparent;
             border: none;
@@ -65,9 +78,15 @@
             transition: border-color 0.3s;
         }
         .live-input:focus { border-bottom-color: var(--accent); }
-        ::placeholder { color: #DDD !important; text-transform: none !important; font-weight: 400 !important; }
+        
+        /* 1. 플레이스홀더 폰트 및 문구 수정 */
+        ::placeholder { 
+            font-family: 'Pretendard', sans-serif !important;
+            color: #DDD !important; 
+            text-transform: none !important; 
+            font-weight: 400 !important; 
+        }
 
-        /* Log Card (The Archive Object) */
         .log-card {
             background-color: white;
             padding: 40px;
@@ -98,82 +117,77 @@
         .pill-active { background: var(--text-main); color: white; border-color: var(--text-main); }
     </style>
 </head>
-<body class="overflow-hidden">
+<body>
 
-    <div id="pin-gate" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4] fade-in">
-        <div class="flex flex-col items-center w-full max-w-sm px-10">
-            <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-10 serif-font slide-up">THE PRIVATE ARCHIVE</p>
-            <h2 class="serif-font text-3xl mb-32 font-bold cinematic-reveal">고재인</h2>
-            <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
-                <input type="text" id="pin" maxlength="4" inputmode="numeric" 
-                    class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none font-bold" placeholder="0000">
-                <button onclick="unlock()" class="text-[10px] tracking-[0.7em] border border-black/20 px-16 py-6 mt-12 uppercase hover:bg-black hover:text-white transition-all">Identify</button>
+    <div class="app-wrapper">
+        <div id="pin-gate" class="absolute inset-0 z-[200] flex items-center justify-center bg-[#F9F8F4] fade-in">
+            <div class="flex flex-col items-center w-full px-10">
+                <p class="text-[8px] tracking-[0.8em] text-slate-400 mb-10 serif-font slide-up">THE PRIVATE ARCHIVE</p>
+                <h2 class="serif-font text-3xl mb-32 font-bold cinematic-reveal">고재인</h2>
+                <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
+                    <input type="text" id="pin" maxlength="4" inputmode="numeric" 
+                        class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none font-bold" placeholder="0000">
+                    <button onclick="unlock()" class="text-[10px] tracking-[0.7em] border border-black/20 px-16 py-6 mt-12 uppercase hover:bg-black hover:text-white transition-all">Identify</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="main-content" class="hidden h-screen max-w-md mx-auto flex flex-col relative bg-white/50">
-        <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
-            <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
-            <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
-            <p class="serif-font text-xl italic opacity-30 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
-        </header>
+        <div id="main-content" class="hidden h-full flex flex-col relative bg-white/50">
+            <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
+                <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
+                <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
+                <p class="serif-font text-xl italic opacity-30 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
+            </header>
 
-        <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60">
+            <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60">
             </main>
 
-        <div class="fixed bottom-12 left-0 w-full flex justify-center z-50">
-            <button onclick="openDraft()" class="bg-black text-white px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
-        </div>
-    </div>
-
-    <div id="draft-overlay" class="fixed inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-center p-8 overflow-y-auto no-scrollbar">
-        
-        <div class="w-full max-w-md flex justify-between items-center mb-10">
-            <span class="serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">DRAFTING RECORD</span>
-            <button onclick="closeDraft()" class="text-4xl font-light opacity-20">×</button>
-        </div>
-
-        <div class="log-card mb-10 draft-container" id="draft-box">
-            <div class="flex items-baseline gap-4 mb-6">
-                <div class="flex-1">
-                    <input type="text" id="d-who" oninput="this.value = this.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '')" 
-                        class="serif-font text-4xl font-bold tracking-tighter w-full bg-transparent outline-none border-b border-black/5" 
-                        placeholder="영문이니셜 (ex. kji)">
-                </div>
-                <div class="w-auto border-b border-black/5 pb-2 min-w-[80px]">
-                    <span class="unified-font text-[11px] font-bold text-slate-400 uppercase">
-                        <span id="d-role-display">ROLE</span> | 
-                        <span id="d-aff-display" class="text-slate-900">-</span>
-                    </span>
-                </div>
+            <div class="absolute bottom-12 left-0 w-full flex justify-center z-50">
+                <button onclick="openDraft()" class="bg-black text-white px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl active:scale-95 transition-transform slide-up">NEW RECORD</button>
             </div>
-
-            <textarea id="d-msg" rows="3" 
-                class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium w-full bg-transparent outline-none resize-none mb-6 border-b border-black/5" 
-                placeholder="고재인과의 만남은 어떠셨나요?"></textarea>
-
-            <p class="unified-font text-[15px] text-slate-500 font-medium flex items-center">
-                <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 16px; opacity: 0.6; margin-right: 8px;">at</span>
-                <input type="text" id="d-where" class="bg-transparent outline-none w-full font-bold border-b border-black/5 text-lg" placeholder="ex. 광화문">
-            </p>
         </div>
 
-        <div class="w-full max-w-md space-y-10 mb-12">
-            <div class="grid grid-cols-3 gap-3">
-                <button onclick="setDraftRole('PRESS', this)" class="role-pill">PRESS</button>
-                <button onclick="setDraftRole('PARTNER', this)" class="role-pill">PARTNER</button>
-                <button onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
-            </div>
+        <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-center p-8 overflow-y-auto no-scrollbar">
             
-            <div class="relative">
-                <p class="text-[9px] text-slate-300 font-bold mb-2 tracking-widest uppercase">Company Entry</p>
-                <input type="text" id="d-aff" oninput="document.getElementById('d-aff-display').innerText = this.value || '-'" 
-                    class="live-input text-slate-900 w-full font-bold text-lg" placeholder="ex. 대보">
+            <div class="w-full flex justify-between items-center mb-10">
+                <span class="serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">DRAFTING RECORD</span>
+                <button onclick="closeDraft()" class="text-4xl font-light opacity-20">×</button>
             </div>
-        </div>
 
-        <button onclick="finalizeRecord()" class="w-full max-w-md bg-black text-white py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE DATA</button>
+            <div class="log-card mb-10 draft-container" id="draft-box">
+                <div class="flex items-baseline gap-4 mb-6">
+                    <div class="flex-1">
+                        <input type="text" id="d-who" oninput="this.value = this.value.toUpperCase().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '')" 
+                            class="serif-font text-4xl font-bold tracking-tighter w-full bg-transparent outline-none border-b border-black/5" 
+                            placeholder="영문 이니셜 (ex.KJI)">
+                    </div>
+                </div>
+
+                <textarea id="d-msg" rows="3" 
+                    class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium w-full bg-transparent outline-none resize-none mb-6 border-b border-black/5" 
+                    placeholder="고재인님과의 만남은 어떠셨나요?"></textarea>
+
+                <p class="unified-font text-[15px] text-slate-500 font-medium flex items-center">
+                    <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 16px; opacity: 0.6; margin-right: 8px;">at</span>
+                    <input type="text" id="d-where" class="bg-transparent outline-none w-full font-bold border-b border-black/5 text-lg" placeholder="ex. 광화문">
+                </p>
+            </div>
+
+            <div class="w-full space-y-10 mb-12">
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="setDraftRole('PRESS', this)" class="role-pill">PRESS</button>
+                    <button onclick="setDraftRole('PARTNER', this)" class="role-pill">PARTNER</button>
+                    <button onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
+                </div>
+                
+                <div class="relative">
+                    <p class="text-[12px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">Your Company</p>
+                    <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
+                </div>
+            </div>
+
+            <button onclick="finalizeRecord()" class="w-full bg-black text-white py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE DATA</button>
+        </div>
     </div>
 
     <script>
@@ -203,7 +217,6 @@
 
         function setDraftRole(role, el) {
             currentRole = role;
-            document.getElementById('d-role-display').innerText = role;
             document.querySelectorAll('.role-pill').forEach(b => b.classList.remove('pill-active'));
             el.classList.add('pill-active');
         }
@@ -233,15 +246,7 @@
                 </div>
             `;
             document.getElementById('feed').insertAdjacentHTML('afterbegin', html);
-            
-            try {
-                await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ role: currentRole, who, aff, where, msg })
-                });
-            } catch (e) {}
-
+            try { await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: currentRole, who, aff, where, msg }) }); } catch (e) {}
             closeDraft();
         }
     </script>
