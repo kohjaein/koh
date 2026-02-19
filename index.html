@@ -132,17 +132,128 @@
     }
     .pill-active { background: var(--accent) !important; color: white !important; border-color: var(--accent) !important; }
 
-    /* 🖋️ 기록 중일 때 입력창 흐려지는 효과 (블러) */
+    /* =========================================================
+       ✅ (2) 제출 버튼 애니메이션 변경: blur -> ink imprint
+       - JS 로직은 "저장" 동일, 비주얼만 변경
+       ========================================================= */
+
     .sealing-mode {
-      filter: blur(4px);
-      opacity: 0.5;
+      position: relative;
+      opacity: 0.76;
+      transform: translateY(2px) scale(0.995);
+      filter: saturate(0.92) contrast(1.03);
       pointer-events: none;
       transition: all 0.6s ease;
     }
 
+    .sealing-mode::after {
+      content: '';
+      position: absolute;
+      inset: -35%;
+      background:
+        radial-gradient(circle at 22% 35%, rgba(168,63,50,0.20), transparent 55%),
+        radial-gradient(circle at 76% 62%, rgba(0,0,0,0.10), transparent 60%),
+        radial-gradient(circle at 48% 92%, rgba(168,63,50,0.10), transparent 55%);
+      opacity: 0;
+      filter: blur(14px);
+      transform: translateY(10px) scale(0.98);
+      animation: imprintWash 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+
+    @keyframes imprintWash {
+      0%   { opacity: 0;   transform: translateY(10px) scale(0.98); }
+      55%  { opacity: 0.24; }
+      100% { opacity: 0.12; transform: translateY(0) scale(1.02); }
+    }
+
+    .btn-imprint {
+      position: relative;
+      overflow: hidden;
+      transform-origin: center;
+      letter-spacing: 0.8em;
+      padding-left: 0.8em;
+      animation: btnPress 0.92s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    @keyframes btnPress {
+      0%, 100% { transform: translateY(0) scale(1); filter: brightness(1); }
+      55%      { transform: translateY(1px) scale(0.985); filter: brightness(0.98); }
+    }
+
+    .btn-imprint::before {
+      content: '';
+      position: absolute;
+      inset: -30%;
+      background: radial-gradient(circle at 50% 55%, rgba(255,255,255,0.55), transparent 58%);
+      opacity: 0.22;
+      animation: stampPulse 0.92s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+
+    @keyframes stampPulse {
+      0%, 100% { transform: scale(0.92); opacity: 0.10; }
+      60%      { transform: scale(1.10); opacity: 0.28; }
+    }
+
+    .btn-imprint::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(110deg,
+          rgba(255,255,255,0) 0%,
+          rgba(255,255,255,0.28) 45%,
+          rgba(255,255,255,0) 70%
+        );
+      transform: translateX(-120%);
+      animation: imprintSweep 1.15s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    @keyframes imprintSweep {
+      0%   { transform: translateX(-120%); }
+      100% { transform: translateX(120%); }
+    }
+
+    .btn-archived {
+      background-color: #1A1A1A !important;
+      color: #F9F8F4 !important;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.8em;
+      padding-left: 0.8em;
+    }
+
+    .btn-archived::after {
+      content: '';
+      position: absolute;
+      inset: -35%;
+      background:
+        radial-gradient(circle at 50% 50%,
+          rgba(168,63,50,0.0) 0%,
+          rgba(168,63,50,0.0) 44%,
+          rgba(168,63,50,0.35) 46%,
+          rgba(168,63,50,0.0) 66%
+        );
+      opacity: 0;
+      transform: scale(0.86);
+      animation: archivedStamp 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes archivedStamp {
+      0%   { opacity: 0; transform: scale(0.86); }
+      55%  { opacity: 0.30; }
+      100% { opacity: 0; transform: scale(1.12); }
+    }
+
     /* =========================================================
-       ✨ INSIGHTS (키워드 빈도 워드클라우드) — "추가" 기능
-       - 기존 피드/저장 로직은 그대로 유지
+       ✨ INSIGHTS (키워드 빈도 워드클라우드)
        ========================================================= */
 
     .btn-ghost {
@@ -455,7 +566,7 @@
       <button id="submit-btn" onclick="finalizeRecord()" class="w-full btn-accent py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE DATA</button>
     </div>
 
-    <!-- ✅ INSIGHTS OVERLAY (키워드 빈도 워드클라우드) — 기존 기능 건드리지 않고 "추가" -->
+    <!-- ✅ INSIGHTS OVERLAY (키워드 빈도 워드클라우드) -->
     <div id="insights-overlay" class="absolute inset-0 z-[160] insights-shell bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col p-8 overflow-y-auto no-scrollbar">
 
       <div class="w-full flex justify-between items-start mb-10">
@@ -471,7 +582,7 @@
 
         <div class="kw-hero-wrap mb-8">
           <div id="kw-hero" class="kw-hero serif-font">—</div>
-          <div id="kw-hero-sub" class="kw-hero-sub unified-font">TOP KEYWORD</div>
+          <div id="kw-hero-sub" class="kw-hero-sub unified-font">TOP SIGNAL</div>
         </div>
 
         <div class="ink-stage">
@@ -479,7 +590,7 @@
         </div>
 
         <p class="unified-font text-[12px] opacity-35 mt-8 tracking-[0.22em] uppercase">
-          Tap a word to reveal its frequency.
+          Tap a phrase to reveal its frequency.
         </p>
       </div>
 
@@ -535,9 +646,7 @@
       el.classList.add('pill-active');
     }
 
-    /* =========================================================
-       ✅ INSIGHTS 오버레이 열기/닫기 (추가 기능)
-       ========================================================= */
+    /* ✅ INSIGHTS 오버레이 열기/닫기 */
     window.openInsights = function() {
       document.getElementById('insights-overlay').classList.remove('hidden');
     }
@@ -545,7 +654,9 @@
       document.getElementById('insights-overlay').classList.add('hidden');
     }
 
-    // 데이터 피드 렌더링 (✅ 기존 기능 그대로)
+    /* =========================================================
+       ✅ 기존 피드 렌더링 로직 그대로 유지
+       ========================================================= */
     const q = query(collection(db, "archive"), orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
       const feed = document.getElementById('feed');
@@ -575,7 +686,9 @@
       });
     });
 
-    // 애니메이션이 결합된 저장 프로세스 (✅ 기존 기능 그대로)
+    /* =========================================================
+       ✅ (2) 저장 프로세스: 기능 동일 / 애니메이션만 변경
+       ========================================================= */
     window.finalizeRecord = async function() {
       const who = document.getElementById('d-who').value;
       const aff = document.getElementById('d-aff').value || '-';
@@ -589,15 +702,16 @@
       const draftOptions = document.getElementById('draft-options');
 
       try {
-        // 1. 씰링 연출 시작 (초점 흐려짐 & 버튼 텍스트 변경)
-        btn.innerText = "SEALING RECORD...";
+        // 1) 임프린트(각인) 연출 시작
+        btn.innerText = "IMPRINTING...";
+        btn.classList.add('btn-imprint');
         draftBox.classList.add('sealing-mode');
         draftOptions.classList.add('sealing-mode');
 
-        // 극적 긴장감을 위한 0.8초 딜레이
-        await new Promise(r => setTimeout(r, 800));
+        // 짧은 긴장감
+        await new Promise(r => setTimeout(r, 650));
 
-        // 2. 파이어베이스 전송
+        // 2) 파이어베이스 전송 (기존과 동일)
         await addDoc(collection(db, "archive"), {
           role: currentRole,
           who: who,
@@ -607,13 +721,14 @@
           createdAt: serverTimestamp()
         });
 
-        // 3. 완료 각인
-        btn.innerText = "ARCHIVED.";
-        btn.style.backgroundColor = "#1A1A1A"; // 버튼이 블랙으로 묵직하게 변함
+        // 3) 완료 각인(스탬프 느낌)
+        btn.classList.remove('btn-imprint');
+        btn.classList.add('btn-archived');
+        btn.innerText = "SEALED.";
 
-        await new Promise(r => setTimeout(r, 600));
+        await new Promise(r => setTimeout(r, 720));
 
-        // 4. 초기화 및 팝업 닫기
+        // 4) 초기화 및 팝업 닫기 (기존과 동일)
         document.getElementById('d-who').value = '';
         document.getElementById('d-aff').value = '';
         document.getElementById('d-where').value = '';
@@ -621,8 +736,8 @@
         currentRole = '';
         document.querySelectorAll('.role-pill').forEach(b => b.classList.remove('pill-active'));
 
+        btn.classList.remove('btn-archived');
         btn.innerText = "ARCHIVE DATA";
-        btn.style.backgroundColor = ""; // 색상 복구
         draftBox.classList.remove('sealing-mode');
         draftOptions.classList.remove('sealing-mode');
 
@@ -632,6 +747,9 @@
         console.error("저장 실패: ", e);
         alert("아카이브 연결에 실패했습니다.");
 
+        // 복구
+        btn.classList.remove('btn-imprint');
+        btn.classList.remove('btn-archived');
         btn.innerText = "ARCHIVE DATA";
         draftBox.classList.remove('sealing-mode');
         draftOptions.classList.remove('sealing-mode');
@@ -639,26 +757,22 @@
     }
 
     /* =========================================================
-       ✅ 키워드 빈도 워드클라우드 (추가 기능)
-       - 기존 피드 onSnapshot은 그대로 두고
-       - 같은 query를 "한 번 더" 구독해서 msg만 집계/렌더
+       ✅ (1) 키워드 추출 업그레이드: "큐레이션 + 구(phrase)" 중심
+       - 단순 split/빈도 -> RAKE 스타일(Stop boundary 기반) + 스코어링
+       - 데이터가 적어도(월 5건) 보기 좋게 '의미 있는 신호'가 뜨게 설계
        ========================================================= */
 
-    const STOPWORDS = new Set([
-      // 상투어/군더더기(가볍게)
-      "그리고","그래서","진짜","정말","너무","완전","그냥","오늘","이번","저번","다음","항상",
-      "제가","저는","저도","우리","너","여기","거기","이거","그거","저거",
-      "감사","감사합니다","고마워","고맙","수고","수고하셨","좋아요","좋았","좋은","좋았습니다",
-      "만남","미팅","대화","시간","얘기",
-      // 조사/접속 느낌(토큰화에서 일부 제거하지만 안전망)
-      "에서","으로","에게","와","과","을","를","은","는","이","가","도","만","까지","부터",
-      // 이 아카이브 특성상 너무 자주 뜰 수 있는 단어(원하면 삭제해도 됨)
-      "고재인","재인","고재인님"
-    ]);
-
-    function isLatinWord(w) {
-      return /^[a-zA-Z0-9]+$/.test(w);
+    // 텍스트에서 단어 토큰만 뽑기 (공백 split보다 깔끔)
+    function rawTokens(text = "") {
+      const m = text
+        .replace(/https?:\/\/\S+/g, " ")
+        .replace(/[\u{1F300}-\u{1FAFF}]/gu, " ") // 이모지 대역(대충)
+        .match(/[A-Za-z0-9]+|[가-힣]+/g);
+      return m ? m : [];
     }
+
+    function hasKorean(str) { return /[가-힣]/.test(str); }
+    function isLatinPhrase(str) { return !hasKorean(str) && /^[A-Z0-9 ]+$/.test(str); }
 
     function hashString(str) {
       let h = 0;
@@ -669,32 +783,214 @@
       return Math.abs(h);
     }
 
-    function stripKoreanParticles(w) {
-      // 너무 공격적이지 않게 "자주 붙는" 것만 가볍게 제거 (1~2회)
-      const particles = /(에서|으로|에게|까지|부터|처럼|보다|라도|라도|와|과|을|를|은|는|이|가|도|만)$/;
-      let out = w;
-      for (let i = 0; i < 2; i++) {
-        if (particles.test(out)) out = out.replace(particles, '');
+    // "말맛" 제거: 조사/접미/동사화/존칭을 과격하지 않게 정리
+    function normalizeKoreanToken(t) {
+      let w = t.trim();
+
+      // 반복 웃음/울음 제거
+      if (/^(ㅋㅋ+|ㅎㅎ+|ㅠㅠ+|ㅜㅜ+)$/.test(w)) return "";
+
+      // 존칭/연결
+      w = w.replace(/님$/, "");
+      w = w.replace(/(과의|와의)$/, "");
+
+      // 자주 붙는 조사/부사격 (단어 뒤에 붙는 경우)
+      w = w.replace(/(에서|으로|로|에게|한테|까지|부터|랑|하고|와|과|을|를|은|는|이|가|도|만)$/g, "");
+
+      // 동사/형용사화 꼬리(가볍게)
+      w = w.replace(/(하다|되다)$/g, "");
+      w = w.replace(/(했습니다|합니다|해요|했어요|였어요|입니다|예요|이에요|좋았어요|좋았습니다|즐거웠어요|즐거웠습니다)$/g, "");
+
+      return w.trim();
+    }
+
+    // boundary(끊어주는) 토큰들: 여기서 잘 끊어주면 “구(phrase)”가 깨끗해짐
+    const STOP_TOKENS = new Set([
+      // 연결/군더더기
+      "그리고","그래서","하지만","또한","그냥","진짜","정말","너무","완전","약간","조금","많이",
+      "오늘","이번","저번","다음","항상",
+      "제가","저는","저도","우리","저희","여기","거기","이거","그거","저거",
+
+      // 예의/상투어
+      "감사","감사합니다","고마워","고맙","고맙습니다","수고","덕분","덕분에",
+
+      // 상황 일반어(키워드로 뜨면 촌스러워 보여서 끊어버림)
+      "만남","미팅","대화","시간","이야기","얘기",
+
+      // 프로젝트 고유명(원하면 지워도 됨)
+      "고재인","재인","고재인님",
+
+      // 영어 기본 불용어(대문자 기준)
+      "AND","OR","THE","A","AN","TO","OF","IN","ON","AT","FOR","WITH","FROM","BY","ABOUT","AS","IS","ARE","WAS","WERE","BE","BEEN","IT","THIS","THAT"
+    ]);
+
+    // 의미를 올리는 “신호 단어” (하드코딩이지만, PR용 인사이트에 도움됨)
+    // 과하게 강제하지 않고, 점수에만 살짝 가산
+    const SIGNAL_HINTS = new Set([
+      "협업","브랜딩","캠페인","콘텐츠","런칭","출시","기사","인터뷰","피칭","제안","파트너십","파트너","콜라보",
+      "PR","PRESS","MEDIA","FEATURE","LAUNCH","COLLAB","PARTNERSHIP"
+    ]);
+
+    function normalizeToken(tok) {
+      if (!tok) return "";
+      // 숫자만은 제외
+      if (/^\d+$/.test(tok)) return "";
+      // 영문/숫자
+      if (/^[A-Za-z0-9]+$/.test(tok)) return tok.toUpperCase();
+      // 한글
+      if (/^[가-힣]+$/.test(tok)) return normalizeKoreanToken(tok);
+      return "";
+    }
+
+    function isStop(tok) {
+      if (!tok) return true;
+      if (tok.length < 2) return true;
+      if (STOP_TOKENS.has(tok)) return true;
+      // 너무 일반적인 “좋다/괜찮다” 계열은 토큰으로 남기지 않게
+      if (/^(좋|좋았|좋아|괜찮|즐겁|만족|재밌|기쁘)/.test(tok)) return true;
+      return false;
+    }
+
+    // Stop boundary 기반으로 phrase 후보 만들기
+    function candidatePhrases(tokens) {
+      const phrases = [];
+      let buf = [];
+
+      const flush = () => {
+        if (buf.length) phrases.push(buf);
+        buf = [];
+      };
+
+      for (const t of tokens) {
+        if (isStop(t)) { flush(); continue; }
+        buf.push(t);
       }
-      // '님'은 많이 붙어서 제거
-      out = out.replace(/님$/, '');
-      return out;
+      flush();
+
+      // 너무 긴 phrase는 2~4그램으로 쪼개서 “포스터 타이포” 느낌으로
+      const expanded = [];
+      for (const p of phrases) {
+        if (p.length <= 4) {
+          expanded.push(p);
+        } else {
+          for (let win = 4; win >= 2; win--) {
+            for (let i = 0; i + win <= p.length; i++) {
+              expanded.push(p.slice(i, i + win));
+            }
+          }
+        }
+      }
+
+      return expanded;
     }
 
-    function tokenize(text = "") {
-      return text
-        .replace(/https?:\/\/\S+/g, " ")
-        .replace(/[#@]\S+/g, " ")
-        .replace(/[^a-zA-Z0-9가-힣\s]/g, " ")
-        .split(/\s+/)
-        .map(t => t.trim())
-        .filter(Boolean)
-        .map(t => isLatinWord(t) ? t.toUpperCase() : stripKoreanParticles(t))
-        .filter(t => t.length >= 2)
-        .filter(t => !STOPWORDS.has(t));
+    // RAKE 스타일: 한 메시지에서 "상위 구(phrase)"만 뽑아서 전역 집계
+    function extractFromMessage(msg, perMsgLimit = 7) {
+      const tokens = rawTokens(msg).map(normalizeToken).filter(Boolean);
+
+      const cands = candidatePhrases(tokens)
+        .filter(arr => arr.length >= 1 && arr.length <= 4);
+
+      if (!cands.length) return [];
+
+      // word freq / degree
+      const freq = new Map();
+      const degree = new Map();
+
+      for (const words of cands) {
+        const L = words.length;
+        for (const w of words) {
+          freq.set(w, (freq.get(w) || 0) + 1);
+          degree.set(w, (degree.get(w) || 0) + (L - 1));
+        }
+      }
+      for (const [w, f] of freq.entries()) {
+        degree.set(w, (degree.get(w) || 0) + f);
+      }
+
+      const wScore = new Map();
+      for (const [w, f] of freq.entries()) {
+        wScore.set(w, (degree.get(w) || 0) / f);
+      }
+
+      // phrase score + 중복 정리
+      const best = new Map(); // phrase -> score
+      for (const words of cands) {
+        const phrase = words.join(' ').trim();
+        if (!phrase || phrase.length < 2) continue;
+
+        // “의미 낮은” 단독 토큰은 과감히 제외(적은 데이터에서 더 예쁨)
+        if (words.length === 1) {
+          const w = words[0];
+          if (w.length <= 2) continue;
+          if (STOP_TOKENS.has(w)) continue;
+        }
+
+        // score
+        let score = 0;
+        for (const w of words) score += (wScore.get(w) || 0);
+
+        // 길이 부스트: 2~3 단어가 제일 “까리하게” 보임
+        const len = words.length;
+        const lengthBoost = (len === 1) ? 1.0 : (len === 2) ? 1.38 : (len === 3) ? 1.55 : 1.35;
+        score *= lengthBoost;
+
+        // PR 신호 단어 가산(살짝만)
+        const hasSignal = words.some(w => SIGNAL_HINTS.has(w));
+        if (hasSignal) score *= 1.12;
+
+        // 너무 흔한 “관계 일반어” 들어간 phrase는 제거
+        if (/(만남|미팅|대화|시간|이야기)/.test(phrase)) continue;
+
+        const prev = best.get(phrase) || 0;
+        if (score > prev) best.set(phrase, score);
+      }
+
+      return [...best.entries()]
+        .sort((a,b) => b[1] - a[1])
+        .slice(0, perMsgLimit)
+        .map(([phrase, score]) => ({ phrase, score }));
     }
 
-    function renderKeywordInsights(pairs, baseDocCount) {
+    // 여러 메시지에서 집계: count(등장 레코드 수) + score(큐레이션 스코어)
+    function buildCuratedKeywords(messages) {
+      const N = messages.length;
+      if (!N) return [];
+
+      const df = new Map();      // phrase -> doc count
+      const scoreSum = new Map();// phrase -> summed score
+
+      for (const msg of messages) {
+        const extracted = extractFromMessage(msg, 7);
+        const seen = new Set();
+        for (const { phrase, score } of extracted) {
+          if (seen.has(phrase)) continue;
+          seen.add(phrase);
+
+          df.set(phrase, (df.get(phrase) || 0) + 1);
+          scoreSum.set(phrase, (scoreSum.get(phrase) || 0) + score);
+        }
+      }
+
+      const items = [];
+      for (const [key, count] of df.entries()) {
+        const s = scoreSum.get(key) || count;
+
+        // TF-IDF 느낌(데이터 적어도 '신호' 순서가 그럴듯해짐)
+        const idf = Math.log((N + 1) / (count + 1)) + 1;
+
+        // 여러 레코드에서 반복되는 phrase를 아주 살짝 더 우대
+        const repeatBoost = 1 + Math.min(0.40, (count - 1) * 0.16);
+
+        const score = s * idf * repeatBoost;
+        items.push({ key, count, score });
+      }
+
+      items.sort((a,b) => b.score - a.score);
+      return items;
+    }
+
+    function renderKeywordInsights(items, baseDocCount) {
       const meta = document.getElementById("kw-meta");
       const cloud = document.getElementById("kw-cloud");
       const hero = document.getElementById("kw-hero");
@@ -703,98 +999,86 @@
 
       if (!cloud || !hero || !heroSub || !list) return;
 
-      // meta
       if (meta) {
-        meta.textContent = `BASED ON ${baseDocCount} RECORDS`;
+        meta.textContent = `BASED ON ${baseDocCount} RECORDS · CURATED PHRASES`;
       }
 
-      // empty state
-      if (!pairs.length) {
+      if (!items.length) {
         hero.textContent = "—";
         hero.classList.remove("kor");
-        heroSub.textContent = "TOP KEYWORD";
+        heroSub.textContent = "TOP SIGNAL";
         cloud.innerHTML = `<span class="unified-font text-[14px] opacity-40">아직 키워드가 충분히 쌓이지 않았어요.</span>`;
         list.innerHTML = "";
         return;
       }
 
-      // hero
-      const [topWord, topCount] = pairs[0];
-      hero.textContent = topWord;
-      hero.classList.toggle("kor", !isLatinWord(topWord));
-      heroSub.textContent = `TOP KEYWORD · ${topCount}×`;
+      const top = items[0];
+      hero.textContent = top.key;
+      hero.classList.toggle("kor", !isLatinPhrase(top.key));
+      heroSub.textContent = `TOP SIGNAL · ${top.count}×`;
 
-      // cloud
       cloud.innerHTML = "";
-      const max = pairs[0][1] || 1;
-      const show = pairs.slice(0, 36); // 너무 많으면 과해 보일 수 있어서 제한
+      const maxScore = items[0].score || 1;
 
-      show.forEach(([word, count], idx) => {
-        const h = hashString(word);
+      const show = items.slice(0, 36);
+      show.forEach((it, idx) => {
+        const h = hashString(it.key);
 
-        // 스케일: 등장 빈도에 따라 크기/투명도/잉크 wash
-        const ratio = Math.min(1, count / max);
-        const size = Math.round(14 + ratio * 18);       // 14px ~ 32px
-        const opacity = (0.40 + ratio * 0.55);          // 0.40 ~ 0.95
-        const wash = (0.05 + ratio * 0.18);             // 0.05 ~ 0.23
+        const ratio = Math.min(1, it.score / maxScore);
+        const size = Math.round(14 + ratio * 18);      // 14px ~ 32px
+        const opacity = (0.42 + ratio * 0.52) + Math.min(0.10, (it.count - 1) * 0.04);
+        const wash = (0.05 + ratio * 0.18);
 
-        // 살짝씩 돌아가고(안 과하게), 딜레이도 분산
-        const rot = ((h % 9) - 4) * 0.55;               // 약 -2.2deg ~ 2.2deg
-        const delay = (idx * 0.03) + ((h % 7) * 0.02);  // 순차 등장 + 랜덤
+        const rot = ((h % 9) - 4) * 0.55;              // -2.2deg ~ 2.2deg
+        const delay = (idx * 0.03) + ((h % 7) * 0.02);
 
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = `ink-chip ${isLatinWord(word) ? "serif-font" : "unified-font"}`;
-        btn.textContent = word;
-        btn.dataset.count = String(count);
+        btn.className = `ink-chip ${isLatinPhrase(it.key) ? "serif-font" : "unified-font"}`;
+        btn.textContent = it.key;
+        btn.dataset.count = String(it.count);
 
         btn.style.setProperty("--size", `${size}px`);
-        btn.style.setProperty("--o", opacity.toFixed(2));
+        btn.style.setProperty("--o", Math.max(0.32, Math.min(0.98, opacity)).toFixed(2));
         btn.style.setProperty("--wash", wash.toFixed(2));
         btn.style.setProperty("--r", `${rot.toFixed(2)}deg`);
         btn.style.setProperty("--d", `${delay.toFixed(2)}s`);
 
-        // 탭하면 count 툴팁 잠깐 보여주기
         btn.addEventListener("click", () => {
           cloud.querySelectorAll(".ink-chip.show-count").forEach(el => el.classList.remove("show-count"));
           btn.classList.add("show-count");
-          setTimeout(() => btn.classList.remove("show-count"), 1100);
+          setTimeout(() => btn.classList.remove("show-count"), 1150);
         });
 
         cloud.appendChild(btn);
       });
 
-      // top list
-      const topList = pairs.slice(0, 12);
-      list.innerHTML = topList.map(([w, c], i) => `
+      const topList = items.slice(0, 12);
+      list.innerHTML = topList.map((it, i) => `
         <div class="kw-row">
           <span class="kw-rank unified-font">#${String(i+1).padStart(2, '0')}</span>
-          <span class="kw-word ${isLatinWord(w) ? 'serif-font' : 'unified-font'}">${w}</span>
-          <span class="kw-count unified-font">${c}×</span>
+          <span class="kw-word ${isLatinPhrase(it.key) ? 'serif-font' : 'unified-font'}">${it.key}</span>
+          <span class="kw-count unified-font">${it.count}×</span>
         </div>
       `).join("");
     }
 
-    // ✅ 같은 query를 "한 번 더" 구독해서 키워드만 집계
+    // ✅ 기존 피드 구독과 분리: 같은 query를 "한 번 더" 구독해서 키워드만 집계
     onSnapshot(q, (snapshot) => {
-      // "전체" 기준이지만, 너무 커질 때를 대비해 렌더/집계는 최근 일부만 사용(보기용)
-      const MAX_DOCS_FOR_INSIGHTS = 350;
+      // 데이터 적다고 했으니 굳이 제한 크게 안 둠(그래도 안전하게)
+      const MAX_DOCS_FOR_INSIGHTS = 600;
       const docs = snapshot.docs.slice(0, MAX_DOCS_FOR_INSIGHTS).map(d => d.data());
 
-      const freq = new Map();
-      let used = 0;
-
+      const messages = [];
       for (const d of docs) {
-        if (!d || !d.msg) continue;
-        used += 1;
-        const tokens = tokenize(d.msg);
-        for (const t of tokens) {
-          freq.set(t, (freq.get(t) || 0) + 1);
+        if (d && typeof d.msg === 'string') {
+          const t = d.msg.trim();
+          if (t) messages.push(t);
         }
       }
 
-      const pairs = [...freq.entries()].sort((a,b) => b[1] - a[1]);
-      renderKeywordInsights(pairs, used);
+      const items = buildCuratedKeywords(messages);
+      renderKeywordInsights(items, messages.length);
     });
   </script>
 </body>
