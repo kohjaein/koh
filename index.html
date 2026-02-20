@@ -131,7 +131,7 @@
       background-color: var(--accent);
       animation: drawLine 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       animation-delay: 0.4s;
-      z-index: 4; /* ✅ 다른 오버레이보다 위로 */
+      z-index: 4;
       pointer-events: none;
     }
     @keyframes drawLine { to { height: 44px; } }
@@ -146,6 +146,25 @@
 
     .btn-accent { background-color: var(--accent); color: white; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
     .btn-accent:active { transform: scale(0.95); filter: brightness(0.9); }
+
+    /* ✅ (요청2) NEW RECORD 전용: 반투명 + 가독성 */
+    .btn-accent-glass{
+      background:
+        radial-gradient(180px 180px at 18% 24%, rgba(255,255,255,0.22), transparent 62%),
+        linear-gradient(120deg, rgba(0,0,0,0.14), rgba(255,255,255,0.06)),
+        rgba(168,63,50,0.82) !important;
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow:
+        0 26px 80px rgba(0,0,0,0.22),
+        0 12px 30px rgba(168,63,50,0.18),
+        inset 0 0 0 1px rgba(255,255,255,0.16);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: rgba(255,255,255,0.96) !important;
+      text-shadow:
+        0 1px 0 rgba(0,0,0,0.18),
+        0 14px 40px rgba(0,0,0,0.22);
+    }
 
     .role-pill {
       border: 1px solid rgba(0,0,0,0.1);
@@ -226,7 +245,7 @@
     }
 
     /* =========================================================
-       ✅ (요청1) 헤더 문구: 살짝 오른쪽(6:4 느낌) 옵티컬 밸런스
+       ✅ 헤더 문구: 살짝 오른쪽(6:4 느낌) 옵티컬 밸런스
        ========================================================= */
     .overlay-bar{
       position: relative;
@@ -250,7 +269,7 @@
     }
 
     /* =========================================================
-       ✅ 메인 화면 배경(요청4: 더 과감한 고급 질감)
+       ✅ 메인 화면 배경(과감한 고급 질감 유지)
        ========================================================= */
     #main-content{
       background:
@@ -267,7 +286,6 @@
       isolation: isolate;
     }
 
-    /* ✅ 고급 종이결 + 미세 패턴 */
     #main-content::before{
       content:'';
       position:absolute;
@@ -287,7 +305,6 @@
       opacity: 0.26;
     }
 
-    /* ✅ 소프트 비네팅(고급스러운 가장자리) */
     #main-content::after{
       content:'';
       position:absolute;
@@ -301,7 +318,6 @@
       mix-blend-mode: multiply;
     }
 
-    /* 콘텐츠는 질감 위로 */
     #main-content > header,
     #main-content > main { position: relative; z-index: 1; }
 
@@ -319,7 +335,7 @@
     }
 
     /* =========================================================
-       ✅ 기록 카드 (role 테두리/입체감 유지) + 터치 애니메이션(요청3)
+       ✅ 기록 카드 + 터치 애니메이션
        ========================================================= */
     .record-card {
       background:
@@ -328,7 +344,6 @@
 
       border: 1px solid rgba(0,0,0,0.06);
 
-      /* ✅ 아주 얇은 흰색 선(알고리즘 다크모드에서도 경계 유지) */
       outline: 1px solid rgba(255,255,255,0.12);
       outline-offset: -1px;
 
@@ -340,7 +355,6 @@
 
       isolation: isolate;
 
-      /* ✅ 터치 프레스 애니메이션 */
       transition:
         transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
         filter 0.42s cubic-bezier(0.16, 1, 0.3, 1);
@@ -359,7 +373,6 @@
       filter: saturate(1.06) contrast(1.03);
     }
 
-    /* ✅ role border + subtle depth */
     .record-card.record-press{
       border-color: rgba(140,106,30,0.34);
       box-shadow:
@@ -391,7 +404,6 @@
         inset 0 -1px 0 rgba(0,0,0,0.03);
     }
 
-    /* ✅ 카드 텍스처 오버레이 (Z-스택) */
     .record-card::after {
       content: '';
       position: absolute;
@@ -406,10 +418,8 @@
       z-index: 3;
     }
 
-    /* ✅ 내용 레이어 */
     .record-content{ position: relative; z-index: 2; display:flex; flex-direction:column; flex:1; }
 
-    /* ✅ (요청3) 고급스러운 하이라이트 쉬인 */
     .card-sheen{
       position:absolute;
       inset:-45%;
@@ -434,39 +444,17 @@
       100% { transform: translateX(120%) rotate(10deg); opacity: 0; }
     }
 
-    /* ✅ record accent line role-based */
     .record-card.record-press::before { background-color: var(--role-press); }
     .record-card.record-partner::before { background-color: var(--role-partner); }
     .record-card.record-crew::before { background-color: var(--role-crew); }
 
-    /* ✅ (요청5) 큰따옴표: 좌측상단 + 우측하단 1개씩 */
+    /* ✅ (요청1) 따옴표 제거: 관련 요소 없음(HTML에서도 제거됨) */
     .record-body{
       position: relative;
       display:flex;
       flex-direction:column;
       flex:1;
       min-height: 0;
-    }
-    .record-quote-open,
-    .record-quote-close{
-      position:absolute;
-      font-family: 'Cinzel', serif;
-      font-size: 72px;
-      color: rgba(0,0,0,0.08);
-      pointer-events:none;
-      user-select:none;
-      line-height: 1;
-      z-index: 0;
-    }
-    .record-quote-open{
-      left: -6px;
-      top: -34px;
-      transform: rotate(-7deg);
-    }
-    .record-quote-close{
-      right: -6px;
-      bottom: -38px;
-      transform: rotate(7deg);
     }
     .record-msg,
     .record-loc{
@@ -550,7 +538,6 @@
       font-weight: 900;
     }
 
-    /* ✅ Top2: 하나의 박스(테두리) */
     .top2-frame{
       position: relative;
       display: inline-flex;
@@ -712,7 +699,6 @@
       pointer-events:none;
     }
 
-    /* ✅ MAP: 정사각형 타일 */
     .signal-stat-pill{
       position: relative;
       overflow: hidden;
@@ -754,7 +740,6 @@
     }
     @keyframes statIn{ to { opacity: 1; transform: translateY(0) scale(1); } }
 
-    /* ✅ (요청7) 숫자만 + 더 크게 */
     .signal-stat-pill .nm{
       font-size: 11px;
       font-weight: 900;
@@ -783,9 +768,6 @@
         inset 0 0 0 1px rgba(255,255,255,0.26);
     }
 
-    /* =========================================================
-       ✅ Draft: 시그널 선택 UI
-       ========================================================= */
     .signal-picker-deck {
       border: 1px solid rgba(0,0,0,0.07);
       background:
@@ -1231,7 +1213,6 @@
         <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
           <input type="text" id="pin" maxlength="4" inputmode="numeric"
                  class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none font-bold" placeholder="0000">
-          <!-- ✅ (요청6) Identify 폰트: drafting record 폰트(Cinzel) -->
           <button onclick="unlock()" class="btn-accent serif-font text-[10px] tracking-[0.7em] border border-transparent px-16 py-6 mt-12 uppercase">Identify</button>
         </div>
       </div>
@@ -1240,7 +1221,6 @@
     <!-- MAIN -->
     <div id="main-content" class="hidden h-full flex flex-col relative bg-white/50">
 
-      <!-- ✅ 메인 헤더 텍스트 없음 / 우상단 원형 버튼 -->
       <header class="archive-header px-10 pt-12 pb-6 border-b border-black/5 slide-up">
         <button class="page-fold-btn" onclick="openSignalsOverlay()" aria-label="SIGNALS 열기">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -1252,9 +1232,9 @@
       <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60"></main>
 
       <div class="absolute bottom-12 left-0 w-full flex justify-center z-50 px-6">
-        <!-- ✅ (요청6) NEW RECORD 폰트: Cinzel -->
+        <!-- ✅ (요청2) NEW RECORD 버튼 반투명 -->
         <button onclick="openDraft()"
-                class="btn-accent serif-font px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl slide-up uppercase">
+                class="btn-accent btn-accent-glass serif-font px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl slide-up uppercase">
           NEW RECORD
         </button>
       </div>
@@ -1277,7 +1257,6 @@
 
       <div id="signals-hero-wrap" class="w-full"></div>
 
-      <!-- ✅ MAP: (요청2) MAP 가운데정렬 / LIVE 제거 / RECORDS는 박스 내부 하단 -->
       <div class="log-card signals-map-card w-full mt-5 mb-6">
         <div class="w-full text-center mb-4">
           <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">MAP</p>
@@ -1294,7 +1273,6 @@
     <!-- DRAFT -->
     <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar">
 
-      <!-- ✅ (요청1) 우측상단 X 제거 -->
       <div class="w-full overlay-bar mb-6">
         <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -1334,7 +1312,6 @@
           <button data-role="CREW" onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
         </div>
 
-        <!-- ✅ SIGNALS 먼저 -->
         <div class="relative">
           <div class="flex items-baseline justify-between">
             <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">SIGNALS</p>
@@ -1348,14 +1325,12 @@
           <p id="signal-hint" class="signal-hint unified-font">시그널은 최대 3개까지 선택할 수 있습니다.</p>
         </div>
 
-        <!-- ✅ YOUR COMPANY 아래로 -->
         <div class="relative">
           <p class="text-[14px] text-slate-400 font-bold mb-2 tracking-widest uppercase unified-font">Your Company(선택사항)</p>
           <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
         </div>
       </div>
 
-      <!-- ✅ (요청6) ARCHIVE DATA 폰트: Cinzel -->
       <button id="submit-btn" onclick="finalizeRecord()" class="w-full btn-accent serif-font py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl uppercase">ARCHIVE DATA</button>
     </div>
 
@@ -1412,7 +1387,6 @@
     ];
     let selectedSignals = [];
 
-    // ✅ Signals overlay state
     let latestSignals = {
       totalRecords: 0,
       pairText: "—",
@@ -1448,7 +1422,6 @@
       el.classList.add('pill-active');
     }
 
-    // ✅ SIGNAL PICKER
     function updateSignalCount() {
       const el = document.getElementById('signal-count');
       if (!el) return;
@@ -1516,7 +1489,6 @@
       updateSignalCount();
     }
 
-    // ✅ SIGNALS OVERLAY OPEN/CLOSE
     window.openSignalsOverlay = function(){
       const overlay = document.getElementById('signals-overlay');
       overlay.classList.remove('hidden');
@@ -1581,7 +1553,6 @@
         </div>
       `;
 
-      // ✅ (요청7) '회' 제거 + 숫자만
       grid.innerHTML = latestSignals.list.map((it, i) => {
         const cls = it.count > 0 ? 'hot' : 'zero';
         return `
@@ -1593,7 +1564,6 @@
       }).join('');
     }
 
-    // ✅ Seal overlay (기존 유지)
     function openSeal(initials) {
       const overlay = document.getElementById('seal-overlay');
       const initEl = document.getElementById('seal-initials');
@@ -1629,7 +1599,6 @@
       }, 520);
     }
 
-    // ✅ role theme helper
     function getRoleTheme(role){
       if (role === 'PRESS') return { cls: 'record-press', color: 'var(--role-press)' };
       if (role === 'PARTNER') return { cls: 'record-partner', color: 'var(--role-partner)' };
@@ -1637,14 +1606,12 @@
       return { cls: '', color: 'rgba(100,116,139,1)' };
     }
 
-    // ✅ (요청3) 기록 카드 터치: 고급스러운 인터랙션(프레스 + 쉬인)
     const feedEl = document.getElementById('feed');
 
     function runCardSheen(card){
       const sheen = card?.querySelector?.('.card-sheen');
       if (!sheen) return;
       sheen.classList.remove('sheen-run');
-      // reflow for restart
       void sheen.offsetWidth;
       sheen.classList.add('sheen-run');
     }
@@ -1653,7 +1620,6 @@
       feedEl.addEventListener('pointerdown', (e) => {
         const card = e.target.closest('.record-card');
         if (!card) return;
-
         card.classList.add('card-pressed');
         try { card.setPointerCapture(e.pointerId); } catch(_) {}
       });
@@ -1677,7 +1643,6 @@
       });
     }
 
-    // ✅ Feed render
     const q = query(collection(db, "archive"), orderBy("createdAt", "desc"));
 
     onSnapshot(q, (snapshot) => {
@@ -1686,7 +1651,6 @@
 
       const docs = snapshot.docs.map(d => d.data());
 
-      // ✅ signals stats update (overlay가 열려있으면 live로 갱신)
       latestSignals = {
         totalRecords: docs.length,
         ...computeSignalsFromDocs(docs)
@@ -1696,7 +1660,6 @@
         renderSignalsOverlay();
       }
 
-      // ✅ 기록 카드 렌더
       snapshot.forEach((doc) => {
         const data = doc.data();
         const t = getRoleTheme(data.role);
@@ -1717,12 +1680,9 @@
                 </div>
               </div>
 
+              <!-- ✅ (요청1) 따옴표 완전 제거 -->
               <div class="record-body">
-                <span class="record-quote-open" aria-hidden="true">“</span>
-
                 <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4 msg-reveal record-msg">${data.msg}</p>
-
-                <span class="record-quote-close" aria-hidden="true">”</span>
 
                 <div class="text-right mt-auto record-loc">
                   <p class="unified-font text-[15px] text-slate-500 pl-4 font-medium italic inline-flex items-center">
@@ -1737,7 +1697,6 @@
       });
     });
 
-    // ✅ Save process (기존 유지)
     window.finalizeRecord = async function() {
       const who = document.getElementById('d-who').value;
       const aff = document.getElementById('d-aff').value || '-';
