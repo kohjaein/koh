@@ -75,7 +75,30 @@
       background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
       background-size: auto, auto, auto, auto, 256px 256px;
       background-blend-mode: normal, normal, normal, normal, multiply;
+
+      /* ✅ (요청6) 질감 레이어를 위해 스태킹 분리 */
+      isolation: isolate;
     }
+
+    /* ✅ (요청6) 메인 피드 배경 질감 추가(고급스러운 미세 패턴) */
+    #main-content::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+
+      background:
+        radial-gradient(900px 420px at 50% 0%, rgba(255,255,255,0.35), transparent 72%),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.014) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.010) 0 1px, transparent 1px 34px),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise2' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise2)' opacity='0.06'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+      opacity: 0.22;
+    }
+    /* 콘텐츠는 질감 위로 */
+    #main-content > header,
+    #main-content > main { position: relative; z-index: 1; }
 
     .serif-font { font-family: 'Cinzel', serif; }
     .unified-font { font-family: 'Pretendard', sans-serif; }
@@ -171,7 +194,7 @@
       -webkit-backdrop-filter: blur(10px);
     }
 
-    /* ✅ role default tint (PRESS ↔ PARTNER 스왑 반영) */
+    /* ✅ role default tint */
     .role-pill[data-role="PRESS"]{
       border-color: rgba(140,106,30,0.26);
       color: rgba(140,106,30,0.92);
@@ -188,7 +211,7 @@
       background: rgba(47,133,90,0.06);
     }
 
-    /* ✅ role active (override 기존 pill-active) */
+    /* ✅ role active */
     .pill-active { background: var(--accent) !important; color: white !important; border-color: var(--accent) !important; }
     .role-pill.pill-active[data-role="PRESS"]{
       background: var(--role-press) !important;
@@ -237,7 +260,7 @@
     }
 
     /* =========================================================
-       ✅ (요청1) 헤더 문구 가운데정렬용 바
+       ✅ (요청1) 헤더 문구: 살짝 오른쪽(6:4 느낌) 옵티컬 밸런스
        ========================================================= */
     .overlay-bar{
       position: relative;
@@ -248,11 +271,11 @@
     }
     .overlay-title{
       position: absolute;
-      left: 50%;
+      left: calc(50% + 12px); /* ✅ 살짝 오른쪽 */
       transform: translateX(-50%);
       text-align: center;
       white-space: nowrap;
-      pointer-events: none; /* 버튼 영역과 겹쳐도 클릭 방해 X */
+      pointer-events: none;
     }
     .bar-spacer{
       width: 52px;
@@ -274,20 +297,58 @@
     }
 
     /* =========================================================
-       ✅ 기록 카드 질감 + (요청3) 다크모드에서도 보이는 얇은 흰색 테두리 느낌
+       ✅ 기록 카드 질감 + (요청5) role 컬러 얇은 테두리 + 입체감
        ========================================================= */
     .record-card {
       background:
         linear-gradient(180deg, rgba(255,255,255,0.985), rgba(249,248,244,0.975));
-      box-shadow:
-        0 8px 26px rgba(0,0,0,0.03),
-        0 28px 80px rgba(0,0,0,0.05);
       overflow: hidden;
 
-      /* ✅ 아주 얇은 흰색 선(알고리즘 다크모드에서도 경계가 남게) */
+      border: 1px solid rgba(0,0,0,0.06);
+
+      /* ✅ 얇은 흰색 라인(강제 다크모드에서도 경계 유지) */
       outline: 1px solid rgba(255,255,255,0.12);
       outline-offset: -1px;
+
+      box-shadow:
+        0 8px 26px rgba(0,0,0,0.03),
+        0 28px 80px rgba(0,0,0,0.05),
+        inset 0 0 0 1px rgba(255,255,255,0.70),
+        inset 0 -1px 0 rgba(0,0,0,0.03);
     }
+
+    /* ✅ role border + subtle depth */
+    .record-card.record-press{
+      border-color: rgba(140,106,30,0.34);
+      box-shadow:
+        0 8px 26px rgba(0,0,0,0.03),
+        0 28px 80px rgba(0,0,0,0.05),
+        0 0 0 1px rgba(140,106,30,0.10),
+        0 24px 80px rgba(140,106,30,0.08),
+        inset 0 0 0 1px rgba(255,255,255,0.72),
+        inset 0 -1px 0 rgba(0,0,0,0.03);
+    }
+    .record-card.record-partner{
+      border-color: rgba(43,108,176,0.34);
+      box-shadow:
+        0 8px 26px rgba(0,0,0,0.03),
+        0 28px 80px rgba(0,0,0,0.05),
+        0 0 0 1px rgba(43,108,176,0.10),
+        0 24px 80px rgba(43,108,176,0.08),
+        inset 0 0 0 1px rgba(255,255,255,0.72),
+        inset 0 -1px 0 rgba(0,0,0,0.03);
+    }
+    .record-card.record-crew{
+      border-color: rgba(47,133,90,0.34);
+      box-shadow:
+        0 8px 26px rgba(0,0,0,0.03),
+        0 28px 80px rgba(0,0,0,0.05),
+        0 0 0 1px rgba(47,133,90,0.10),
+        0 24px 80px rgba(47,133,90,0.08),
+        inset 0 0 0 1px rgba(255,255,255,0.72),
+        inset 0 -1px 0 rgba(0,0,0,0.03);
+    }
+
     .record-card::after {
       content: '';
       position: absolute;
@@ -300,6 +361,7 @@
       mix-blend-mode: multiply;
       pointer-events: none;
     }
+
     .record-msg { position: relative; }
     .record-msg::before {
       content: "“";
@@ -361,7 +423,7 @@
     .page-fold-btn:active { transform: scale(0.96); filter: brightness(0.96); }
 
     /* =========================================================
-       ✅ SIGNALS 오버레이 (한 페이지 압축 유지)
+       ✅ SIGNALS 오버레이
        ========================================================= */
     #signals-overlay{
       opacity: 0;
@@ -406,7 +468,6 @@
       padding: 14px 16px;
       border-radius: 22px;
 
-      /* ✅ (요청2) 라이트에서 대비/가독성 ↑ : 박스는 더 밝게, 보더는 더 또렷하게 */
       border: 1px solid rgba(168,63,50,0.54);
       background:
         radial-gradient(220px 160px at 18% 30%, rgba(255,255,255,0.88), transparent 72%),
@@ -466,7 +527,6 @@
       pointer-events: none;
     }
 
-    /* ✅ (요청2) 라이트에서 더 또렷하게: 스트로크/섀도우 강화 + 하이라이트 과밝음↓ */
     .pair-text{
       position: relative;
       display: inline-block;
@@ -627,7 +687,7 @@
     }
 
     /* =========================================================
-       ✅ Draft: 시그널 선택 UI (2줄 고정 유지)
+       ✅ Draft: 시그널 선택 UI
        ========================================================= */
     .signal-picker-deck {
       border: 1px solid rgba(0,0,0,0.07);
@@ -1104,7 +1164,7 @@
     <!-- ✅ SIGNALS OVERLAY -->
     <div id="signals-overlay" class="absolute inset-0 z-[170] hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar bg-[#F9F8F4]/98 backdrop-blur-xl">
 
-      <!-- ✅ (요청1) SIGNALS 가운데정렬 / 우측 RECORDS 제거(맵으로 이동) -->
+      <!-- ✅ SIGNALS 가운데(옵티컬 6:4) -->
       <div class="w-full overlay-bar mb-4" style="padding-top: calc(env(safe-area-inset-top) + 18px);">
         <button onclick="closeSignalsOverlay()" class="draft-back-btn" aria-label="뒤로">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -1114,32 +1174,29 @@
 
         <span class="overlay-title serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">SIGNALS</span>
 
-        <!-- spacer for symmetry -->
         <div class="bar-spacer" aria-hidden="true"></div>
       </div>
 
       <div id="signals-hero-wrap" class="w-full"></div>
 
-      <!-- ✅ MAP: 4열(3줄) + 정사각형 -->
+      <!-- ✅ MAP: LIVE 제거 / RECORDS는 정사각형들 아래(박스 내부) -->
       <div class="log-card signals-map-card w-full mt-5 mb-6">
-        <div class="flex justify-between items-baseline mb-2 pl-4">
+        <div class="flex items-baseline mb-4 pl-4">
           <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">MAP</p>
-          <p class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35">LIVE</p>
         </div>
 
-        <!-- ✅ (요청1) RECORDS를 MAP 밑으로 가운데정렬 -->
-        <div class="text-center mb-4 -mt-1">
+        <div id="signals-grid" class="grid grid-cols-4 gap-2 px-4"></div>
+
+        <div class="text-center mt-4 pb-2">
           <span id="signals-meta" class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35">0 RECORDS</span>
         </div>
-
-        <div id="signals-grid" class="grid grid-cols-4 gap-2 px-4 pb-2"></div>
       </div>
     </div>
 
     <!-- DRAFT -->
     <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar">
 
-      <!-- ✅ (요청1) DRAFTING RECORD 가운데정렬 -->
+      <!-- ✅ DRAFTING RECORD 가운데(옵티컬 6:4) -->
       <div class="w-full overlay-bar mb-6">
         <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -1179,11 +1236,7 @@
           <button data-role="CREW" onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
         </div>
 
-        <div class="relative">
-          <p class="text-[14px] text-slate-400 font-bold mb-2 tracking-widest uppercase unified-font">Your Company(선택사항)</p>
-          <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
-        </div>
-
+        <!-- ✅ (요청4) SIGNALS 먼저 -->
         <div class="relative">
           <div class="flex items-baseline justify-between">
             <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">SIGNALS</p>
@@ -1195,6 +1248,12 @@
           </div>
 
           <p id="signal-hint" class="signal-hint unified-font">시그널은 최대 3개까지 선택할 수 있습니다.</p>
+        </div>
+
+        <!-- ✅ (요청4) YOUR COMPANY 아래로 -->
+        <div class="relative">
+          <p class="text-[14px] text-slate-400 font-bold mb-2 tracking-widest uppercase unified-font">Your Company(선택사항)</p>
+          <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
         </div>
       </div>
 
@@ -1405,14 +1464,15 @@
 
       if (meta) meta.textContent = `${latestSignals.totalRecords} RECORDS`;
 
+      /* ✅ (요청3) KOH JAE IN + Top2 모두 가운데정렬 */
       heroWrap.innerHTML = `
         <div class="log-card summary-card w-full signals-hero-card">
-          <div class="pl-2">
+          <div class="w-full text-center">
             <p class="text-[10px] tracking-[0.85em] text-[#C04A3A] font-bold serif-font uppercase">KOH JAE IN</p>
           </div>
 
-          <div class="pl-2 mt-8">
-            <div class="summary-hero unified-font">
+          <div class="w-full mt-8 flex justify-center">
+            <div class="summary-hero unified-font text-center">
               <span class="top2-frame">
                 <span class="pair-focus">
                   <span class="pair-text" data-text="${latestSignals.pairText}">${latestSignals.pairText}</span>
@@ -1470,7 +1530,7 @@
       }, 520);
     }
 
-    // ✅ role theme helper (메인페이지 표시용)
+    // ✅ role theme helper
     function getRoleTheme(role){
       if (role === 'PRESS') return { cls: 'record-press', color: 'var(--role-press)' };
       if (role === 'PARTNER') return { cls: 'record-partner', color: 'var(--role-partner)' };
@@ -1497,7 +1557,7 @@
         renderSignalsOverlay();
       }
 
-      // ✅ 기존: 기록 카드 렌더 (기능 유지)
+      // ✅ 기록 카드 렌더
       snapshot.forEach((doc) => {
         const data = doc.data();
         const t = getRoleTheme(data.role);
