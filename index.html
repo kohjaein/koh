@@ -22,7 +22,7 @@
       --accent: #A83F32;
       --mobile-width: 480px;
 
-      /* ✅ role colors (PRESS ↔ PARTNER 스왑) */
+      /* ✅ role colors (PRESS ↔ PARTNER 스왑 유지) */
       --role-press: #8C6A1E;   /* dark yellow (gold) */
       --role-partner: #2B6CB0; /* blue (lux) */
       --role-crew: #2F855A;    /* green (deep) */
@@ -237,6 +237,30 @@
     }
 
     /* =========================================================
+       ✅ (요청1) 헤더 문구 가운데정렬용 바
+       ========================================================= */
+    .overlay-bar{
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .overlay-title{
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: none; /* 버튼 영역과 겹쳐도 클릭 방해 X */
+    }
+    .bar-spacer{
+      width: 52px;
+      height: 52px;
+      flex: 0 0 auto;
+    }
+
+    /* =========================================================
        ✅ 카드 캔버스 통일
        ========================================================= */
     .card-canvas {
@@ -250,7 +274,7 @@
     }
 
     /* =========================================================
-       ✅ 기록 카드 질감
+       ✅ 기록 카드 질감 + (요청3) 다크모드에서도 보이는 얇은 흰색 테두리 느낌
        ========================================================= */
     .record-card {
       background:
@@ -259,6 +283,10 @@
         0 8px 26px rgba(0,0,0,0.03),
         0 28px 80px rgba(0,0,0,0.05);
       overflow: hidden;
+
+      /* ✅ 아주 얇은 흰색 선(알고리즘 다크모드에서도 경계가 남게) */
+      outline: 1px solid rgba(255,255,255,0.12);
+      outline-offset: -1px;
     }
     .record-card::after {
       content: '';
@@ -368,7 +396,7 @@
       font-weight: 900;
     }
 
-    /* ✅ (요청) Top2: 하나의 박스(테두리)로 강조 */
+    /* ✅ Top2: 하나의 박스(테두리) */
     .top2-frame{
       position: relative;
       display: inline-flex;
@@ -378,16 +406,18 @@
       padding: 14px 16px;
       border-radius: 22px;
 
-      border: 1px solid rgba(168,63,50,0.42);
+      /* ✅ (요청2) 라이트에서 대비/가독성 ↑ : 박스는 더 밝게, 보더는 더 또렷하게 */
+      border: 1px solid rgba(168,63,50,0.54);
       background:
-        radial-gradient(180px 120px at 18% 25%, rgba(255,255,255,0.65), transparent 72%),
-        linear-gradient(120deg, rgba(168,63,50,0.14), rgba(0,0,0,0.00)),
-        rgba(255,255,255,0.76);
+        radial-gradient(220px 160px at 18% 30%, rgba(255,255,255,0.88), transparent 72%),
+        radial-gradient(240px 170px at 88% 100%, rgba(0,0,0,0.05), transparent 65%),
+        linear-gradient(120deg, rgba(168,63,50,0.10), rgba(0,0,0,0.00)),
+        rgba(255,255,255,0.88);
 
       box-shadow:
-        0 22px 75px rgba(0,0,0,0.10),
-        inset 0 0 0 1px rgba(255,255,255,0.46),
-        inset 0 0 0 2px rgba(0,0,0,0.04);
+        0 22px 75px rgba(0,0,0,0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.62),
+        inset 0 0 0 2px rgba(0,0,0,0.05);
 
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
@@ -414,7 +444,6 @@
       100% { transform: translateX(120%) rotate(8deg); opacity: 0.0; }
     }
 
-    /* ✅ Top2 키워드: 가독성 ↑ + 화려함 유지 */
     .pair-focus{
       position: relative;
       display: inline-block;
@@ -428,8 +457,8 @@
       top: 62%;
       height: 22px;
       background:
-        radial-gradient(closest-side, rgba(168,63,50,0.30), rgba(168,63,50,0.00) 74%),
-        radial-gradient(closest-side, rgba(0,0,0,0.08), transparent 70%);
+        radial-gradient(closest-side, rgba(168,63,50,0.28), rgba(168,63,50,0.00) 74%),
+        radial-gradient(closest-side, rgba(0,0,0,0.10), transparent 70%);
       filter: blur(16px);
       opacity: 0.55;
       transform: translateY(10px) scaleX(1);
@@ -437,32 +466,34 @@
       pointer-events: none;
     }
 
+    /* ✅ (요청2) 라이트에서 더 또렷하게: 스트로크/섀도우 강화 + 하이라이트 과밝음↓ */
     .pair-text{
       position: relative;
       display: inline-block;
 
       letter-spacing: -0.035em;
-      color: rgba(18,18,18,0.94);
+      color: rgba(18,18,18,0.95);
 
-      -webkit-text-stroke: 1.05px rgba(0,0,0,0.18);
+      -webkit-text-stroke: 1.15px rgba(0,0,0,0.26);
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.72),
-        0 10px 34px rgba(0,0,0,0.18),
-        0 0 18px rgba(168,63,50,0.18),
-        0 0 52px rgba(168,63,50,0.12);
+        0 1px 0 rgba(255,255,255,0.88),
+        0 0 2px rgba(0,0,0,0.14),
+        0 12px 30px rgba(0,0,0,0.22),
+        0 0 18px rgba(168,63,50,0.16),
+        0 0 50px rgba(168,63,50,0.10);
 
-      filter: saturate(1.06) contrast(1.04);
+      filter: saturate(1.05) contrast(1.04);
     }
 
     @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
       .pair-text{
         background-image:
           linear-gradient(92deg,
-            rgba(26,26,26,1) 0%,
-            rgba(168,63,50,1) 28%,
-            rgba(239,186,173,1) 50%,
-            rgba(168,63,50,1) 72%,
-            rgba(26,26,26,1) 100%
+            rgba(18,18,18,1) 0%,
+            rgba(125,38,31,1) 28%,
+            rgba(231,167,152,1) 50%,
+            rgba(125,38,31,1) 72%,
+            rgba(18,18,18,1) 100%
           );
         background-size: 240% 100%;
         animation: top2Flow 7.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
@@ -472,7 +503,7 @@
         -webkit-text-fill-color: transparent;
         color: transparent;
 
-        -webkit-text-stroke: 1.15px rgba(0,0,0,0.18);
+        -webkit-text-stroke: 1.20px rgba(0,0,0,0.26);
       }
       @keyframes top2Flow{
         0%   { background-position: 0% 50%; }
@@ -486,7 +517,7 @@
         inset: 0;
         background: linear-gradient(115deg,
           rgba(255,255,255,0) 0%,
-          rgba(255,255,255,0.72) 46%,
+          rgba(255,255,255,0.70) 46%,
           rgba(255,255,255,0) 70%
         );
         background-size: 240% 100%;
@@ -501,7 +532,7 @@
       }
       @keyframes top2Sheen{
         0%   { background-position: -120% 50%; opacity: 0.0; }
-        16%  { opacity: 0.70; }
+        16%  { opacity: 0.65; }
         40%  { opacity: 0.0; }
         100% { background-position: 120% 50%; opacity: 0.0; }
       }
@@ -1073,25 +1104,32 @@
     <!-- ✅ SIGNALS OVERLAY -->
     <div id="signals-overlay" class="absolute inset-0 z-[170] hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar bg-[#F9F8F4]/98 backdrop-blur-xl">
 
-      <div class="w-full flex justify-between items-center mb-4" style="padding-top: calc(env(safe-area-inset-top) + 18px);">
+      <!-- ✅ (요청1) SIGNALS 가운데정렬 / 우측 RECORDS 제거(맵으로 이동) -->
+      <div class="w-full overlay-bar mb-4" style="padding-top: calc(env(safe-area-inset-top) + 18px);">
         <button onclick="closeSignalsOverlay()" class="draft-back-btn" aria-label="뒤로">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"></path>
           </svg>
         </button>
 
-        <span class="serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">SIGNALS</span>
+        <span class="overlay-title serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">SIGNALS</span>
 
-        <span id="signals-meta" class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35">0 RECORDS</span>
+        <!-- spacer for symmetry -->
+        <div class="bar-spacer" aria-hidden="true"></div>
       </div>
 
       <div id="signals-hero-wrap" class="w-full"></div>
 
       <!-- ✅ MAP: 4열(3줄) + 정사각형 -->
       <div class="log-card signals-map-card w-full mt-5 mb-6">
-        <div class="flex justify-between items-baseline mb-4 pl-4">
+        <div class="flex justify-between items-baseline mb-2 pl-4">
           <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">MAP</p>
           <p class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35">LIVE</p>
+        </div>
+
+        <!-- ✅ (요청1) RECORDS를 MAP 밑으로 가운데정렬 -->
+        <div class="text-center mb-4 -mt-1">
+          <span id="signals-meta" class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35">0 RECORDS</span>
         </div>
 
         <div id="signals-grid" class="grid grid-cols-4 gap-2 px-4 pb-2"></div>
@@ -1101,16 +1139,17 @@
     <!-- DRAFT -->
     <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar">
 
-      <div class="w-full flex justify-between items-center mb-6">
-        <div class="flex items-center gap-3">
-          <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 18l-6-6 6-6"></path>
-            </svg>
-          </button>
-          <span class="serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">DRAFTING RECORD</span>
-        </div>
-        <button onclick="closeDraft()" class="text-4xl font-light opacity-20">×</button>
+      <!-- ✅ (요청1) DRAFTING RECORD 가운데정렬 -->
+      <div class="w-full overlay-bar mb-6">
+        <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+
+        <span class="overlay-title serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">DRAFTING RECORD</span>
+
+        <button onclick="closeDraft()" class="text-4xl font-light opacity-20" aria-label="닫기">×</button>
       </div>
 
       <div class="log-card mb-6 draft-container" id="draft-box">
