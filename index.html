@@ -29,9 +29,9 @@
     .app-wrapper {
       width: 100%;
       max-width: var(--mobile-width);
-      height: 100vh;   /* fallback */
-      height: 100svh;  /* iOS Safari stable viewport */
-      height: 100dvh;  /* dynamic viewport */
+      height: 100vh;
+      height: 100svh;
+      height: 100dvh;
       background-color: var(--bg-color);
       position: relative;
       overflow: hidden;
@@ -94,7 +94,7 @@
       width: 100%;
     }
 
-    /* 🖋️ 붉은 선 드로잉 애니메이션 (만년필로 긋는 느낌) */
+    /* 🖋️ 붉은 선 드로잉 애니메이션 */
     .log-card::before {
       content: '';
       position: absolute;
@@ -109,7 +109,6 @@
     }
     @keyframes drawLine { to { height: 44px; } }
 
-    /* 🖋️ 메시지 텍스트가 우아하게 나타나는 애니메이션 */
     .msg-reveal {
       opacity: 0;
       transform: translateY(5px);
@@ -123,7 +122,7 @@
 
     .role-pill {
       border: 1px solid rgba(0,0,0,0.1);
-      padding: 10px 0; /* ✅ (요청1) 조금 더 컴팩트 */
+      padding: 10px 0;
       font-size: 10px;
       letter-spacing: 0.2em;
       font-weight: 700;
@@ -131,7 +130,6 @@
     }
     .pill-active { background: var(--accent) !important; color: white !important; border-color: var(--accent) !important; }
 
-    /* ✅ 제출 시 입력영역 잠금(기존 클래스 유지) */
     .sealing-mode {
       opacity: 0.55;
       transform: translateY(1px) scale(0.995);
@@ -140,22 +138,33 @@
       transition: all 0.65s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* =========================================================
-       ✅ (요청1) DRAFT 오버레이: safe-area + 한 화면에 최대한 맞추기
-       ========================================================= */
+    /* ✅ DRAFT 오버레이 safe-area + 컴팩트 */
     #draft-overlay{
       padding-top: calc(env(safe-area-inset-top) + 18px);
       padding-bottom: calc(env(safe-area-inset-bottom) + 18px);
     }
-    #draft-box.log-card{
-      padding: 32px; /* ✅ 카드 자체 높이 축소 */
-    }
+    #draft-box.log-card{ padding: 32px; }
     @media (max-height: 760px){
       #draft-box.log-card{ padding: 28px; }
     }
 
     /* =========================================================
-       ✅ (PATCH-3) 기록 카드: 워터마크 제거 + 시그널 카드와 재질 분리(매트/장부)
+       ✅ (요청1) "카드 캔버스" 통일: 대표 시그널 카드(요약)와 기록 카드 동일 높이/비율
+       - 대표 카드가 상대적으로 낮아 보이는 문제를 "둘 다" 같은 최소 높이로 맞춤
+       - 내용은 유지하고, 공간만 ‘캔버스’로 통일
+       ========================================================= */
+    .card-canvas {
+      min-height: 220px;               /* ✅ 통일된 사각형 캔버스 */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    @media (max-width: 420px){
+      .card-canvas{ min-height: 210px; }
+    }
+
+    /* =========================================================
+       ✅ 기록 카드: 장부 질감(유지)
        ========================================================= */
     .record-card {
       background:
@@ -193,7 +202,7 @@
     }
 
     /* =========================================================
-       ✅ 피드 상단 "종합 평가(시그널)" 카드
+       ✅ 대표(요약) 시그널 카드
        ========================================================= */
     .summary-card {
       background:
@@ -246,27 +255,15 @@
     }
 
     /* =========================================================
-       ✅ (요청2) Top2 키워드: "안 보임" 해결 → 로즈골드 더 진하게 + 메탈릭 유지
+       ✅ (요청2) "로즈골드"를 넘어서는 고연봉 디자이너식 표현
+       - 프리미엄 ‘주얼 메탈’(Champagne / Copper / Ruby foil) 텍스트
+       - 화면에서 확실히 튀면서도 저렴하지 않게(화이트 백화 방지)
        ========================================================= */
     .pair-focus { position: relative; display: inline-block; }
     .pair-focus::before { content: none !important; } /* 사각 음영 안전 제거 */
 
-    .pair-focus::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -10px;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, rgba(168,63,50,0.62), transparent);
-      transform: scaleX(0.18);
-      transform-origin: center;
-      opacity: 0.92;
-      animation: pairUnderline 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      pointer-events: none;
-      filter: blur(0.12px);
-    }
-    @keyframes pairUnderline { to { transform: scaleX(1); } }
+    /* ✅ 밑줄 토글(?) 제거 요청 → underline 완전 제거 */
+    .pair-focus::after { content: none !important; }
 
     .pair-text{
       display: inline-block;
@@ -274,54 +271,55 @@
       padding: 0 !important;
       margin: 0 !important;
 
-      /* fallback: 확실한 로즈골드 */
-      color: rgba(183, 96, 112, 0.98);
+      /* fallback: 진한 샴페인-코퍼 */
+      color: rgba(168, 73, 74, 0.98);
 
-      /* 음각/엠보싱 느낌 유지 + 가독성 강화 */
+      /* 음각 + 빛 반사 느낌 */
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.60),
-        0 -1px 0 rgba(0,0,0,0.12),
-        0 22px 65px rgba(161, 75, 92, 0.20);
+        0 1px 0 rgba(255,255,255,0.55),
+        0 -1px 0 rgba(0,0,0,0.14),
+        0 22px 70px rgba(160, 60, 70, 0.18);
 
-      -webkit-text-stroke: 0.55px rgba(0,0,0,0.16);
+      -webkit-text-stroke: 0.7px rgba(0,0,0,0.18);
       letter-spacing: -0.01em;
+      filter: saturate(1.04);
     }
 
-    @keyframes roseFoil {
+    @keyframes jewelFoil {
       0%   { background-position: 0% 50%, 0% 50%, 0 0; }
-      50%  { background-position: 100% 50%, 120% 50%, 120px 60px; }
+      50%  { background-position: 100% 50%, 120% 50%, 110px 60px; }
       100% { background-position: 0% 50%, 0% 50%, 0 0; }
     }
 
     @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
       .pair-text {
         background-image:
-          /* 더 진한 로즈골드(화이트 스톱 제거/축소) */
+          /* ✅ 메인 메탈: 샴페인 → 코퍼 → 루비 하이라이트 */
           linear-gradient(90deg,
-            rgba(60,12,20,1) 0%,
-            rgba(140,52,68,1) 18%,
-            rgba(215,140,150,1) 34%,
-            rgba(242,198,187,1) 50%,
-            rgba(215,140,150,1) 66%,
-            rgba(140,52,68,1) 82%,
-            rgba(60,12,20,1) 100%
+            rgba(52,10,18,1) 0%,
+            rgba(132,35,46,1) 18%,
+            rgba(201,118,112,1) 34%,
+            rgba(246,214,180,1) 50%,
+            rgba(201,118,112,1) 66%,
+            rgba(132,35,46,1) 82%,
+            rgba(52,10,18,1) 100%
           ),
-          /* 포일 하이라이트(과한 screen 제거) */
+          /* ✅ 포일 하이라이트(은은, 백화 방지) */
           linear-gradient(115deg,
             rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.38) 46%,
+            rgba(255,255,255,0.34) 46%,
             rgba(255,255,255,0) 70%
           ),
-          /* 미세 텍스처 */
-          url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+          /* ✅ 미세 텍스처 */
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.14'/%3E%3C/svg%3E");
 
         background-size: 220% 100%, 180% 100%, 240px 240px;
         background-repeat: no-repeat, no-repeat, repeat;
 
-        /* ✅ screen 제거 → 과도한 백화 방지 */
+        /* ✅ 과한 screen 금지: 대비 유지 */
         background-blend-mode: normal, overlay, multiply;
 
-        animation: roseFoil 8.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        animation: jewelFoil 9.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 
         -webkit-background-clip: text;
         background-clip: text;
@@ -329,11 +327,11 @@
         color: transparent;
 
         text-shadow:
-          0 1px 0 rgba(255,255,255,0.58),
-          0 -1px 0 rgba(0,0,0,0.12),
-          0 26px 70px rgba(140,52,68,0.22);
+          0 1px 0 rgba(255,255,255,0.50),
+          0 -1px 0 rgba(0,0,0,0.14),
+          0 26px 75px rgba(132,35,46,0.22);
 
-        -webkit-text-stroke: 0.65px rgba(0,0,0,0.18);
+        -webkit-text-stroke: 0.85px rgba(0,0,0,0.20);
 
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
@@ -341,10 +339,9 @@
     }
 
     /* =========================================================
-       ✅ (PATCH-1) SIGNALS 토글: 등장 후 사라지는 버그 방지용 "stable"
+       ✅ SIGNALS 토글 안정화
        ========================================================= */
     .signals-stable { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-
     #signals-summary[hidden] { display: none; }
     .signals-exit {
       opacity: 0;
@@ -384,7 +381,7 @@
       box-shadow:
         0 18px 60px rgba(0,0,0,0.05),
         inset 0 0 0 1px rgba(255,255,255,0.35);
-      padding: 12px; /* ✅ (요청1) deck 높이 조금 축소 */
+      padding: 12px;
       backdrop-filter: blur(14px);
     }
 
@@ -402,7 +399,7 @@
       position: relative;
       overflow: hidden;
 
-      width: 100%;            /* ✅ (요청1) grid 셀 꽉 채우기 */
+      width: 100%;
       text-align: center;
       white-space: nowrap;
 
@@ -412,7 +409,6 @@
         linear-gradient(120deg, rgba(168,63,50,0.06), rgba(0,0,0,0.01)),
         rgba(255,255,255,0.78);
 
-      /* ✅ (요청1) 세로 공간 줄이기 */
       padding: 10px 0;
       border-radius: 999px;
 
@@ -484,12 +480,10 @@
       100% { transform: scale(1); }
     }
 
-    /* ✅ (요청1) 힌트가 평소엔 레이아웃 공간을 차지하지 않게 */
     .signal-hint {
       margin-top: 0;
       max-height: 0;
       overflow: hidden;
-
       font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.22em;
@@ -513,9 +507,6 @@
       100% { transform: translateX(0); }
     }
 
-    /* =========================================================
-       ✅ Draft 뒤로 버튼
-       ========================================================= */
     .draft-back-btn {
       width: 52px;
       height: 52px;
@@ -549,9 +540,6 @@
     }
     .draft-back-btn:active { transform: scale(0.96); filter: brightness(0.985); opacity: 1; }
 
-    /* =========================================================
-       ✅ 하단 왼쪽 버튼 (SIGNALS)
-       ========================================================= */
     .btn-ghost {
       background: rgba(255,255,255,0.78);
       border: 1px solid rgba(0,0,0,0.08);
@@ -562,9 +550,7 @@
     }
     .btn-ghost:active { transform: scale(0.96); filter: brightness(0.96); }
 
-    /* =========================================================
-       ✅ (돈 쓴 느낌) SEAL OVERLAY (기존 유지)
-       ========================================================= */
+    /* SEAL OVERLAY (기존 유지) */
     #seal-overlay {
       opacity: 0;
       transform: scale(1);
@@ -846,7 +832,6 @@
 
     <!-- MAIN -->
     <div id="main-content" class="hidden h-full flex flex-col relative bg-white/50">
-      <!-- 헤더(이전 요청대로 컴팩트) -->
       <header class="px-10 pt-12 pb-6 border-b border-black/5 slide-up">
         <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-3 uppercase">RELATIONS</p>
         <h1 class="serif-font text-5xl mb-2 tracking-tighter font-bold">Archive</h1>
@@ -855,7 +840,6 @@
 
       <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60"></main>
 
-      <!-- Bottom Buttons -->
       <div class="absolute bottom-12 left-0 w-full flex justify-center z-50 px-6 gap-3">
         <button onclick="focusSignals()"
                 class="btn-ghost px-10 py-6 rounded-none text-[10px] tracking-[0.5em] slide-up uppercase">
@@ -869,10 +853,8 @@
     </div>
 
     <!-- DRAFT -->
-    <!-- ✅ (요청1) justify-start + px 축소 + 위/아래 잘림 방지(safe-area는 CSS에서) -->
     <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar">
 
-      <!-- ✅ (요청1) 상단 공간 줄이기: mb-10 -> mb-6 -->
       <div class="w-full flex justify-between items-center mb-6">
         <div class="flex items-center gap-3">
           <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
@@ -885,7 +867,6 @@
         <button onclick="closeDraft()" class="text-4xl font-light opacity-20">×</button>
       </div>
 
-      <!-- ✅ (요청1) draft-box 아래 여백 축소: mb-10 -> mb-6 -->
       <div class="log-card mb-6 draft-container" id="draft-box">
         <div class="flex items-baseline gap-4 mb-6">
           <div class="flex-1">
@@ -906,10 +887,7 @@
         </p>
       </div>
 
-      <!-- ✅ (요청1) space-y-10 -> space-y-6, mb-12 -> mb-8 -->
       <div class="w-full space-y-6 mb-8" id="draft-options">
-
-        <!-- ✅ (요청1) role 버튼 간격 줄임: gap-3 -> gap-2 -->
         <div class="grid grid-cols-3 gap-2">
           <button onclick="setDraftRole('PRESS', this)" class="role-pill">PRESS</button>
           <button onclick="setDraftRole('PARTNER', this)" class="role-pill">PARTNER</button>
@@ -921,7 +899,6 @@
           <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
         </div>
 
-        <!-- SIGNAL PICKER -->
         <div class="relative">
           <div class="flex items-baseline justify-between">
             <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">SIGNALS</p>
@@ -929,7 +906,6 @@
           </div>
 
           <div class="signal-picker-deck">
-            <!-- ✅ (요청1) 12개를 6x2로 고정 -->
             <div id="signal-picker" class="grid grid-cols-6 gap-2"></div>
           </div>
 
@@ -994,7 +970,6 @@
     let selectedSignals = [];
     let signalsVisible = true;
 
-    // PIN
     window.unlock = function() {
       if (document.getElementById('pin').value === PIN) {
         document.getElementById('pin-gate').style.opacity = '0';
@@ -1005,11 +980,10 @@
       }
     }
 
-    // Draft open/close
     window.openDraft = function() {
       const overlay = document.getElementById('draft-overlay');
       overlay.classList.remove('hidden');
-      overlay.scrollTop = 0; // ✅ 잘림/스크롤 잔상 방지(기능 유지)
+      overlay.scrollTop = 0;
       setTimeout(() => document.getElementById('draft-box').classList.add('draft-active'), 50);
     }
 
@@ -1024,7 +998,6 @@
       el.classList.add('pill-active');
     }
 
-    // Signal picker
     function updateSignalCount() {
       const el = document.getElementById('signal-count');
       if (!el) return;
@@ -1092,7 +1065,6 @@
       updateSignalCount();
     }
 
-    // Seal overlay
     function openSeal(initials) {
       const overlay = document.getElementById('seal-overlay');
       const initEl = document.getElementById('seal-initials');
@@ -1128,14 +1100,13 @@
       }, 520);
     }
 
-    // Feed rendering
     const q = query(collection(db, "archive"), orderBy("createdAt", "desc"));
 
     function buildSignalsSummaryHTML(totalRecords, signalPairs) {
       const { pairText } = signalPairs;
 
       return `
-        <div id="signals-summary" class="log-card slide-up summary-card">
+        <div id="signals-summary" class="log-card slide-up summary-card card-canvas">
           <div class="flex justify-between items-start mb-6 pl-4">
             <div>
               <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">SIGNALS</p>
@@ -1146,7 +1117,7 @@
             </div>
           </div>
 
-          <div class="pl-4">
+          <div class="pl-4 mt-auto">
             <div class="summary-hero unified-font">
               <span class="pair-focus"><span class="pair-text">${pairText}</span></span>
             </div>
@@ -1156,7 +1127,7 @@
     }
 
     function computeSignalsFromDocs(docs) {
-      const m = new Map(); // signal -> count(records)
+      const m = new Map();
       for (const d of docs) {
         const arr = Array.isArray(d.signals) ? d.signals : [];
         const uniq = new Set(arr.filter(Boolean));
@@ -1169,7 +1140,7 @@
         top2.length >= 2 ? `${top2[0]} · ${top2[1]}` :
         top2.length === 1 ? `${top2[0]}` : `—`;
 
-      const top5 = sorted.slice(0, 5); // (유지: 기존 로직 영향 최소화)
+      const top5 = sorted.slice(0, 5);
       return { pairText, top5 };
     }
 
@@ -1209,7 +1180,6 @@
       reprintSignalChips();
     }
 
-    // SIGNALS button toggle
     window.focusSignals = function() {
       const feed = document.getElementById('feed');
       const summary = document.getElementById('signals-summary');
@@ -1255,23 +1225,20 @@
 
       const docs = snapshot.docs.map(d => d.data());
 
-      // Top summary first
       const totalRecords = docs.length;
       const sig = computeSignalsFromDocs(docs);
       feed.insertAdjacentHTML('beforeend', buildSignalsSummaryHTML(totalRecords, sig));
 
-      // 토글 상태 유지
       const summary = document.getElementById('signals-summary');
       if (summary) {
         summary.hidden = !signalsVisible;
         if (!summary.hidden) summary.classList.add('signals-stable');
       }
 
-      // Existing record cards
       snapshot.forEach((doc) => {
         const data = doc.data();
         const html = `
-          <div class="log-card slide-up record-card">
+          <div class="log-card slide-up record-card card-canvas">
             <div class="flex justify-between items-baseline mb-8 pl-4">
               <span class="serif-font text-5xl font-bold tracking-tighter">${data.who}</span>
               <div class="flex-1 text-right border-b border-black/5 pb-3">
@@ -1283,7 +1250,7 @@
 
             <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4 msg-reveal record-msg">${data.msg}</p>
 
-            <div class="text-right">
+            <div class="text-right mt-auto">
               <p class="unified-font text-[15px] text-slate-500 pl-4 font-medium italic inline-flex items-center">
                 <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 17px; opacity: 0.6; margin-right: 8px;">at</span> ${data.where}
               </p>
@@ -1294,7 +1261,6 @@
       });
     });
 
-    // Save process
     window.finalizeRecord = async function() {
       const who = document.getElementById('d-who').value;
       const aff = document.getElementById('d-aff').value || '-';
