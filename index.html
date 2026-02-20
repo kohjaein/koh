@@ -29,7 +29,9 @@
     .app-wrapper {
       width: 100%;
       max-width: var(--mobile-width);
-      height: 100vh;
+      height: 100vh;   /* fallback */
+      height: 100svh;  /* iOS Safari stable viewport */
+      height: 100dvh;  /* dynamic viewport */
       background-color: var(--bg-color);
       position: relative;
       overflow: hidden;
@@ -121,7 +123,7 @@
 
     .role-pill {
       border: 1px solid rgba(0,0,0,0.1);
-      padding: 12px 0;
+      padding: 10px 0; /* ✅ (요청1) 조금 더 컴팩트 */
       font-size: 10px;
       letter-spacing: 0.2em;
       font-weight: 700;
@@ -139,7 +141,21 @@
     }
 
     /* =========================================================
-       ✅ 기록 카드: 워터마크 제거 + 시그널 카드와 재질 분리(매트/장부)
+       ✅ (요청1) DRAFT 오버레이: safe-area + 한 화면에 최대한 맞추기
+       ========================================================= */
+    #draft-overlay{
+      padding-top: calc(env(safe-area-inset-top) + 18px);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 18px);
+    }
+    #draft-box.log-card{
+      padding: 32px; /* ✅ 카드 자체 높이 축소 */
+    }
+    @media (max-height: 760px){
+      #draft-box.log-card{ padding: 28px; }
+    }
+
+    /* =========================================================
+       ✅ (PATCH-3) 기록 카드: 워터마크 제거 + 시그널 카드와 재질 분리(매트/장부)
        ========================================================= */
     .record-card {
       background:
@@ -154,15 +170,8 @@
       position: absolute;
       inset: 0;
       background:
-        /* corner fold (우상단 접힘) */
         linear-gradient(135deg, rgba(0,0,0,0.06) 0 14px, transparent 14px) top right/28px 28px no-repeat,
-        /* ledger lines (아주 은은한 줄) */
-        repeating-linear-gradient(
-          180deg,
-          rgba(0,0,0,0.022) 0 1px,
-          transparent 1px 34px
-        ),
-        /* paper noise */
+        repeating-linear-gradient(180deg, rgba(0,0,0,0.022) 0 1px, transparent 1px 34px),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.09'/%3E%3C/svg%3E");
       opacity: 0.30;
       mix-blend-mode: multiply;
@@ -199,7 +208,6 @@
     }
     @keyframes drawLineTall { to { height: 66px; } }
 
-    /* ✅ 포일 하이라이트는 "가끔만" */
     .summary-card::after {
       content: '';
       position: absolute;
@@ -238,11 +246,10 @@
     }
 
     /* =========================================================
-       ✅ (요청2) Top2 키워드: 로즈골드 + 화려한 메탈릭 / "사각형 음영" 완전 제거
+       ✅ (요청2) Top2 키워드: "안 보임" 해결 → 로즈골드 더 진하게 + 메탈릭 유지
        ========================================================= */
     .pair-focus { position: relative; display: inline-block; }
-    /* ✅ 혹시 이전 버전에서 남아있을 수 있는 배경 pseudo 제거(안전장치) */
-    .pair-focus::before { content: none !important; }
+    .pair-focus::before { content: none !important; } /* 사각 음영 안전 제거 */
 
     .pair-focus::after {
       content: '';
@@ -262,16 +269,22 @@
     @keyframes pairUnderline { to { transform: scaleX(1); } }
 
     .pair-text{
-      display: inline-block;            /* ✅ inline에서 clip 이슈 방지 */
-      background: transparent !important;/* ✅ 사각 배경 방지 */
+      display: inline-block;
+      background: transparent !important;
       padding: 0 !important;
       margin: 0 !important;
-      color: rgba(183,110,121,0.98);    /* fallback 로즈골드 */
+
+      /* fallback: 확실한 로즈골드 */
+      color: rgba(183, 96, 112, 0.98);
+
+      /* 음각/엠보싱 느낌 유지 + 가독성 강화 */
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.72),
-        0 2px 2px rgba(0,0,0,0.10),
-        0 22px 60px rgba(183,110,121,0.18);
-      -webkit-text-stroke: 0.35px rgba(0,0,0,0.10);
+        0 1px 0 rgba(255,255,255,0.60),
+        0 -1px 0 rgba(0,0,0,0.12),
+        0 22px 65px rgba(161, 75, 92, 0.20);
+
+      -webkit-text-stroke: 0.55px rgba(0,0,0,0.16);
+      letter-spacing: -0.01em;
     }
 
     @keyframes roseFoil {
@@ -283,27 +296,31 @@
     @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
       .pair-text {
         background-image:
-          /* 메탈릭 로즈골드 베이스 */
+          /* 더 진한 로즈골드(화이트 스톱 제거/축소) */
           linear-gradient(90deg,
-            rgba(88,20,30,1) 0%,
-            rgba(160,78,90,1) 16%,
-            rgba(247,210,195,1) 32%,
-            rgba(183,110,121,1) 50%,
-            rgba(255,236,226,1) 62%,
-            rgba(160,78,90,1) 78%,
-            rgba(88,20,30,1) 100%
+            rgba(60,12,20,1) 0%,
+            rgba(140,52,68,1) 18%,
+            rgba(215,140,150,1) 34%,
+            rgba(242,198,187,1) 50%,
+            rgba(215,140,150,1) 66%,
+            rgba(140,52,68,1) 82%,
+            rgba(60,12,20,1) 100%
           ),
-          /* 슬로우 하이라이트(포일) */
+          /* 포일 하이라이트(과한 screen 제거) */
           linear-gradient(115deg,
             rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.55) 46%,
+            rgba(255,255,255,0.38) 46%,
             rgba(255,255,255,0) 70%
           ),
           /* 미세 텍스처 */
-          url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+
         background-size: 220% 100%, 180% 100%, 240px 240px;
         background-repeat: no-repeat, no-repeat, repeat;
-        background-blend-mode: overlay, screen, overlay;
+
+        /* ✅ screen 제거 → 과도한 백화 방지 */
+        background-blend-mode: normal, overlay, multiply;
+
         animation: roseFoil 8.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 
         -webkit-background-clip: text;
@@ -311,210 +328,23 @@
         -webkit-text-fill-color: transparent;
         color: transparent;
 
-        /* ✅ 가독성(윤곽) */
         text-shadow:
-          0 1px 0 rgba(255,255,255,0.60),
-          0 26px 70px rgba(160,78,90,0.22);
-        -webkit-text-stroke: 0.45px rgba(0,0,0,0.14);
+          0 1px 0 rgba(255,255,255,0.58),
+          0 -1px 0 rgba(0,0,0,0.12),
+          0 26px 70px rgba(140,52,68,0.22);
 
-        /* ✅ 멀티라인에서 배경이 "사각형"처럼 보이는 현상 방지 */
+        -webkit-text-stroke: 0.65px rgba(0,0,0,0.18);
+
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
       }
     }
 
-    .signals-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 10px;
-      margin-top: 16px;
-    }
-
     /* =========================================================
-       ✅ 시그널 칩: “키워드 + 횟수” 중앙정렬 + 잘림 제거
+       ✅ (PATCH-1) SIGNALS 토글: 등장 후 사라지는 버그 방지용 "stable"
        ========================================================= */
-    .signal-display-chip {
-      --wash: 0.08;
-      --edge: 0.08;
-      --gloss: 0.22;
-      --d: 0s;
+    .signals-stable { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 
-      position: relative;
-      overflow: hidden;
-
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,var(--edge));
-      background:
-        radial-gradient(120px 120px at 22% 25%, rgba(255,255,255,0.40), transparent 65%),
-        linear-gradient(120deg, rgba(168,63,50,var(--wash)), rgba(0,0,0,0.01));
-
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      color: rgba(26,26,26,0.92);
-
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.06),
-        0 22px 60px rgba(0,0,0,0.08),
-        inset 0 0 0 1px rgba(255,255,255,var(--gloss));
-
-      backdrop-filter: blur(10px);
-      -webkit-tap-highlight-color: transparent;
-      cursor: pointer;
-      user-select: none;
-
-      transition:
-        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-        filter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .signal-display-chip:active { transform: scale(0.985); filter: brightness(0.99); }
-
-    .sig-pattern {
-      position: absolute;
-      inset: -35%;
-      border-radius: 999px;
-      background:
-        repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,0.10) 0 1px, transparent 1px 8px),
-        repeating-conic-gradient(from 0deg, rgba(168,63,50,0.09) 0 6deg, transparent 6deg 14deg);
-      opacity: 0.10;
-      transform: rotate(12deg);
-      mix-blend-mode: multiply;
-      pointer-events: none;
-    }
-
-    .sig-sheen {
-      position: absolute;
-      inset: -40%;
-      border-radius: 999px;
-      background: linear-gradient(115deg,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,0.35) 46%,
-        rgba(255,255,255,0) 70%
-      );
-      transform: translateX(-120%) rotate(8deg);
-      opacity: 0.0;
-      mix-blend-mode: overlay;
-      pointer-events: none;
-    }
-    .signal-print .sig-sheen {
-      animation: chipSheen 1.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      animation-delay: calc(var(--d) + 0.06s);
-    }
-    @keyframes chipSheen {
-      0%   { transform: translateX(-120%) rotate(8deg); opacity: 0.0; }
-      35%  { opacity: 0.55; }
-      100% { transform: translateX(120%) rotate(8deg); opacity: 0.0; }
-    }
-
-    .sig-bloom {
-      position: absolute;
-      inset: -45%;
-      border-radius: 999px;
-      background: radial-gradient(circle at 45% 55%, rgba(168,63,50,0.26), rgba(168,63,50,0.00) 62%);
-      opacity: 0;
-      transform: scale(0.86);
-      filter: blur(12px);
-      pointer-events: none;
-      mix-blend-mode: multiply;
-    }
-    .signal-display-chip.ink-bloom .sig-bloom { animation: inkBloom 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    @keyframes inkBloom {
-      0%   { opacity: 0.0; transform: scale(0.86); }
-      55%  { opacity: 0.28; transform: scale(1.04); }
-      100% { opacity: 0.0; transform: scale(1.10); }
-    }
-
-    .sig-core {
-      position: relative;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      white-space: nowrap;
-    }
-    .sig-label { display: inline-block; transform: translateY(0.1px); }
-
-    .sig-meta {
-      display: grid;
-      place-items: center;
-      min-width: 42px;
-    }
-    .sig-meta > span { grid-area: 1 / 1; }
-
-    .sig-dots {
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.18em;
-      opacity: 0.42;
-      transform: translateY(0);
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .sig-count {
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 0.18em;
-
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(249,248,244,0.92);
-      border: 1px solid rgba(0,0,0,0.10);
-      color: rgba(26,26,26,0.92);
-
-      box-shadow:
-        0 14px 34px rgba(0,0,0,0.12),
-        inset 0 0 0 1px rgba(255,255,255,0.45);
-
-      opacity: 0;
-      transform: translateY(2px) scale(0.985);
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-      pointer-events: none;
-    }
-
-    .signal-display-chip.show-count .sig-dots {
-      opacity: 0;
-      transform: translateY(2px) scale(0.985);
-    }
-    .signal-display-chip.show-count .sig-count {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .signal-print {
-      opacity: 0;
-      transform: translateY(10px) scale(0.99);
-      filter: blur(10px);
-      animation: chipPrint 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      animation-delay: var(--d);
-      will-change: transform, opacity, filter;
-    }
-    @keyframes chipPrint {
-      0%   { opacity: 0; transform: translateY(10px) scale(0.99); filter: blur(10px); }
-      62%  { opacity: 1; transform: translateY(-1px) scale(1.01); filter: blur(1.5px); }
-      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-
-    .summary-pulse { animation: summaryPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    @keyframes summaryPulse {
-      0% { transform: translateY(0) scale(1); filter: blur(0); }
-      45% { transform: translateY(-2px) scale(1.01); filter: blur(0); }
-      100% { transform: translateY(0) scale(1); }
-    }
-
-    /* ✅ SIGNALS 토글 안정화 */
-    .signals-stable {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
-
-    /* ✅ SIGNALS 섹션 숨김/표시 토글 */
     #signals-summary[hidden] { display: none; }
     .signals-exit {
       opacity: 0;
@@ -535,8 +365,15 @@
       transition: all 0.72s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .summary-pulse { animation: summaryPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    @keyframes summaryPulse {
+      0% { transform: translateY(0) scale(1); filter: blur(0); }
+      45% { transform: translateY(-2px) scale(1.01); filter: blur(0); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
     /* =========================================================
-       ✅ Draft: 시그널 선택 UI
+       ✅ Draft: 시그널 선택 UI (2줄 고정)
        ========================================================= */
     .signal-picker-deck {
       border: 1px solid rgba(0,0,0,0.07);
@@ -547,7 +384,7 @@
       box-shadow:
         0 18px 60px rgba(0,0,0,0.05),
         inset 0 0 0 1px rgba(255,255,255,0.35);
-      padding: 14px;
+      padding: 12px; /* ✅ (요청1) deck 높이 조금 축소 */
       backdrop-filter: blur(14px);
     }
 
@@ -565,18 +402,25 @@
       position: relative;
       overflow: hidden;
 
+      width: 100%;            /* ✅ (요청1) grid 셀 꽉 채우기 */
+      text-align: center;
+      white-space: nowrap;
+
       border: 1px solid rgba(0,0,0,0.10);
       background:
         radial-gradient(120px 120px at 22% 30%, rgba(255,255,255,0.38), transparent 68%),
         linear-gradient(120deg, rgba(168,63,50,0.06), rgba(0,0,0,0.01)),
         rgba(255,255,255,0.78);
 
-      padding: 12px 16px 12px 14px;
+      /* ✅ (요청1) 세로 공간 줄이기 */
+      padding: 10px 0;
       border-radius: 999px;
 
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
-      letter-spacing: 0.10em;
+      letter-spacing: 0.08em;
+      line-height: 1;
+
       color: rgba(26,26,26,0.86);
 
       box-shadow:
@@ -588,6 +432,9 @@
       transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+    }
+    @media (max-width: 420px){
+      .signal-chip-btn{ font-size: 10px; padding: 9px 0; }
     }
     .signal-chip-btn:active { transform: scale(0.98); filter: brightness(0.985); }
 
@@ -637,8 +484,12 @@
       100% { transform: scale(1); }
     }
 
+    /* ✅ (요청1) 힌트가 평소엔 레이아웃 공간을 차지하지 않게 */
     .signal-hint {
-      margin-top: 10px;
+      margin-top: 0;
+      max-height: 0;
+      overflow: hidden;
+
       font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.22em;
@@ -648,6 +499,8 @@
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .signal-hint.show {
+      margin-top: 10px;
+      max-height: 48px;
       opacity: 0.45;
       transform: translateY(0);
     }
@@ -661,7 +514,7 @@
     }
 
     /* =========================================================
-       ✅ (요청1) Draft 뒤로 버튼: 잘림 방지 + 더 명확(쉐브론) + 그림자 크기 줄여 클리핑 방지
+       ✅ Draft 뒤로 버튼
        ========================================================= */
     .draft-back-btn {
       width: 52px;
@@ -675,7 +528,6 @@
       border: 1px solid rgba(0,0,0,0.12);
       background: rgba(255,255,255,0.90);
 
-      /* ✅ blur 큰 그림자는 가장자리에서 잘려 보일 수 있어 축소 */
       box-shadow:
         0 10px 28px rgba(0,0,0,0.08),
         inset 0 0 0 1px rgba(255,255,255,0.55);
@@ -687,8 +539,6 @@
       line-height: 1;
       padding: 0;
       color: rgba(26,26,26,0.82);
-
-      /* ✅ 혹시 SVG stroke가 가장자리에서 잘리는 환경 대비 */
       overflow: visible;
     }
     .draft-back-btn svg {
@@ -996,7 +846,7 @@
 
     <!-- MAIN -->
     <div id="main-content" class="hidden h-full flex flex-col relative bg-white/50">
-      <!-- ✅ (요청3) 헤더 높이: 더 컴팩트하게(현재의 ~2/3 수준) -->
+      <!-- 헤더(이전 요청대로 컴팩트) -->
       <header class="px-10 pt-12 pb-6 border-b border-black/5 slide-up">
         <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-3 uppercase">RELATIONS</p>
         <h1 class="serif-font text-5xl mb-2 tracking-tighter font-bold">Archive</h1>
@@ -1019,11 +869,12 @@
     </div>
 
     <!-- DRAFT -->
-    <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-center p-8 overflow-y-auto no-scrollbar">
+    <!-- ✅ (요청1) justify-start + px 축소 + 위/아래 잘림 방지(safe-area는 CSS에서) -->
+    <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar">
 
-      <div class="w-full flex justify-between items-center mb-10">
+      <!-- ✅ (요청1) 상단 공간 줄이기: mb-10 -> mb-6 -->
+      <div class="w-full flex justify-between items-center mb-6">
         <div class="flex items-center gap-3">
-          <!-- ✅ (요청1) 직관적인 "chevron-left" + 잘림 방지 -->
           <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M15 18l-6-6 6-6"></path>
@@ -1034,7 +885,8 @@
         <button onclick="closeDraft()" class="text-4xl font-light opacity-20">×</button>
       </div>
 
-      <div class="log-card mb-10 draft-container" id="draft-box">
+      <!-- ✅ (요청1) draft-box 아래 여백 축소: mb-10 -> mb-6 -->
+      <div class="log-card mb-6 draft-container" id="draft-box">
         <div class="flex items-baseline gap-4 mb-6">
           <div class="flex-1">
             <input type="text" id="d-who"
@@ -1054,15 +906,18 @@
         </p>
       </div>
 
-      <div class="w-full space-y-10 mb-12" id="draft-options">
-        <div class="grid grid-cols-3 gap-3">
+      <!-- ✅ (요청1) space-y-10 -> space-y-6, mb-12 -> mb-8 -->
+      <div class="w-full space-y-6 mb-8" id="draft-options">
+
+        <!-- ✅ (요청1) role 버튼 간격 줄임: gap-3 -> gap-2 -->
+        <div class="grid grid-cols-3 gap-2">
           <button onclick="setDraftRole('PRESS', this)" class="role-pill">PRESS</button>
           <button onclick="setDraftRole('PARTNER', this)" class="role-pill">PARTNER</button>
           <button onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
         </div>
 
         <div class="relative">
-          <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">Your Company(선택사항)</p>
+          <p class="text-[14px] text-slate-400 font-bold mb-2 tracking-widest uppercase unified-font">Your Company(선택사항)</p>
           <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
         </div>
 
@@ -1074,7 +929,8 @@
           </div>
 
           <div class="signal-picker-deck">
-            <div id="signal-picker" class="flex flex-wrap gap-2"></div>
+            <!-- ✅ (요청1) 12개를 6x2로 고정 -->
+            <div id="signal-picker" class="grid grid-cols-6 gap-2"></div>
           </div>
 
           <p id="signal-hint" class="signal-hint unified-font">시그널은 최대 3개까지 선택할 수 있습니다.</p>
@@ -1151,7 +1007,9 @@
 
     // Draft open/close
     window.openDraft = function() {
-      document.getElementById('draft-overlay').classList.remove('hidden');
+      const overlay = document.getElementById('draft-overlay');
+      overlay.classList.remove('hidden');
+      overlay.scrollTop = 0; // ✅ 잘림/스크롤 잔상 방지(기능 유지)
       setTimeout(() => document.getElementById('draft-box').classList.add('draft-active'), 50);
     }
 
@@ -1274,37 +1132,7 @@
     const q = query(collection(db, "archive"), orderBy("createdAt", "desc"));
 
     function buildSignalsSummaryHTML(totalRecords, signalPairs) {
-      const { pairText, top5 } = signalPairs;
-
-      const chipsHtml = top5.length
-        ? top5.map(([sig, cnt], i) => {
-            const wash = 0.07 + Math.min(0.14, (cnt - 1) * 0.04);
-            const edge = 0.07 + Math.min(0.06, (cnt - 1) * 0.02);
-            const gloss = 0.18 + Math.min(0.24, (cnt - 1) * 0.06);
-
-            const dots = (cnt >= 3) ? "•••" : (cnt === 2) ? "••" : "•";
-            const delay = (i * 0.08).toFixed(2);
-
-            return `
-              <button type="button"
-                class="signal-display-chip signal-print unified-font"
-                style="--wash:${wash.toFixed(2)}; --edge:${edge.toFixed(2)}; --gloss:${gloss.toFixed(2)}; --d:${delay}s;"
-                data-count="${cnt}">
-                <span class="sig-pattern" aria-hidden="true"></span>
-                <span class="sig-sheen" aria-hidden="true"></span>
-                <span class="sig-bloom" aria-hidden="true"></span>
-
-                <span class="sig-core">
-                  <span class="sig-label">${sig}</span>
-                  <span class="sig-meta" aria-hidden="true">
-                    <span class="sig-dots">${dots}</span>
-                    <span class="sig-count">${cnt}회</span>
-                  </span>
-                </span>
-              </button>
-            `;
-          }).join('')
-        : `<span class="unified-font text-[13px] font-bold opacity-40">아직 시그널이 없습니다. (기록 작성 시 1~3개 선택)</span>`;
+      const { pairText } = signalPairs;
 
       return `
         <div id="signals-summary" class="log-card slide-up summary-card">
@@ -1322,7 +1150,6 @@
             <div class="summary-hero unified-font">
               <span class="pair-focus"><span class="pair-text">${pairText}</span></span>
             </div>
-            <div class="signals-row">${chipsHtml}</div>
           </div>
         </div>
       `;
@@ -1342,7 +1169,7 @@
         top2.length >= 2 ? `${top2[0]} · ${top2[1]}` :
         top2.length === 1 ? `${top2[0]}` : `—`;
 
-      const top5 = sorted.slice(0, 5);
+      const top5 = sorted.slice(0, 5); // (유지: 기존 로직 영향 최소화)
       return { pairText, top5 };
     }
 
@@ -1381,23 +1208,6 @@
 
       reprintSignalChips();
     }
-
-    // chip click: dots→n회 + ink bloom
-    document.addEventListener('click', (e) => {
-      const chip = e.target?.closest?.('.signal-display-chip');
-      if (!chip) return;
-      const summary = chip.closest('#signals-summary');
-      if (!summary) return;
-
-      summary.querySelectorAll('.signal-display-chip.show-count').forEach(el => el.classList.remove('show-count'));
-      chip.classList.add('show-count');
-      setTimeout(() => chip.classList.remove('show-count'), 1100);
-
-      chip.classList.remove('ink-bloom');
-      void chip.offsetWidth;
-      chip.classList.add('ink-bloom');
-      setTimeout(() => chip.classList.remove('ink-bloom'), 320);
-    });
 
     // SIGNALS button toggle
     window.focusSignals = function() {
