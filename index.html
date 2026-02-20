@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-  <!-- ✅ (요청) 다크모드여도 강제로 오리지널(라이트) 디자인 유지 -->
-  <meta name="color-scheme" content="only light" />
+  <!-- ✅ 다크모드여도 강제로 오리지널(라이트) 디자인 유지 -->
+  <meta name="color-scheme" content="light" />
   <meta name="supported-color-schemes" content="light" />
   <meta name="theme-color" content="#F9F8F4" />
 
@@ -22,12 +22,16 @@
       --accent: #A83F32;
       --mobile-width: 480px;
 
-      /* ✅ 다크모드 강제 무시 */
-      color-scheme: only light;
+      /* ✅ role colors */
+      --role-press: #2B6CB0;   /* blue (lux) */
+      --role-partner: #8C6A1E; /* dark yellow (gold) */
+      --role-crew: #2F855A;    /* green (deep) */
+
+      color-scheme: light;
     }
 
-    html { color-scheme: only light; }
-    input, textarea, button, select { color-scheme: only light; }
+    html { color-scheme: light; }
+    input, textarea, button, select { color-scheme: light; }
 
     /* ✅ OS/브라우저 다크 선호에서도 라이트 유지(가능한 범위 내에서 강제) */
     @media (prefers-color-scheme: dark) {
@@ -161,8 +165,58 @@
       letter-spacing: 0.2em;
       font-weight: 700;
       transition: all 0.3s;
+      background: rgba(255,255,255,0.72);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
+
+    /* ✅ role default tint */
+    .role-pill[data-role="PRESS"]{
+      border-color: rgba(43,108,176,0.26);
+      color: rgba(43,108,176,0.92);
+      background: rgba(43,108,176,0.06);
+    }
+    .role-pill[data-role="PARTNER"]{
+      border-color: rgba(140,106,30,0.26);
+      color: rgba(140,106,30,0.92);
+      background: rgba(140,106,30,0.06);
+    }
+    .role-pill[data-role="CREW"]{
+      border-color: rgba(47,133,90,0.26);
+      color: rgba(47,133,90,0.92);
+      background: rgba(47,133,90,0.06);
+    }
+
+    /* ✅ role active (override 기존 pill-active) */
     .pill-active { background: var(--accent) !important; color: white !important; border-color: var(--accent) !important; }
+    .role-pill.pill-active[data-role="PRESS"]{
+      background: var(--role-press) !important;
+      border-color: var(--role-press) !important;
+      color: rgba(255,255,255,0.98) !important;
+      box-shadow:
+        0 18px 55px rgba(43,108,176,0.18),
+        0 35px 95px rgba(0,0,0,0.10),
+        inset 0 0 0 1px rgba(255,255,255,0.18);
+    }
+    .role-pill.pill-active[data-role="PARTNER"]{
+      background: var(--role-partner) !important;
+      border-color: var(--role-partner) !important;
+      color: rgba(255,255,255,0.98) !important;
+      box-shadow:
+        0 18px 55px rgba(140,106,30,0.18),
+        0 35px 95px rgba(0,0,0,0.10),
+        inset 0 0 0 1px rgba(255,255,255,0.18);
+    }
+    .role-pill.pill-active[data-role="CREW"]{
+      background: var(--role-crew) !important;
+      border-color: var(--role-crew) !important;
+      color: rgba(255,255,255,0.98) !important;
+      box-shadow:
+        0 18px 55px rgba(47,133,90,0.18),
+        0 35px 95px rgba(0,0,0,0.10),
+        inset 0 0 0 1px rgba(255,255,255,0.18);
+    }
 
     .sealing-mode {
       opacity: 0.55;
@@ -233,82 +287,59 @@
       line-height: 1;
     }
 
+    /* ✅ record accent line role-based */
+    .record-card.record-press::before { background-color: var(--role-press); }
+    .record-card.record-partner::before { background-color: var(--role-partner); }
+    .record-card.record-crew::before { background-color: var(--role-crew); }
+
     /* =========================================================
-       ✅ (요청1) 6번 표현: 페이지 폴드(종이 접힘) 디테일 (더 크게/더 선명하게)
+       ✅ 메인 우상단: 원형 SIGNALS 버튼 (접힘 제거)
        ========================================================= */
     .archive-header{
       position: relative;
-      overflow: visible; /* ✅ 커진 폴드가 잘리지 않게 */
+      overflow: visible;
+      min-height: 88px;
     }
 
     .page-fold-btn{
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 96px;            /* ✅ 더 크게 */
-      height: 96px;           /* ✅ 더 크게 */
-      background: transparent;
-      border: none;
-      padding: 0;
-      cursor: pointer;
+      top: calc(env(safe-area-inset-top) + 18px);
+      right: 18px;
+
+      width: 58px;
+      height: 58px;
+
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: var(--accent);
+      color: rgba(249,248,244,0.96);
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      box-shadow:
+        0 18px 55px rgba(0,0,0,0.18),
+        inset 0 0 0 1px rgba(255,255,255,0.16);
+
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      cursor: pointer;
+
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 30;
     }
-
-    .page-fold-btn::before{
-      content:'';
-      position:absolute;
-      top:0;
-      right:0;
-      width: 96px;
-      height: 96px;
-      clip-path: polygon(0 0, 100% 0, 100% 100%);
-
-      /* ✅ 기록 버튼과 같은 톤(Accent) + 더 정교한 접힘(크리즈/하이라이트/그레인) */
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.00) 44%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.00) 56%),
-        linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.00) 42%),
-        linear-gradient(135deg, rgba(168,63,50,0.98) 0%, rgba(128,41,33,0.98) 58%, rgba(0,0,0,0.28) 100%),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.10'/%3E%3C/svg%3E");
-      background-blend-mode: overlay, overlay, normal, multiply;
-
-      border-left: 1px solid rgba(0,0,0,0.10);
-      border-bottom: 1px solid rgba(0,0,0,0.10);
-      box-shadow:
-        -26px 26px 78px rgba(0,0,0,0.22);
-      opacity: 0.98;
-    }
-
-    .page-fold-btn::after{
-      content:'';
-      position:absolute;
-      top: 28px;
-      right: 28px;
-      width: 22px;
-      height: 22px;
-      border-right: 2.6px solid rgba(249,248,244,0.92); /* ✅ 더 선명 */
-      border-bottom: 2.6px solid rgba(249,248,244,0.92);
-      transform: rotate(-45deg);
-      opacity: 0.90;
-      pointer-events:none;
-    }
-
-    .page-fold-btn:active{
-      transform: scale(0.975);
-      filter: brightness(0.985);
-    }
+    .page-fold-btn svg { width: 24px; height: 24px; display:block; }
+    .page-fold-btn:active { transform: scale(0.96); filter: brightness(0.96); }
 
     /* =========================================================
-       ✅ (신규) SIGNALS 화면 오버레이 (한 페이지에 보이도록 압축)
+       ✅ SIGNALS 오버레이 (한 페이지 압축 유지)
        ========================================================= */
     #signals-overlay{
       opacity: 0;
       transform: translateY(18px) scale(1.01);
       filter: blur(12px);
       transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-
-      /* ✅ 하단 잘림 방지 */
       padding-bottom: calc(env(safe-area-inset-bottom) + 18px);
     }
     #signals-overlay.overlay-open{
@@ -317,15 +348,11 @@
       filter: blur(0);
     }
 
-    /* ✅ HERO(상단 사각형) 압축 */
-    .signals-hero-card.log-card{
-      padding: 28px;
-    }
+    .signals-hero-card.log-card{ padding: 28px; }
     @media (max-height: 760px){
       .signals-hero-card.log-card{ padding: 24px; }
     }
 
-    /* ✅ 상단 카드 배경 유지 */
     .summary-card {
       background:
         radial-gradient(900px 260px at 22% 0%, rgba(168,63,50,0.07), transparent 55%),
@@ -341,7 +368,7 @@
       font-weight: 900;
     }
 
-    /* ✅ Top2 키워드: “화려하지만 고급” (텍스트 자체에서 빛이 움직이는 느낌) */
+    /* ✅ Top2 키워드: 화려(고급) */
     .pair-focus{
       position: relative;
       display: inline-block;
@@ -367,10 +394,6 @@
     .pair-text{
       position: relative;
       display: inline-block;
-      padding: 0 !important;
-      margin: 0 !important;
-
-      /* fallback */
       color: rgba(18,18,18,0.92);
       -webkit-text-stroke: 0.7px rgba(0,0,0,0.18);
       text-shadow:
@@ -407,7 +430,6 @@
         100% { background-position: 0% 50%; }
       }
 
-      /* ✅ 텍스트 위로 ‘빛 스윕’ */
       .pair-text::after{
         content: attr(data-text);
         position: absolute;
@@ -435,10 +457,7 @@
       }
     }
 
-    /* ✅ MAP 카드 압축 */
-    .signals-map-card.log-card{
-      padding: 22px;
-    }
+    .signals-map-card.log-card{ padding: 22px; }
     @media (max-height: 760px){
       .signals-map-card.log-card{ padding: 18px; }
     }
@@ -460,7 +479,7 @@
       pointer-events:none;
     }
 
-    /* ✅ 통계 타일(한 화면 압축용) */
+    /* ✅ MAP: 정사각형 타일 */
     .signal-stat-pill{
       position: relative;
       overflow: hidden;
@@ -472,6 +491,8 @@
         rgba(255,255,255,0.78);
 
       border-radius: 18px;
+
+      aspect-ratio: 1 / 1; /* ✅ 정사각형 */
       padding: 10px 8px;
 
       display: flex;
@@ -980,9 +1001,13 @@
     <!-- MAIN -->
     <div id="main-content" class="hidden h-full flex flex-col relative bg-white/50">
 
-      <!-- ✅ (요청) 메인 헤더 텍스트 전부 삭제 / 폴드만 유지 -->
+      <!-- ✅ 메인 헤더 텍스트 없음 / 우상단 원형 버튼 -->
       <header class="archive-header px-10 pt-12 pb-6 border-b border-black/5 slide-up">
-        <button class="page-fold-btn" onclick="openSignalsOverlay()" aria-label="SIGNALS 열기"></button>
+        <button class="page-fold-btn" onclick="openSignalsOverlay()" aria-label="SIGNALS 열기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18l6-6-6-6"></path>
+          </svg>
+        </button>
       </header>
 
       <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60"></main>
@@ -1012,14 +1037,13 @@
 
       <div id="signals-hero-wrap" class="w-full"></div>
 
-      <!-- ✅ MAP: 한 페이지에 보이도록 압축 -->
+      <!-- ✅ MAP: 4열(3줄) + 정사각형 -->
       <div class="log-card signals-map-card w-full mt-5 mb-6">
         <div class="flex justify-between items-baseline mb-4 pl-4">
           <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">MAP</p>
           <p class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35">LIVE</p>
         </div>
 
-        <!-- ✅ 2열 → 4열(3줄)로 압축 -->
         <div id="signals-grid" class="grid grid-cols-4 gap-2 px-4 pb-2"></div>
       </div>
     </div>
@@ -1061,9 +1085,9 @@
 
       <div class="w-full space-y-6 mb-8" id="draft-options">
         <div class="grid grid-cols-3 gap-2">
-          <button onclick="setDraftRole('PRESS', this)" class="role-pill">PRESS</button>
-          <button onclick="setDraftRole('PARTNER', this)" class="role-pill">PARTNER</button>
-          <button onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
+          <button data-role="PRESS" onclick="setDraftRole('PRESS', this)" class="role-pill">PRESS</button>
+          <button data-role="PARTNER" onclick="setDraftRole('PARTNER', this)" class="role-pill">PARTNER</button>
+          <button data-role="CREW" onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
         </div>
 
         <div class="relative">
@@ -1292,7 +1316,6 @@
 
       if (meta) meta.textContent = `${latestSignals.totalRecords} RECORDS`;
 
-      /* ✅ (요청) 상단 사각형: records/how they see me 제거, SIGNALS 대신 KOH JAE IN */
       heroWrap.innerHTML = `
         <div class="log-card summary-card w-full signals-hero-card">
           <div class="pl-2">
@@ -1309,7 +1332,6 @@
         </div>
       `;
 
-      /* ✅ (요청) 하단 통계: 한 페이지에 보이게 4열/3줄 타일 */
       grid.innerHTML = latestSignals.list.map((it, i) => {
         const cls = it.count > 0 ? 'hot' : 'zero';
         return `
@@ -1357,6 +1379,14 @@
       }, 520);
     }
 
+    // ✅ role theme helper (메인페이지 표시용)
+    function getRoleTheme(role){
+      if (role === 'PRESS') return { cls: 'record-press', color: 'var(--role-press)' };
+      if (role === 'PARTNER') return { cls: 'record-partner', color: 'var(--role-partner)' };
+      if (role === 'CREW') return { cls: 'record-crew', color: 'var(--role-crew)' };
+      return { cls: '', color: 'rgba(100,116,139,1)' };
+    }
+
     // ✅ Feed render
     const q = query(collection(db, "archive"), orderBy("createdAt", "desc"));
 
@@ -1379,13 +1409,17 @@
       // ✅ 기존: 기록 카드 렌더 (기능 유지)
       snapshot.forEach((doc) => {
         const data = doc.data();
+        const t = getRoleTheme(data.role);
+
         const html = `
-          <div class="log-card slide-up record-card card-canvas">
+          <div class="log-card slide-up record-card card-canvas ${t.cls}">
             <div class="flex justify-between items-baseline mb-8 pl-4">
               <span class="serif-font text-5xl font-bold tracking-tighter">${data.who}</span>
               <div class="flex-1 text-right border-b border-black/5 pb-3">
-                <span class="unified-font text-[15px] font-bold text-slate-400 uppercase">
-                  ${data.role} | <span class="text-slate-900">${data.aff}</span>
+                <span class="unified-font text-[15px] font-bold uppercase">
+                  <span style="color:${t.color}">${data.role}</span>
+                  <span class="text-slate-400"> | </span>
+                  <span class="text-slate-900">${data.aff}</span>
                 </span>
               </div>
             </div>
