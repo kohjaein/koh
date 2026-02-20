@@ -139,7 +139,7 @@
     }
 
     /* =========================================================
-       ✅ (PATCH-3) 기록 카드: 워터마크 제거 + 시그널 카드와 재질 분리(매트/장부)
+       ✅ 기록 카드: 워터마크 제거 + 시그널 카드와 재질 분리(매트/장부)
        ========================================================= */
     .record-card {
       background:
@@ -199,7 +199,7 @@
     }
     @keyframes drawLineTall { to { height: 66px; } }
 
-    /* ✅ 너의추천(B): 포일 하이라이트는 "가끔만" */
+    /* ✅ 포일 하이라이트는 "가끔만" */
     .summary-card::after {
       content: '';
       position: absolute;
@@ -238,27 +238,9 @@
     }
 
     /* =========================================================
-       ✅ (PATCH-4) Top2 키워드 가독성 개선(그라데이션 유지 + Safari 안정화)
+       ✅ (요청2) Top2 키워드: 로즈골드 + 화려한 메탈릭, 배경 사각 음영 제거
        ========================================================= */
     .pair-focus { position: relative; display: inline-block; }
-
-    .pair-focus::before {
-      content: '';
-      position: absolute;
-      left: -24px;
-      right: -24px;
-      top: 50%;
-      height: 84px;
-      transform: translateY(-50%);
-      background:
-        radial-gradient(closest-side at 50% 55%, rgba(168,63,50,0.14), transparent 72%),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
-      background-blend-mode: multiply;
-      opacity: 0.95;
-      pointer-events: none;
-      z-index: -1;
-      filter: blur(0.1px);
-    }
 
     .pair-focus::after {
       content: '';
@@ -267,8 +249,8 @@
       right: 0;
       bottom: -10px;
       height: 3px;
-      background: linear-gradient(90deg, transparent, rgba(168,63,50,0.60), transparent);
-      transform: scaleX(0.15);
+      background: linear-gradient(90deg, transparent, rgba(168,63,50,0.62), transparent);
+      transform: scaleX(0.18);
       transform-origin: center;
       opacity: 0.92;
       animation: pairUnderline 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -277,29 +259,50 @@
     }
     @keyframes pairUnderline { to { transform: scaleX(1); } }
 
-    /* ✅ 기본(미지원 브라우저)에서는 진한 텍스트로 보이게 */
+    /* ✅ fallback(미지원 브라우저): 로즈골드 단색 */
     .pair-text {
-      color: rgba(18,18,18,0.98);
+      color: rgba(183,110,121,0.98);
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.70),
-        0 18px 52px rgba(0,0,0,0.14);
-      -webkit-text-stroke: 0.25px rgba(0,0,0,0.12);
+        0 1px 0 rgba(255,255,255,0.72),
+        0 2px 2px rgba(0,0,0,0.10),
+        0 20px 55px rgba(183,110,121,0.18);
+      -webkit-text-stroke: 0.35px rgba(0,0,0,0.10);
     }
 
-    /* ✅ 지원 브라우저에서만 그라데이션 텍스트 적용 */
+    @keyframes roseFoil {
+      0%   { background-position: 0% 50%, 0 0; }
+      50%  { background-position: 100% 50%, 120px 60px; }
+      100% { background-position: 0% 50%, 0 0; }
+    }
+
+    /* ✅ 지원 브라우저: 로즈골드 메탈릭 그라데이션 + 텍스처 + 슬로우 쉬머 */
     @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
       .pair-text {
-        background-image: linear-gradient(90deg,
-          rgba(18,18,18,0.98) 0%,
-          rgba(18,18,18,0.98) 40%,
-          rgba(168,63,50,1) 55%,
-          rgba(18,18,18,0.98) 72%,
-          rgba(18,18,18,0.98) 100%
-        );
+        background-image:
+          linear-gradient(90deg,
+            rgba(111,44,50,1) 0%,
+            rgba(183,110,121,1) 18%,
+            rgba(247,210,195,1) 34%,
+            rgba(183,110,121,1) 52%,
+            rgba(255,236,226,1) 62%,
+            rgba(160,78,90,1) 76%,
+            rgba(111,44,50,1) 100%
+          ),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.20'/%3E%3C/svg%3E");
+        background-size: 220% 100%, 240px 240px;
+        background-repeat: no-repeat, repeat;
+        background-blend-mode: overlay;
+        animation: roseFoil 8.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
         color: transparent;
+
+        text-shadow:
+          0 1px 0 rgba(255,255,255,0.65),
+          0 24px 65px rgba(183,110,121,0.22);
+        -webkit-text-stroke: 0.35px rgba(0,0,0,0.10);
       }
     }
 
@@ -311,7 +314,7 @@
     }
 
     /* =========================================================
-       ✅ (PATCH-1) 시그널 칩: “키워드 + 횟수” 중앙정렬 + 잘림 제거
+       ✅ 시그널 칩: “키워드 + 횟수” 중앙정렬 + 잘림 제거
        ========================================================= */
     .signal-display-chip {
       --wash: 0.08;
@@ -487,9 +490,7 @@
       100% { transform: translateY(0) scale(1); }
     }
 
-    /* =========================================================
-       ✅ (PATCH-1) SIGNALS 토글: 등장 후 사라지는 버그 방지용 "stable"
-       ========================================================= */
+    /* ✅ SIGNALS 토글 안정화 */
     .signals-stable {
       opacity: 1;
       transform: translateY(0) scale(1);
@@ -553,7 +554,6 @@
         linear-gradient(120deg, rgba(168,63,50,0.06), rgba(0,0,0,0.01)),
         rgba(255,255,255,0.78);
 
-      /* ✅ (PATCH-2) 점 표시 제거에 따라 오른쪽 여백 정상화 */
       padding: 12px 16px 12px 14px;
       border-radius: 999px;
 
@@ -644,29 +644,32 @@
     }
 
     /* =========================================================
-       ✅ (PATCH-3) Draft 뒤로 버튼(좌측 상단)
+       ✅ (요청1) Draft 뒤로 버튼: 잘림 방지 + 직관적인 SVG + 더 또렷하게
        ========================================================= */
     .draft-back-btn {
-      width: 46px;
-      height: 46px;
+      width: 54px;
+      height: 54px;
+      flex: 0 0 auto;
       display: inline-flex;
       align-items: center;
       justify-content: center;
 
       border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.08);
-      background: rgba(255,255,255,0.72);
-      box-shadow: 0 18px 55px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.82);
+      box-shadow: 0 18px 55px rgba(0,0,0,0.07);
       backdrop-filter: blur(10px);
 
-      font-size: 20px;
-      font-weight: 300;
-      opacity: 0.55;
+      opacity: 0.78;
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      line-height: 1;
+      padding: 0;
+      color: rgba(26,26,26,0.78);
     }
-    .draft-back-btn:active { transform: scale(0.96); filter: brightness(0.98); opacity: 0.7; }
+    .draft-back-btn svg { width: 22px; height: 22px; }
+    .draft-back-btn:active { transform: scale(0.96); filter: brightness(0.985); opacity: 0.88; }
 
     /* =========================================================
        ✅ 하단 왼쪽 버튼 (SIGNALS)
@@ -944,7 +947,6 @@
       55% { opacity: 0.30; }
       100% { opacity: 0; transform: scale(1.14); }
     }
-
   </style>
 </head>
 
@@ -966,9 +968,10 @@
 
     <!-- MAIN -->
     <div id="main-content" class="hidden h-full flex flex-col relative bg-white/50">
-      <header class="p-10 pt-28 pb-12 border-b border-black/5 slide-up">
-        <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-6 uppercase">RELATIONS</p>
-        <h1 class="serif-font text-6xl mb-4 tracking-tighter font-bold">Archive</h1>
+      <!-- ✅ (요청3) 헤더 높이 2/3로 축소(세로 여백만) -->
+      <header class="px-10 pt-20 pb-8 border-b border-black/5 slide-up">
+        <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-4 uppercase">RELATIONS</p>
+        <h1 class="serif-font text-6xl mb-3 tracking-tighter font-bold">Archive</h1>
         <p class="serif-font text-xl italic opacity-30 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
       </header>
 
@@ -990,10 +993,15 @@
     <!-- DRAFT -->
     <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-center p-8 overflow-y-auto no-scrollbar">
 
-      <!-- ✅ (PATCH-3) 좌측 상단 뒤로 버튼 추가 -->
       <div class="w-full flex justify-between items-center mb-10">
         <div class="flex items-center gap-3">
-          <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">←</button>
+          <!-- ✅ (요청1) 잘림 없는 SVG 아이콘 -->
+          <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 6L4 12l6 6"></path>
+              <path d="M4 12h16"></path>
+            </svg>
+          </button>
           <span class="serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">DRAFTING RECORD</span>
         </div>
         <button onclick="closeDraft()" class="text-4xl font-light opacity-20">×</button>
@@ -1042,7 +1050,6 @@
             <div id="signal-picker" class="flex flex-wrap gap-2"></div>
           </div>
 
-          <!-- ✅ (PATCH-2) 안내 문구 수정 -->
           <p id="signal-hint" class="signal-hint unified-font">시그널은 최대 3개까지 선택할 수 있습니다.</p>
         </div>
       </div>
@@ -1325,9 +1332,7 @@
       const summary = document.getElementById('signals-summary');
       if (!summary || summary.hidden) return;
 
-      /* ✅ (PATCH-1) enter 상태가 남아있으면 먼저 제거 */
       summary.classList.remove('signals-enter', 'signals-enter-active');
-
       summary.classList.add('signals-exit');
       setTimeout(() => {
         summary.hidden = true;
@@ -1340,8 +1345,6 @@
       if (!summary) return;
 
       summary.hidden = false;
-
-      /* ✅ (PATCH-1) 등장 애니메이션 종료 후 사라짐 방지 */
       summary.classList.add('signals-stable');
       summary.classList.remove('signals-exit');
 
@@ -1420,11 +1423,10 @@
       const sig = computeSignalsFromDocs(docs);
       feed.insertAdjacentHTML('beforeend', buildSignalsSummaryHTML(totalRecords, sig));
 
-      // ✅ 토글 상태 유지
+      // 토글 상태 유지
       const summary = document.getElementById('signals-summary');
       if (summary) {
         summary.hidden = !signalsVisible;
-        /* ✅ (PATCH-1) visible 상태면 stable 기본값 부여 */
         if (!summary.hidden) summary.classList.add('signals-stable');
       }
 
