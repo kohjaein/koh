@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-  <!-- ✅ (요청2) 다크모드여도 강제로 오리지널(라이트) 디자인 유지 -->
-  <meta name="color-scheme" content="light" />
+  <!-- ✅ (요청) 다크모드여도 강제로 오리지널(라이트) 디자인 유지 -->
+  <meta name="color-scheme" content="only light" />
+  <meta name="supported-color-schemes" content="light" />
+  <meta name="theme-color" content="#F9F8F4" />
 
   <title>고재인 | Relations Archive</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -21,11 +23,20 @@
       --mobile-width: 480px;
 
       /* ✅ 다크모드 강제 무시 */
-      color-scheme: light;
+      color-scheme: only light;
     }
 
-    html { color-scheme: light; }
-    input, textarea, button, select { color-scheme: light; }
+    html { color-scheme: only light; }
+    input, textarea, button, select { color-scheme: only light; }
+
+    /* ✅ OS/브라우저 다크 선호에서도 라이트 유지(가능한 범위 내에서 강제) */
+    @media (prefers-color-scheme: dark) {
+      html, body { background: #E2E1DD !important; color: #1A1A1A !important; }
+      .app-wrapper { background-color: #F9F8F4 !important; }
+      #main-content { background-color: rgba(255,255,255,0.50) !important; }
+      #signals-overlay, #draft-overlay { background-color: rgba(249,248,244,0.98) !important; }
+      .log-card { background-color: #fff !important; }
+    }
 
     body {
       font-family: 'Pretendard', sans-serif;
@@ -223,68 +234,98 @@
     }
 
     /* =========================================================
-       ✅ (요청1) 6번 표현: 페이지 폴드(종이 접힘) 디테일 + 클릭 진입
+       ✅ (요청1) 6번 표현: 페이지 폴드(종이 접힘) 디테일 (더 크게/더 선명하게)
        ========================================================= */
     .archive-header{
       position: relative;
-      overflow: hidden;
+      overflow: visible; /* ✅ 커진 폴드가 잘리지 않게 */
     }
+
     .page-fold-btn{
       position: absolute;
       top: 0;
       right: 0;
-      width: 74px;
-      height: 74px;
+      width: 96px;            /* ✅ 더 크게 */
+      height: 96px;           /* ✅ 더 크게 */
       background: transparent;
       border: none;
       padding: 0;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      z-index: 10;
+      z-index: 30;
     }
+
     .page-fold-btn::before{
       content:'';
       position:absolute;
       top:0;
       right:0;
-      width: 74px;
-      height: 74px;
+      width: 96px;
+      height: 96px;
       clip-path: polygon(0 0, 100% 0, 100% 100%);
+
+      /* ✅ 기록 버튼과 같은 톤(Accent) + 더 정교한 접힘(크리즈/하이라이트/그레인) */
       background:
-        linear-gradient(135deg,
-          rgba(255,255,255,0.96) 0%,
-          rgba(249,248,244,0.98) 55%,
-          rgba(0,0,0,0.06) 100%
-        );
-      border-left: 1px solid rgba(0,0,0,0.06);
-      border-bottom: 1px solid rgba(0,0,0,0.06);
+        linear-gradient(135deg, rgba(255,255,255,0.00) 44%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.00) 56%),
+        linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.00) 42%),
+        linear-gradient(135deg, rgba(168,63,50,0.98) 0%, rgba(128,41,33,0.98) 58%, rgba(0,0,0,0.28) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.10'/%3E%3C/svg%3E");
+      background-blend-mode: overlay, overlay, normal, multiply;
+
+      border-left: 1px solid rgba(0,0,0,0.10);
+      border-bottom: 1px solid rgba(0,0,0,0.10);
       box-shadow:
-        -18px 18px 40px rgba(0,0,0,0.10);
-      opacity: 0.92;
+        -26px 26px 78px rgba(0,0,0,0.22);
+      opacity: 0.98;
     }
+
     .page-fold-btn::after{
       content:'';
       position:absolute;
-      top: 18px;
-      right: 18px;
-      width: 18px;
-      height: 18px;
-      border-right: 2px solid rgba(0,0,0,0.18);
-      border-bottom: 2px solid rgba(0,0,0,0.18);
+      top: 28px;
+      right: 28px;
+      width: 22px;
+      height: 22px;
+      border-right: 2.6px solid rgba(249,248,244,0.92); /* ✅ 더 선명 */
+      border-bottom: 2.6px solid rgba(249,248,244,0.92);
       transform: rotate(-45deg);
-      opacity: 0.55;
-      filter: blur(0.15px);
+      opacity: 0.90;
       pointer-events:none;
     }
+
     .page-fold-btn:active{
       transform: scale(0.975);
       filter: brightness(0.985);
     }
 
     /* =========================================================
-       ✅ 대표(시그널) 타이포 (유지)
+       ✅ (신규) SIGNALS 화면 오버레이 (한 페이지에 보이도록 압축)
        ========================================================= */
+    #signals-overlay{
+      opacity: 0;
+      transform: translateY(18px) scale(1.01);
+      filter: blur(12px);
+      transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+
+      /* ✅ 하단 잘림 방지 */
+      padding-bottom: calc(env(safe-area-inset-bottom) + 18px);
+    }
+    #signals-overlay.overlay-open{
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+
+    /* ✅ HERO(상단 사각형) 압축 */
+    .signals-hero-card.log-card{
+      padding: 28px;
+    }
+    @media (max-height: 760px){
+      .signals-hero-card.log-card{ padding: 24px; }
+    }
+
+    /* ✅ 상단 카드 배경 유지 */
     .summary-card {
       background:
         radial-gradient(900px 260px at 22% 0%, rgba(168,63,50,0.07), transparent 55%),
@@ -292,50 +333,15 @@
         linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.92));
       overflow: hidden;
     }
-    .summary-card::before {
-      animation: drawLineTall 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      animation-delay: 0.35s;
-    }
-    @keyframes drawLineTall { to { height: 66px; } }
-
-    .summary-card::after {
-      content: '';
-      position: absolute;
-      inset: -30%;
-      background: linear-gradient(115deg,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,0.22) 44%,
-        rgba(255,255,255,0) 68%
-      );
-      transform: translateX(-120%) rotate(8deg);
-      opacity: 0.0;
-      pointer-events: none;
-      mix-blend-mode: overlay;
-      animation: summaryFoil 14s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-    }
-    @keyframes summaryFoil {
-      0%   { transform: translateX(-120%) rotate(8deg); opacity: 0.0; }
-      7%   { opacity: 0.36; }
-      14%  { transform: translateX(120%) rotate(8deg); opacity: 0.0; }
-      100% { opacity: 0.0; transform: translateX(120%) rotate(8deg); }
-    }
 
     .summary-hero {
-      font-size: 34px;
-      line-height: 1.05;
-      letter-spacing: -0.02em;
+      font-size: 36px;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
       font-weight: 900;
-    }
-    .summary-sub {
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.36em;
-      padding-left: 0.36em;
-      opacity: 0.38;
-      text-transform: uppercase;
     }
 
-    /* ✅ Top2 시그널: 하이엔드 ‘라커 + 글로우’ */
+    /* ✅ Top2 키워드: “화려하지만 고급” (텍스트 자체에서 빛이 움직이는 느낌) */
     .pair-focus{
       position: relative;
       display: inline-block;
@@ -344,57 +350,97 @@
     .pair-focus::before{
       content:'';
       position:absolute;
-      left:-16%;
-      right:-16%;
+      left:-18%;
+      right:-18%;
       top: 62%;
-      height: 20px;
+      height: 22px;
       background:
-        radial-gradient(closest-side, rgba(168,63,50,0.26), rgba(168,63,50,0.00) 72%),
+        radial-gradient(closest-side, rgba(168,63,50,0.30), rgba(168,63,50,0.00) 74%),
         radial-gradient(closest-side, rgba(0,0,0,0.07), transparent 70%);
       filter: blur(16px);
-      opacity: 0.52;
+      opacity: 0.55;
       transform: translateY(10px) scaleX(1);
       z-index: -1;
       pointer-events: none;
-      animation: pairAura 7.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
     }
-    @keyframes pairAura{
-      0%,100% { opacity: 0.42; filter: blur(18px); transform: translateY(10px) scaleX(0.98); }
-      50%     { opacity: 0.62; filter: blur(14px); transform: translateY(8px)  scaleX(1.04); }
-    }
+
     .pair-text{
+      position: relative;
       display: inline-block;
-      background: transparent !important;
       padding: 0 !important;
       margin: 0 !important;
 
-      color: rgba(18,18,18,0.94);
-      letter-spacing: -0.03em;
-
-      -webkit-text-stroke: 0.45px rgba(0,0,0,0.18);
+      /* fallback */
+      color: rgba(18,18,18,0.92);
+      -webkit-text-stroke: 0.7px rgba(0,0,0,0.18);
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.62),
-        0 -1px 0 rgba(0,0,0,0.10),
-        0 26px 80px rgba(0,0,0,0.14),
-        0 0 18px rgba(168,63,50,0.14),
-        0 0 54px rgba(168,63,50,0.10);
-
-      filter: saturate(1.03);
+        0 1px 0 rgba(255,255,255,0.55),
+        0 -1px 0 rgba(0,0,0,0.12),
+        0 28px 80px rgba(0,0,0,0.16),
+        0 0 22px rgba(168,63,50,0.14),
+        0 0 60px rgba(168,63,50,0.10);
     }
 
-    /* =========================================================
-       ✅ (신규) SIGNALS 화면 오버레이 (기능 위치 이동)
-       ========================================================= */
-    #signals-overlay{
-      opacity: 0;
-      transform: translateY(18px) scale(1.01);
-      filter: blur(12px);
-      transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
+      .pair-text{
+        background-image:
+          linear-gradient(92deg,
+            rgba(18,18,18,1) 0%,
+            rgba(168,63,50,1) 22%,
+            rgba(246,201,190,1) 52%,
+            rgba(168,63,50,1) 78%,
+            rgba(18,18,18,1) 100%
+          );
+        background-size: 220% 100%;
+        animation: top2Flow 7.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+
+        -webkit-text-stroke: 0.85px rgba(0,0,0,0.18);
+      }
+      @keyframes top2Flow{
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      /* ✅ 텍스트 위로 ‘빛 스윕’ */
+      .pair-text::after{
+        content: attr(data-text);
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(115deg,
+          rgba(255,255,255,0) 0%,
+          rgba(255,255,255,0.62) 46%,
+          rgba(255,255,255,0) 70%
+        );
+        background-size: 220% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        mix-blend-mode: overlay;
+        opacity: 0.0;
+        animation: top2Sheen 4.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        pointer-events: none;
+      }
+      @keyframes top2Sheen{
+        0%   { background-position: -120% 50%; opacity: 0.0; }
+        18%  { opacity: 0.65; }
+        45%  { opacity: 0.0; }
+        100% { background-position: 120% 50%; opacity: 0.0; }
+      }
     }
-    #signals-overlay.overlay-open{
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
+
+    /* ✅ MAP 카드 압축 */
+    .signals-map-card.log-card{
+      padding: 22px;
+    }
+    @media (max-height: 760px){
+      .signals-map-card.log-card{ padding: 18px; }
     }
 
     .signals-map-card{
@@ -409,60 +455,34 @@
       position:absolute;
       inset:0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-      opacity: 0.25;
+      opacity: 0.22;
       mix-blend-mode: multiply;
       pointer-events:none;
     }
 
-    .sig-mini{
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.10);
-      background: rgba(255,255,255,0.72);
-      box-shadow:
-        0 18px 50px rgba(0,0,0,0.06),
-        inset 0 0 0 1px rgba(255,255,255,0.35);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      font-weight: 900;
-      font-size: 12px;
-      letter-spacing: -0.01em;
-      color: rgba(18,18,18,0.90);
-    }
-    .sig-mini .cnt{
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 0.24em;
-      padding-left: 0.24em;
-      opacity: 0.45;
-      text-transform: uppercase;
-    }
-
+    /* ✅ 통계 타일(한 화면 압축용) */
     .signal-stat-pill{
       position: relative;
       overflow: hidden;
 
       border: 1px solid rgba(0,0,0,0.10);
       background:
-        radial-gradient(120px 120px at 20% 30%, rgba(255,255,255,0.40), transparent 70%),
+        radial-gradient(110px 110px at 20% 25%, rgba(255,255,255,0.42), transparent 72%),
         linear-gradient(120deg, rgba(168,63,50,0.05), rgba(0,0,0,0.01)),
         rgba(255,255,255,0.78);
 
-      border-radius: 999px;
-      padding: 14px 14px;
+      border-radius: 18px;
+      padding: 10px 8px;
 
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 4px;
 
       box-shadow:
         0 14px 45px rgba(0,0,0,0.06),
-        inset 0 0 0 1px rgba(255,255,255,0.30);
+        inset 0 0 0 1px rgba(255,255,255,0.28);
 
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -474,30 +494,38 @@
 
       opacity: 0;
       transform: translateY(10px) scale(0.995);
-      animation: statIn 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: statIn 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       animation-delay: var(--d, 0ms);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    @keyframes statIn{
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .signal-stat-pill.zero{
-      opacity: 0.45 !important;
-      filter: saturate(0.85);
-    }
-    .signal-stat-pill .cnt{
+    @keyframes statIn{ to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .signal-stat-pill .ct{
       font-size: 10px;
       font-weight: 900;
       letter-spacing: 0.24em;
       padding-left: 0.24em;
-      opacity: 0.45;
+      opacity: 0.50;
       text-transform: uppercase;
       white-space: nowrap;
     }
 
+    .signal-stat-pill.zero{
+      opacity: 0.42 !important;
+      filter: saturate(0.85);
+    }
+
+    .signal-stat-pill.hot{
+      border-color: rgba(168,63,50,0.22);
+      box-shadow:
+        0 18px 55px rgba(168,63,50,0.12),
+        0 14px 45px rgba(0,0,0,0.06),
+        inset 0 0 0 1px rgba(255,255,255,0.26);
+    }
+
     /* =========================================================
-       ✅ Draft: 시그널 선택 UI (2줄 고정)
+       ✅ Draft: 시그널 선택 UI (2줄 고정 유지)
        ========================================================= */
     .signal-picker-deck {
       border: 1px solid rgba(0,0,0,0.07);
@@ -951,18 +979,14 @@
 
     <!-- MAIN -->
     <div id="main-content" class="hidden h-full flex flex-col relative bg-white/50">
-      <header class="archive-header px-10 pt-12 pb-6 border-b border-black/5 slide-up">
-        <!-- ✅ 페이지 폴드(클릭 = SIGNALS 화면) -->
-        <button class="page-fold-btn" onclick="openSignalsOverlay()" aria-label="SIGNALS 열기"></button>
 
-        <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font mb-3 uppercase">RELATIONS</p>
-        <h1 class="serif-font text-5xl mb-2 tracking-tighter font-bold">Archive</h1>
-        <p class="serif-font text-lg italic opacity-30 text-slate-500 font-bold uppercase">by KOH JAEIN</p>
+      <!-- ✅ (요청) 메인 헤더 텍스트 전부 삭제 / 폴드만 유지 -->
+      <header class="archive-header px-10 pt-12 pb-6 border-b border-black/5 slide-up">
+        <button class="page-fold-btn" onclick="openSignalsOverlay()" aria-label="SIGNALS 열기"></button>
       </header>
 
       <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60"></main>
 
-      <!-- ✅ (기능 위치 이동) SIGNALS 버튼 제거, NEW RECORD만 유지 -->
       <div class="absolute bottom-12 left-0 w-full flex justify-center z-50 px-6">
         <button onclick="openDraft()"
                 class="btn-accent px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl slide-up uppercase">
@@ -971,9 +995,10 @@
       </div>
     </div>
 
-    <!-- ✅ SIGNALS OVERLAY (이전 '시그널 화면' 기능을 여기로 이동) -->
+    <!-- ✅ SIGNALS OVERLAY -->
     <div id="signals-overlay" class="absolute inset-0 z-[170] hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar bg-[#F9F8F4]/98 backdrop-blur-xl">
-      <div class="w-full flex justify-between items-center mb-6" style="padding-top: calc(env(safe-area-inset-top) + 18px);">
+
+      <div class="w-full flex justify-between items-center mb-4" style="padding-top: calc(env(safe-area-inset-top) + 18px);">
         <button onclick="closeSignalsOverlay()" class="draft-back-btn" aria-label="뒤로">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"></path>
@@ -987,13 +1012,15 @@
 
       <div id="signals-hero-wrap" class="w-full"></div>
 
-      <div class="log-card signals-map-card w-full mt-10 mb-16">
-        <div class="flex justify-between items-baseline mb-6 pl-4">
+      <!-- ✅ MAP: 한 페이지에 보이도록 압축 -->
+      <div class="log-card signals-map-card w-full mt-5 mb-6">
+        <div class="flex justify-between items-baseline mb-4 pl-4">
           <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">MAP</p>
           <p class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35">LIVE</p>
         </div>
 
-        <div id="signals-grid" class="grid grid-cols-2 gap-3 pl-4 pr-4 pb-4"></div>
+        <!-- ✅ 2열 → 4열(3줄)로 압축 -->
+        <div id="signals-grid" class="grid grid-cols-4 gap-2 px-4 pb-2"></div>
       </div>
     </div>
 
@@ -1265,40 +1292,30 @@
 
       if (meta) meta.textContent = `${latestSignals.totalRecords} RECORDS`;
 
-      const topBadges = latestSignals.top2.length
-        ? latestSignals.top2.map(t => `<span class="sig-mini unified-font"><span>${t.name}</span><span class="cnt">${t.count}회</span></span>`).join('')
-        : `<span class="sig-mini unified-font"><span>아직 시그널이 없습니다</span><span class="cnt">0회</span></span>`;
-
+      /* ✅ (요청) 상단 사각형: records/how they see me 제거, SIGNALS 대신 KOH JAE IN */
       heroWrap.innerHTML = `
-        <div class="log-card summary-card card-canvas w-full">
-          <div class="flex justify-between items-start mb-6 pl-4">
-            <div>
-              <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">SIGNALS</p>
-              <p class="summary-sub unified-font mt-2">HOW THEY SEE ME</p>
-            </div>
-            <div class="unified-font text-[10px] tracking-[0.4em] uppercase opacity-35 text-right">
-              ${latestSignals.totalRecords} RECORDS
-            </div>
+        <div class="log-card summary-card w-full signals-hero-card">
+          <div class="pl-2">
+            <p class="text-[10px] tracking-[0.85em] text-[#C04A3A] font-bold serif-font uppercase">KOH JAE IN</p>
           </div>
 
-          <div class="pl-4 mt-auto">
+          <div class="pl-2 mt-8">
             <div class="summary-hero unified-font">
-              <span class="pair-focus"><span class="pair-text">${latestSignals.pairText}</span></span>
-            </div>
-
-            <div class="mt-6 flex flex-wrap gap-2">
-              ${topBadges}
+              <span class="pair-focus">
+                <span class="pair-text" data-text="${latestSignals.pairText}">${latestSignals.pairText}</span>
+              </span>
             </div>
           </div>
         </div>
       `;
 
+      /* ✅ (요청) 하단 통계: 한 페이지에 보이게 4열/3줄 타일 */
       grid.innerHTML = latestSignals.list.map((it, i) => {
-        const zero = it.count === 0 ? 'zero' : '';
+        const cls = it.count > 0 ? 'hot' : 'zero';
         return `
-          <div class="signal-stat-pill ${zero} unified-font" style="--d:${i * 35}ms">
-            <span>${it.name}</span>
-            <span class="cnt">${it.count}회</span>
+          <div class="signal-stat-pill ${cls} unified-font" style="--d:${i * 22}ms">
+            <span class="nm">${it.name}</span>
+            <span class="ct">${it.count}회</span>
           </div>
         `;
       }).join('');
