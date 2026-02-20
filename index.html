@@ -39,6 +39,19 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
     }
 
+    /* ✅ (요청2) 메인 화면 배경: ‘백지 가독성’ 유지 + 은은한 질감/라이트 레이어 */
+    #main-content{
+      background:
+        radial-gradient(1100px 520px at 18% -10%, rgba(168,63,50,0.06), transparent 60%),
+        radial-gradient(900px 520px at 82% 35%, rgba(0,0,0,0.035), transparent 65%),
+        radial-gradient(700px 320px at 50% 110%, rgba(0,0,0,0.04), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,0.70), rgba(249,248,244,0.94)),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+      background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+      background-size: auto, auto, auto, auto, 256px 256px;
+      background-blend-mode: normal, normal, normal, normal, multiply;
+    }
+
     .serif-font { font-family: 'Cinzel', serif; }
     .unified-font { font-family: 'Pretendard', sans-serif; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -149,12 +162,10 @@
     }
 
     /* =========================================================
-       ✅ (요청1) "카드 캔버스" 통일: 대표 시그널 카드(요약)와 기록 카드 동일 높이/비율
-       - 대표 카드가 상대적으로 낮아 보이는 문제를 "둘 다" 같은 최소 높이로 맞춤
-       - 내용은 유지하고, 공간만 ‘캔버스’로 통일
+       ✅ "카드 캔버스" 통일
        ========================================================= */
     .card-canvas {
-      min-height: 220px;               /* ✅ 통일된 사각형 캔버스 */
+      min-height: 220px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -164,7 +175,7 @@
     }
 
     /* =========================================================
-       ✅ 기록 카드: 장부 질감(유지)
+       ✅ 기록 카드: 장부 질감
        ========================================================= */
     .record-card {
       background:
@@ -255,15 +266,37 @@
     }
 
     /* =========================================================
-       ✅ (요청2) "로즈골드"를 넘어서는 고연봉 디자이너식 표현
-       - 프리미엄 ‘주얼 메탈’(Champagne / Copper / Ruby foil) 텍스트
-       - 화면에서 확실히 튀면서도 저렴하지 않게(화이트 백화 방지)
+       ✅ (요청1) Top2 시그널 텍스트: 메탈릭 제거 → ‘라커(spot varnish) + 하이엔드 글로우’ 타이포
        ========================================================= */
-    .pair-focus { position: relative; display: inline-block; }
-    .pair-focus::before { content: none !important; } /* 사각 음영 안전 제거 */
+    .pair-focus{
+      position: relative;
+      display: inline-block;
+      isolation: isolate; /* glow 레이어가 카드 안에서만 */
+    }
 
-    /* ✅ 밑줄 토글(?) 제거 요청 → underline 완전 제거 */
-    .pair-focus::after { content: none !important; }
+    /* ✅ 텍스트 뒤 ‘사각형’ 대신, 아주 부드러운 오라(빛 번짐) */
+    .pair-focus::before{
+      content:'';
+      position:absolute;
+      left:-16%;
+      right:-16%;
+      top: 62%;
+      height: 20px;
+      background:
+        radial-gradient(closest-side, rgba(168,63,50,0.26), rgba(168,63,50,0.00) 72%),
+        radial-gradient(closest-side, rgba(0,0,0,0.07), transparent 70%);
+      filter: blur(16px);
+      opacity: 0.52;
+      transform: translateY(10px) scaleX(1);
+      z-index: -1;
+      pointer-events: none;
+      animation: pairAura 7.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    @keyframes pairAura{
+      0%,100% { opacity: 0.42; filter: blur(18px); transform: translateY(10px) scaleX(0.98); }
+      50%     { opacity: 0.62; filter: blur(14px); transform: translateY(8px)  scaleX(1.04); }
+    }
 
     .pair-text{
       display: inline-block;
@@ -271,71 +304,23 @@
       padding: 0 !important;
       margin: 0 !important;
 
-      /* fallback: 진한 샴페인-코퍼 */
-      color: rgba(168, 73, 74, 0.98);
+      color: rgba(18,18,18,0.94);
+      letter-spacing: -0.03em;
 
-      /* 음각 + 빛 반사 느낌 */
+      /* 고급 인쇄 느낌: 얇은 윤곽 + 하이라이트/쉐도우 */
+      -webkit-text-stroke: 0.45px rgba(0,0,0,0.18);
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.55),
-        0 -1px 0 rgba(0,0,0,0.14),
-        0 22px 70px rgba(160, 60, 70, 0.18);
+        0 1px 0 rgba(255,255,255,0.62),
+        0 -1px 0 rgba(0,0,0,0.10),
 
-      -webkit-text-stroke: 0.7px rgba(0,0,0,0.18);
-      letter-spacing: -0.01em;
-      filter: saturate(1.04);
-    }
+        /* 깊이(그림자) */
+        0 26px 80px rgba(0,0,0,0.14),
 
-    @keyframes jewelFoil {
-      0%   { background-position: 0% 50%, 0% 50%, 0 0; }
-      50%  { background-position: 100% 50%, 120% 50%, 110px 60px; }
-      100% { background-position: 0% 50%, 0% 50%, 0 0; }
-    }
+        /* 컬러 글로우(은은하지만 존재감 확실) */
+        0 0 18px rgba(168,63,50,0.14),
+        0 0 54px rgba(168,63,50,0.10);
 
-    @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
-      .pair-text {
-        background-image:
-          /* ✅ 메인 메탈: 샴페인 → 코퍼 → 루비 하이라이트 */
-          linear-gradient(90deg,
-            rgba(52,10,18,1) 0%,
-            rgba(132,35,46,1) 18%,
-            rgba(201,118,112,1) 34%,
-            rgba(246,214,180,1) 50%,
-            rgba(201,118,112,1) 66%,
-            rgba(132,35,46,1) 82%,
-            rgba(52,10,18,1) 100%
-          ),
-          /* ✅ 포일 하이라이트(은은, 백화 방지) */
-          linear-gradient(115deg,
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.34) 46%,
-            rgba(255,255,255,0) 70%
-          ),
-          /* ✅ 미세 텍스처 */
-          url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.14'/%3E%3C/svg%3E");
-
-        background-size: 220% 100%, 180% 100%, 240px 240px;
-        background-repeat: no-repeat, no-repeat, repeat;
-
-        /* ✅ 과한 screen 금지: 대비 유지 */
-        background-blend-mode: normal, overlay, multiply;
-
-        animation: jewelFoil 9.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: transparent;
-
-        text-shadow:
-          0 1px 0 rgba(255,255,255,0.50),
-          0 -1px 0 rgba(0,0,0,0.14),
-          0 26px 75px rgba(132,35,46,0.22);
-
-        -webkit-text-stroke: 0.85px rgba(0,0,0,0.20);
-
-        -webkit-box-decoration-break: clone;
-        box-decoration-break: clone;
-      }
+      filter: saturate(1.03);
     }
 
     /* =========================================================
@@ -1337,3 +1322,4 @@
   </script>
 </body>
 </html>
+```0
