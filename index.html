@@ -22,9 +22,9 @@
       --accent: #A83F32;
       --mobile-width: 480px;
 
-      /* ✅ role colors */
-      --role-press: #2B6CB0;   /* blue (lux) */
-      --role-partner: #8C6A1E; /* dark yellow (gold) */
+      /* ✅ role colors (PRESS ↔ PARTNER 스왑) */
+      --role-press: #8C6A1E;   /* dark yellow (gold) */
+      --role-partner: #2B6CB0; /* blue (lux) */
       --role-crew: #2F855A;    /* green (deep) */
 
       color-scheme: light;
@@ -171,16 +171,16 @@
       -webkit-backdrop-filter: blur(10px);
     }
 
-    /* ✅ role default tint */
+    /* ✅ role default tint (PRESS ↔ PARTNER 스왑 반영) */
     .role-pill[data-role="PRESS"]{
-      border-color: rgba(43,108,176,0.26);
-      color: rgba(43,108,176,0.92);
-      background: rgba(43,108,176,0.06);
-    }
-    .role-pill[data-role="PARTNER"]{
       border-color: rgba(140,106,30,0.26);
       color: rgba(140,106,30,0.92);
       background: rgba(140,106,30,0.06);
+    }
+    .role-pill[data-role="PARTNER"]{
+      border-color: rgba(43,108,176,0.26);
+      color: rgba(43,108,176,0.92);
+      background: rgba(43,108,176,0.06);
     }
     .role-pill[data-role="CREW"]{
       border-color: rgba(47,133,90,0.26);
@@ -195,7 +195,7 @@
       border-color: var(--role-press) !important;
       color: rgba(255,255,255,0.98) !important;
       box-shadow:
-        0 18px 55px rgba(43,108,176,0.18),
+        0 18px 55px rgba(140,106,30,0.18),
         0 35px 95px rgba(0,0,0,0.10),
         inset 0 0 0 1px rgba(255,255,255,0.18);
     }
@@ -204,7 +204,7 @@
       border-color: var(--role-partner) !important;
       color: rgba(255,255,255,0.98) !important;
       box-shadow:
-        0 18px 55px rgba(140,106,30,0.18),
+        0 18px 55px rgba(43,108,176,0.18),
         0 35px 95px rgba(0,0,0,0.10),
         inset 0 0 0 1px rgba(255,255,255,0.18);
     }
@@ -293,7 +293,7 @@
     .record-card.record-crew::before { background-color: var(--role-crew); }
 
     /* =========================================================
-       ✅ 메인 우상단: 원형 SIGNALS 버튼 (접힘 제거)
+       ✅ 메인 우상단: 원형 SIGNALS 버튼
        ========================================================= */
     .archive-header{
       position: relative;
@@ -368,7 +368,53 @@
       font-weight: 900;
     }
 
-    /* ✅ Top2 키워드: 화려(고급) */
+    /* ✅ (요청) Top2: 하나의 박스(테두리)로 강조 */
+    .top2-frame{
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 14px 16px;
+      border-radius: 22px;
+
+      border: 1px solid rgba(168,63,50,0.42);
+      background:
+        radial-gradient(180px 120px at 18% 25%, rgba(255,255,255,0.65), transparent 72%),
+        linear-gradient(120deg, rgba(168,63,50,0.14), rgba(0,0,0,0.00)),
+        rgba(255,255,255,0.76);
+
+      box-shadow:
+        0 22px 75px rgba(0,0,0,0.10),
+        inset 0 0 0 1px rgba(255,255,255,0.46),
+        inset 0 0 0 2px rgba(0,0,0,0.04);
+
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .top2-frame::after{
+      content:'';
+      position:absolute;
+      inset: -40%;
+      background: linear-gradient(115deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.55) 46%,
+        rgba(255,255,255,0) 70%
+      );
+      transform: translateX(-120%) rotate(8deg);
+      opacity: 0;
+      pointer-events:none;
+      mix-blend-mode: overlay;
+      animation: top2FrameSheen 6.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+    @keyframes top2FrameSheen{
+      0%   { transform: translateX(-120%) rotate(8deg); opacity: 0.0; }
+      10%  { opacity: 0.40; }
+      22%  { opacity: 0.0; }
+      100% { transform: translateX(120%) rotate(8deg); opacity: 0.0; }
+    }
+
+    /* ✅ Top2 키워드: 가독성 ↑ + 화려함 유지 */
     .pair-focus{
       position: relative;
       display: inline-block;
@@ -383,7 +429,7 @@
       height: 22px;
       background:
         radial-gradient(closest-side, rgba(168,63,50,0.30), rgba(168,63,50,0.00) 74%),
-        radial-gradient(closest-side, rgba(0,0,0,0.07), transparent 70%);
+        radial-gradient(closest-side, rgba(0,0,0,0.08), transparent 70%);
       filter: blur(16px);
       opacity: 0.55;
       transform: translateY(10px) scaleX(1);
@@ -394,35 +440,39 @@
     .pair-text{
       position: relative;
       display: inline-block;
-      color: rgba(18,18,18,0.92);
-      -webkit-text-stroke: 0.7px rgba(0,0,0,0.18);
+
+      letter-spacing: -0.035em;
+      color: rgba(18,18,18,0.94);
+
+      -webkit-text-stroke: 1.05px rgba(0,0,0,0.18);
       text-shadow:
-        0 1px 0 rgba(255,255,255,0.55),
-        0 -1px 0 rgba(0,0,0,0.12),
-        0 28px 80px rgba(0,0,0,0.16),
-        0 0 22px rgba(168,63,50,0.14),
-        0 0 60px rgba(168,63,50,0.10);
+        0 1px 0 rgba(255,255,255,0.72),
+        0 10px 34px rgba(0,0,0,0.18),
+        0 0 18px rgba(168,63,50,0.18),
+        0 0 52px rgba(168,63,50,0.12);
+
+      filter: saturate(1.06) contrast(1.04);
     }
 
     @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
       .pair-text{
         background-image:
           linear-gradient(92deg,
-            rgba(18,18,18,1) 0%,
-            rgba(168,63,50,1) 22%,
-            rgba(246,201,190,1) 52%,
-            rgba(168,63,50,1) 78%,
-            rgba(18,18,18,1) 100%
+            rgba(26,26,26,1) 0%,
+            rgba(168,63,50,1) 28%,
+            rgba(239,186,173,1) 50%,
+            rgba(168,63,50,1) 72%,
+            rgba(26,26,26,1) 100%
           );
-        background-size: 220% 100%;
-        animation: top2Flow 7.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        background-size: 240% 100%;
+        animation: top2Flow 7.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
         color: transparent;
 
-        -webkit-text-stroke: 0.85px rgba(0,0,0,0.18);
+        -webkit-text-stroke: 1.15px rgba(0,0,0,0.18);
       }
       @keyframes top2Flow{
         0%   { background-position: 0% 50%; }
@@ -436,23 +486,23 @@
         inset: 0;
         background: linear-gradient(115deg,
           rgba(255,255,255,0) 0%,
-          rgba(255,255,255,0.62) 46%,
+          rgba(255,255,255,0.72) 46%,
           rgba(255,255,255,0) 70%
         );
-        background-size: 220% 100%;
+        background-size: 240% 100%;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
         color: transparent;
         mix-blend-mode: overlay;
         opacity: 0.0;
-        animation: top2Sheen 4.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        animation: top2Sheen 4.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         pointer-events: none;
       }
       @keyframes top2Sheen{
         0%   { background-position: -120% 50%; opacity: 0.0; }
-        18%  { opacity: 0.65; }
-        45%  { opacity: 0.0; }
+        16%  { opacity: 0.70; }
+        40%  { opacity: 0.0; }
         100% { background-position: 120% 50%; opacity: 0.0; }
       }
     }
@@ -492,7 +542,7 @@
 
       border-radius: 18px;
 
-      aspect-ratio: 1 / 1; /* ✅ 정사각형 */
+      aspect-ratio: 1 / 1;
       padding: 10px 8px;
 
       display: flex;
@@ -1324,8 +1374,10 @@
 
           <div class="pl-2 mt-8">
             <div class="summary-hero unified-font">
-              <span class="pair-focus">
-                <span class="pair-text" data-text="${latestSignals.pairText}">${latestSignals.pairText}</span>
+              <span class="top2-frame">
+                <span class="pair-focus">
+                  <span class="pair-text" data-text="${latestSignals.pairText}">${latestSignals.pairText}</span>
+                </span>
               </span>
             </div>
           </div>
