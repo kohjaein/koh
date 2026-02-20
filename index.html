@@ -64,42 +64,6 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
     }
 
-    /* ✅ 메인 화면 배경(백지 느낌 개선) */
-    #main-content{
-      background:
-        radial-gradient(1100px 520px at 18% -10%, rgba(168,63,50,0.06), transparent 60%),
-        radial-gradient(900px 520px at 82% 35%, rgba(0,0,0,0.035), transparent 65%),
-        radial-gradient(700px 320px at 50% 110%, rgba(0,0,0,0.04), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,0.70), rgba(249,248,244,0.94)),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-      background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
-      background-size: auto, auto, auto, auto, 256px 256px;
-      background-blend-mode: normal, normal, normal, normal, multiply;
-
-      /* ✅ (요청6) 질감 레이어를 위해 스태킹 분리 */
-      isolation: isolate;
-    }
-
-    /* ✅ (요청6) 메인 피드 배경 질감 추가(고급스러운 미세 패턴) */
-    #main-content::before{
-      content:'';
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-
-      background:
-        radial-gradient(900px 420px at 50% 0%, rgba(255,255,255,0.35), transparent 72%),
-        repeating-linear-gradient(0deg, rgba(0,0,0,0.014) 0 1px, transparent 1px 34px),
-        repeating-linear-gradient(90deg, rgba(0,0,0,0.010) 0 1px, transparent 1px 34px),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise2' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise2)' opacity='0.06'/%3E%3C/svg%3E");
-      mix-blend-mode: multiply;
-      opacity: 0.22;
-    }
-    /* 콘텐츠는 질감 위로 */
-    #main-content > header,
-    #main-content > main { position: relative; z-index: 1; }
-
     .serif-font { font-family: 'Cinzel', serif; }
     .unified-font { font-family: 'Pretendard', sans-serif; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -167,6 +131,8 @@
       background-color: var(--accent);
       animation: drawLine 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       animation-delay: 0.4s;
+      z-index: 4; /* ✅ 다른 오버레이보다 위로 */
+      pointer-events: none;
     }
     @keyframes drawLine { to { height: 44px; } }
 
@@ -271,7 +237,7 @@
     }
     .overlay-title{
       position: absolute;
-      left: calc(50% + 12px); /* ✅ 살짝 오른쪽 */
+      left: calc(50% + 12px);
       transform: translateX(-50%);
       text-align: center;
       white-space: nowrap;
@@ -282,6 +248,62 @@
       height: 52px;
       flex: 0 0 auto;
     }
+
+    /* =========================================================
+       ✅ 메인 화면 배경(요청4: 더 과감한 고급 질감)
+       ========================================================= */
+    #main-content{
+      background:
+        radial-gradient(1200px 560px at 12% -10%, rgba(168,63,50,0.13), transparent 62%),
+        radial-gradient(980px 560px at 90% 28%, rgba(0,0,0,0.09), transparent 66%),
+        radial-gradient(820px 420px at 50% 112%, rgba(0,0,0,0.10), transparent 62%),
+        radial-gradient(1200px 900px at 50% 55%, rgba(0,0,0,0.00) 55%, rgba(0,0,0,0.07) 100%),
+        linear-gradient(180deg, rgba(255,255,255,0.70), rgba(249,248,244,0.95)),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseM' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseM)' opacity='0.07'/%3E%3C/svg%3E");
+      background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+      background-size: auto, auto, auto, auto, auto, 256px 256px;
+      background-blend-mode: normal, normal, normal, multiply, normal, multiply;
+
+      isolation: isolate;
+    }
+
+    /* ✅ 고급 종이결 + 미세 패턴 */
+    #main-content::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+
+      background:
+        radial-gradient(900px 480px at 50% -10%, rgba(255,255,255,0.45), transparent 72%),
+        radial-gradient(1100px 700px at 50% 120%, rgba(168,63,50,0.07), transparent 62%),
+        radial-gradient(circle at 1px 1px, rgba(0,0,0,0.018) 1px, transparent 1px) 0 0 / 10px 10px,
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.020) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.014) 0 1px, transparent 1px 34px),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise2' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.05' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise2)' opacity='0.09'/%3E%3C/svg%3E");
+
+      mix-blend-mode: multiply;
+      opacity: 0.26;
+    }
+
+    /* ✅ 소프트 비네팅(고급스러운 가장자리) */
+    #main-content::after{
+      content:'';
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      z-index:0;
+      background:
+        radial-gradient(1200px 900px at 50% 45%, rgba(255,255,255,0.00) 58%, rgba(0,0,0,0.08) 100%),
+        radial-gradient(900px 700px at 50% 0%, rgba(255,255,255,0.45), transparent 62%);
+      opacity: 0.18;
+      mix-blend-mode: multiply;
+    }
+
+    /* 콘텐츠는 질감 위로 */
+    #main-content > header,
+    #main-content > main { position: relative; z-index: 1; }
 
     /* =========================================================
        ✅ 카드 캔버스 통일
@@ -297,7 +319,7 @@
     }
 
     /* =========================================================
-       ✅ 기록 카드 질감 + (요청5) role 컬러 얇은 테두리 + 입체감
+       ✅ 기록 카드 (role 테두리/입체감 유지) + 터치 애니메이션(요청3)
        ========================================================= */
     .record-card {
       background:
@@ -306,7 +328,7 @@
 
       border: 1px solid rgba(0,0,0,0.06);
 
-      /* ✅ 얇은 흰색 라인(강제 다크모드에서도 경계 유지) */
+      /* ✅ 아주 얇은 흰색 선(알고리즘 다크모드에서도 경계 유지) */
       outline: 1px solid rgba(255,255,255,0.12);
       outline-offset: -1px;
 
@@ -315,6 +337,26 @@
         0 28px 80px rgba(0,0,0,0.05),
         inset 0 0 0 1px rgba(255,255,255,0.70),
         inset 0 -1px 0 rgba(0,0,0,0.03);
+
+      isolation: isolate;
+
+      /* ✅ 터치 프레스 애니메이션 */
+      transition:
+        transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, filter;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    .record-card.card-pressed{
+      transform: translateY(2px) scale(0.992);
+      filter: saturate(1.05) contrast(1.03);
+    }
+    .record-card.card-peek{
+      transform: translateY(-1px) scale(1.003);
+      filter: saturate(1.06) contrast(1.03);
     }
 
     /* ✅ role border + subtle depth */
@@ -349,6 +391,7 @@
         inset 0 -1px 0 rgba(0,0,0,0.03);
     }
 
+    /* ✅ 카드 텍스처 오버레이 (Z-스택) */
     .record-card::after {
       content: '';
       position: absolute;
@@ -356,31 +399,80 @@
       background:
         linear-gradient(135deg, rgba(0,0,0,0.06) 0 14px, transparent 14px) top right/28px 28px no-repeat,
         repeating-linear-gradient(180deg, rgba(0,0,0,0.022) 0 1px, transparent 1px 34px),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.09'/%3E%3C/svg%3E");
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseC' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseC)' opacity='0.10'/%3E%3C/svg%3E");
       opacity: 0.30;
       mix-blend-mode: multiply;
       pointer-events: none;
+      z-index: 3;
     }
 
-    .record-msg { position: relative; }
-    .record-msg::before {
-      content: "“";
-      position: absolute;
-      left: -10px;
-      top: -34px;
-      font-family: 'Cinzel', serif;
-      font-size: 72px;
-      color: rgba(0,0,0,0.08);
-      transform: rotate(-7deg);
-      pointer-events: none;
-      user-select: none;
-      line-height: 1;
+    /* ✅ 내용 레이어 */
+    .record-content{ position: relative; z-index: 2; display:flex; flex-direction:column; flex:1; }
+
+    /* ✅ (요청3) 고급스러운 하이라이트 쉬인 */
+    .card-sheen{
+      position:absolute;
+      inset:-45%;
+      z-index: 6;
+      pointer-events:none;
+      background: linear-gradient(115deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.55) 46%,
+        rgba(255,255,255,0) 70%
+      );
+      transform: translateX(-120%) rotate(10deg);
+      opacity: 0;
+      mix-blend-mode: overlay;
+      filter: blur(0.2px);
+    }
+    .card-sheen.sheen-run{
+      animation: cardSheen 0.92s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes cardSheen{
+      0%   { transform: translateX(-120%) rotate(10deg); opacity: 0; }
+      18%  { opacity: 0.40; }
+      100% { transform: translateX(120%) rotate(10deg); opacity: 0; }
     }
 
     /* ✅ record accent line role-based */
     .record-card.record-press::before { background-color: var(--role-press); }
     .record-card.record-partner::before { background-color: var(--role-partner); }
     .record-card.record-crew::before { background-color: var(--role-crew); }
+
+    /* ✅ (요청5) 큰따옴표: 좌측상단 + 우측하단 1개씩 */
+    .record-body{
+      position: relative;
+      display:flex;
+      flex-direction:column;
+      flex:1;
+      min-height: 0;
+    }
+    .record-quote-open,
+    .record-quote-close{
+      position:absolute;
+      font-family: 'Cinzel', serif;
+      font-size: 72px;
+      color: rgba(0,0,0,0.08);
+      pointer-events:none;
+      user-select:none;
+      line-height: 1;
+      z-index: 0;
+    }
+    .record-quote-open{
+      left: -6px;
+      top: -34px;
+      transform: rotate(-7deg);
+    }
+    .record-quote-close{
+      right: -6px;
+      bottom: -38px;
+      transform: rotate(7deg);
+    }
+    .record-msg,
+    .record-loc{
+      position: relative;
+      z-index: 1;
+    }
 
     /* =========================================================
        ✅ 메인 우상단: 원형 SIGNALS 버튼
@@ -640,7 +732,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
 
       box-shadow:
         0 14px 45px rgba(0,0,0,0.06),
@@ -650,7 +742,6 @@
       -webkit-backdrop-filter: blur(12px);
 
       font-weight: 900;
-      font-size: 12px;
       letter-spacing: -0.01em;
       color: rgba(18,18,18,0.88);
 
@@ -663,15 +754,21 @@
     }
     @keyframes statIn{ to { opacity: 1; transform: translateY(0) scale(1); } }
 
-    .signal-stat-pill .ct{
-      font-size: 10px;
+    /* ✅ (요청7) 숫자만 + 더 크게 */
+    .signal-stat-pill .nm{
+      font-size: 11px;
       font-weight: 900;
-      letter-spacing: 0.24em;
-      padding-left: 0.24em;
-      opacity: 0.50;
-      text-transform: uppercase;
-      white-space: nowrap;
+      opacity: 0.88;
+      letter-spacing: -0.01em;
     }
+    .signal-stat-pill .ct{
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      opacity: 0.50;
+    }
+    .signal-stat-pill.hot .ct{ opacity: 0.72; }
 
     .signal-stat-pill.zero{
       opacity: 0.42 !important;
@@ -1134,7 +1231,8 @@
         <div class="w-full flex flex-col items-center slide-up" style="animation-delay: 1.2s;">
           <input type="text" id="pin" maxlength="4" inputmode="numeric"
                  class="bg-transparent text-center serif-font text-5xl w-full py-4 outline-none font-bold" placeholder="0000">
-          <button onclick="unlock()" class="btn-accent text-[10px] tracking-[0.7em] border border-transparent px-16 py-6 mt-12 uppercase">Identify</button>
+          <!-- ✅ (요청6) Identify 폰트: drafting record 폰트(Cinzel) -->
+          <button onclick="unlock()" class="btn-accent serif-font text-[10px] tracking-[0.7em] border border-transparent px-16 py-6 mt-12 uppercase">Identify</button>
         </div>
       </div>
     </div>
@@ -1154,8 +1252,9 @@
       <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60"></main>
 
       <div class="absolute bottom-12 left-0 w-full flex justify-center z-50 px-6">
+        <!-- ✅ (요청6) NEW RECORD 폰트: Cinzel -->
         <button onclick="openDraft()"
-                class="btn-accent px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl slide-up uppercase">
+                class="btn-accent serif-font px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl slide-up uppercase">
           NEW RECORD
         </button>
       </div>
@@ -1164,7 +1263,6 @@
     <!-- ✅ SIGNALS OVERLAY -->
     <div id="signals-overlay" class="absolute inset-0 z-[170] hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar bg-[#F9F8F4]/98 backdrop-blur-xl">
 
-      <!-- ✅ SIGNALS 가운데(옵티컬 6:4) -->
       <div class="w-full overlay-bar mb-4" style="padding-top: calc(env(safe-area-inset-top) + 18px);">
         <button onclick="closeSignalsOverlay()" class="draft-back-btn" aria-label="뒤로">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -1179,9 +1277,9 @@
 
       <div id="signals-hero-wrap" class="w-full"></div>
 
-      <!-- ✅ MAP: LIVE 제거 / RECORDS는 정사각형들 아래(박스 내부) -->
+      <!-- ✅ MAP: (요청2) MAP 가운데정렬 / LIVE 제거 / RECORDS는 박스 내부 하단 -->
       <div class="log-card signals-map-card w-full mt-5 mb-6">
-        <div class="flex items-baseline mb-4 pl-4">
+        <div class="w-full text-center mb-4">
           <p class="text-[10px] tracking-[0.7em] text-[#C04A3A] font-bold serif-font uppercase">MAP</p>
         </div>
 
@@ -1196,7 +1294,7 @@
     <!-- DRAFT -->
     <div id="draft-overlay" class="absolute inset-0 z-[150] bg-[#F9F8F4]/98 backdrop-blur-xl hidden flex flex-col items-center justify-start px-6 overflow-y-auto no-scrollbar">
 
-      <!-- ✅ DRAFTING RECORD 가운데(옵티컬 6:4) -->
+      <!-- ✅ (요청1) 우측상단 X 제거 -->
       <div class="w-full overlay-bar mb-6">
         <button onclick="closeDraft()" class="draft-back-btn" aria-label="뒤로">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -1206,7 +1304,7 @@
 
         <span class="overlay-title serif-font text-[11px] tracking-[0.4em] font-bold opacity-30">DRAFTING RECORD</span>
 
-        <button onclick="closeDraft()" class="text-4xl font-light opacity-20" aria-label="닫기">×</button>
+        <div class="bar-spacer" aria-hidden="true"></div>
       </div>
 
       <div class="log-card mb-6 draft-container" id="draft-box">
@@ -1236,7 +1334,7 @@
           <button data-role="CREW" onclick="setDraftRole('CREW', this)" class="role-pill">CREW</button>
         </div>
 
-        <!-- ✅ (요청4) SIGNALS 먼저 -->
+        <!-- ✅ SIGNALS 먼저 -->
         <div class="relative">
           <div class="flex items-baseline justify-between">
             <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">SIGNALS</p>
@@ -1250,14 +1348,15 @@
           <p id="signal-hint" class="signal-hint unified-font">시그널은 최대 3개까지 선택할 수 있습니다.</p>
         </div>
 
-        <!-- ✅ (요청4) YOUR COMPANY 아래로 -->
+        <!-- ✅ YOUR COMPANY 아래로 -->
         <div class="relative">
           <p class="text-[14px] text-slate-400 font-bold mb-2 tracking-widest uppercase unified-font">Your Company(선택사항)</p>
           <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
         </div>
       </div>
 
-      <button id="submit-btn" onclick="finalizeRecord()" class="w-full btn-accent py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE DATA</button>
+      <!-- ✅ (요청6) ARCHIVE DATA 폰트: Cinzel -->
+      <button id="submit-btn" onclick="finalizeRecord()" class="w-full btn-accent serif-font py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl uppercase">ARCHIVE DATA</button>
     </div>
 
     <!-- SEAL OVERLAY -->
@@ -1464,7 +1563,6 @@
 
       if (meta) meta.textContent = `${latestSignals.totalRecords} RECORDS`;
 
-      /* ✅ (요청3) KOH JAE IN + Top2 모두 가운데정렬 */
       heroWrap.innerHTML = `
         <div class="log-card summary-card w-full signals-hero-card">
           <div class="w-full text-center">
@@ -1483,12 +1581,13 @@
         </div>
       `;
 
+      // ✅ (요청7) '회' 제거 + 숫자만
       grid.innerHTML = latestSignals.list.map((it, i) => {
         const cls = it.count > 0 ? 'hot' : 'zero';
         return `
           <div class="signal-stat-pill ${cls} unified-font" style="--d:${i * 22}ms">
             <span class="nm">${it.name}</span>
-            <span class="ct">${it.count}회</span>
+            <span class="ct">${it.count}</span>
           </div>
         `;
       }).join('');
@@ -1538,6 +1637,46 @@
       return { cls: '', color: 'rgba(100,116,139,1)' };
     }
 
+    // ✅ (요청3) 기록 카드 터치: 고급스러운 인터랙션(프레스 + 쉬인)
+    const feedEl = document.getElementById('feed');
+
+    function runCardSheen(card){
+      const sheen = card?.querySelector?.('.card-sheen');
+      if (!sheen) return;
+      sheen.classList.remove('sheen-run');
+      // reflow for restart
+      void sheen.offsetWidth;
+      sheen.classList.add('sheen-run');
+    }
+
+    if (feedEl) {
+      feedEl.addEventListener('pointerdown', (e) => {
+        const card = e.target.closest('.record-card');
+        if (!card) return;
+
+        card.classList.add('card-pressed');
+        try { card.setPointerCapture(e.pointerId); } catch(_) {}
+      });
+
+      feedEl.addEventListener('pointerup', (e) => {
+        const card = e.target.closest('.record-card');
+        if (!card) return;
+
+        card.classList.remove('card-pressed');
+        card.classList.add('card-peek');
+        clearTimeout(card._peekT);
+        card._peekT = setTimeout(() => card.classList.remove('card-peek'), 220);
+
+        runCardSheen(card);
+      });
+
+      feedEl.addEventListener('pointercancel', (e) => {
+        const card = e.target.closest('.record-card');
+        if (!card) return;
+        card.classList.remove('card-pressed');
+      });
+    }
+
     // ✅ Feed render
     const q = query(collection(db, "archive"), orderBy("createdAt", "desc"));
 
@@ -1564,23 +1703,33 @@
 
         const html = `
           <div class="log-card slide-up record-card card-canvas ${t.cls}">
-            <div class="flex justify-between items-baseline mb-8 pl-4">
-              <span class="serif-font text-5xl font-bold tracking-tighter">${data.who}</span>
-              <div class="flex-1 text-right border-b border-black/5 pb-3">
-                <span class="unified-font text-[15px] font-bold uppercase">
-                  <span style="color:${t.color}">${data.role}</span>
-                  <span class="text-slate-400"> | </span>
-                  <span class="text-slate-900">${data.aff}</span>
-                </span>
+            <span class="card-sheen" aria-hidden="true"></span>
+
+            <div class="record-content">
+              <div class="flex justify-between items-baseline mb-8 pl-4">
+                <span class="serif-font text-5xl font-bold tracking-tighter">${data.who}</span>
+                <div class="flex-1 text-right border-b border-black/5 pb-3">
+                  <span class="unified-font text-[15px] font-bold uppercase">
+                    <span style="color:${t.color}">${data.role}</span>
+                    <span class="text-slate-400"> | </span>
+                    <span class="text-slate-900">${data.aff}</span>
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4 msg-reveal record-msg">${data.msg}</p>
+              <div class="record-body">
+                <span class="record-quote-open" aria-hidden="true">“</span>
 
-            <div class="text-right mt-auto">
-              <p class="unified-font text-[15px] text-slate-500 pl-4 font-medium italic inline-flex items-center">
-                <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 17px; opacity: 0.6; margin-right: 8px;">at</span> ${data.where}
-              </p>
+                <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4 msg-reveal record-msg">${data.msg}</p>
+
+                <span class="record-quote-close" aria-hidden="true">”</span>
+
+                <div class="text-right mt-auto record-loc">
+                  <p class="unified-font text-[15px] text-slate-500 pl-4 font-medium italic inline-flex items-center">
+                    <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 17px; opacity: 0.6; margin-right: 8px;">at</span> ${data.where}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         `;
