@@ -139,16 +139,14 @@
     }
 
     /* =========================================================
-       ✅ (패치2) 기록 카드 디자인 디테일 추가 (레이아웃 유지)
+       ✅ (PATCH-3) 기록 카드: 워터마크 제거 + 시그널 카드와 재질 분리(매트/장부)
        ========================================================= */
     .record-card {
       background:
-        radial-gradient(900px 280px at 88% 0%, rgba(168,63,50,0.055), transparent 58%),
-        radial-gradient(820px 300px at 12% 100%, rgba(0,0,0,0.035), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,0.985), rgba(249,248,244,0.965));
+        linear-gradient(180deg, rgba(255,255,255,0.985), rgba(249,248,244,0.975));
       box-shadow:
-        0 10px 38px rgba(0,0,0,0.04),
-        0 38px 110px rgba(0,0,0,0.06);
+        0 8px 26px rgba(0,0,0,0.03),
+        0 28px 80px rgba(0,0,0,0.05);
       overflow: hidden;
     }
     .record-card::after {
@@ -156,33 +154,19 @@
       position: absolute;
       inset: 0;
       background:
-        /* 얇은 하단 실선(필름 같은 디테일) */
-        linear-gradient(90deg,
-          rgba(168,63,50,0.0) 0%,
-          rgba(168,63,50,0.12) 18%,
-          rgba(168,63,50,0.0) 55%,
-          rgba(168,63,50,0.10) 78%,
-          rgba(168,63,50,0.0) 100%
-        ) bottom/100% 1px no-repeat,
-        /* 종이 결/노이즈 */
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-      opacity: 0.55;
+        /* corner fold (우상단 접힘) */
+        linear-gradient(135deg, rgba(0,0,0,0.06) 0 14px, transparent 14px) top right/28px 28px no-repeat,
+        /* ledger lines (아주 은은한 줄) */
+        repeating-linear-gradient(
+          180deg,
+          rgba(0,0,0,0.022) 0 1px,
+          transparent 1px 34px
+        ),
+        /* paper noise */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.09'/%3E%3C/svg%3E");
+      opacity: 0.30;
       mix-blend-mode: multiply;
       pointer-events: none;
-    }
-    .record-watermark {
-      position: absolute;
-      right: 18px;
-      bottom: 14px;
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: 0.28em;
-      padding-left: 0.28em;
-      opacity: 0.045;
-      transform: rotate(-6deg);
-      pointer-events: none;
-      user-select: none;
-      white-space: nowrap;
     }
     .record-msg { position: relative; }
     .record-msg::before {
@@ -192,7 +176,7 @@
       top: -34px;
       font-family: 'Cinzel', serif;
       font-size: 72px;
-      color: rgba(168,63,50,0.11);
+      color: rgba(0,0,0,0.08); /* ✅ 빨강 대신 뉴트럴로(시그널과 분리) */
       transform: rotate(-7deg);
       pointer-events: none;
       user-select: none;
@@ -253,6 +237,61 @@
       text-transform: uppercase;
     }
 
+    /* =========================================================
+       ✅ (PATCH-2) Top2 타이포를 “집중/화려”하게: 그라데이션+텍스처+글로우+언더라인
+       ========================================================= */
+    .pair-focus { position: relative; display: inline-block; }
+    .pair-focus::before {
+      content: '';
+      position: absolute;
+      left: -26px;
+      right: -26px;
+      top: 50%;
+      height: 84px;
+      transform: translateY(-50%);
+      background: radial-gradient(closest-side at 50% 55%, rgba(168,63,50,0.16), transparent 72%);
+      opacity: 0.95;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .pair-focus::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -10px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(168,63,50,0.60), transparent);
+      transform: scaleX(0.15);
+      transform-origin: center;
+      opacity: 0.88;
+      animation: pairUnderline 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: none;
+      filter: blur(0.15px);
+    }
+    @keyframes pairUnderline { to { transform: scaleX(1); } }
+
+    .pair-text {
+      background-image:
+        linear-gradient(90deg,
+          rgba(18,18,18,0.98) 0%,
+          rgba(18,18,18,0.98) 34%,
+          rgba(168,63,50,0.95) 55%,
+          rgba(18,18,18,0.98) 78%,
+          rgba(18,18,18,0.98) 100%
+        ),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+      background-size: 100% 100%, 220px 220px;
+      background-repeat: no-repeat, repeat;
+      background-blend-mode: overlay;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.78),
+        0 18px 52px rgba(0,0,0,0.12);
+    }
+
     .signals-row {
       display: flex;
       flex-wrap: wrap;
@@ -260,7 +299,11 @@
       margin-top: 16px;
     }
 
-    /* ✅ (패치1) 시그널 표시 더 화려하게 (너의추천(B) 반영 + 패턴/쉬머 추가) */
+    /* =========================================================
+       ✅ (PATCH-1) 시그널 칩: “키워드 + 횟수” 중앙정렬 + 잘림 제거
+       - 기존 ::after 툴팁 제거(잘림 원인)
+       - meta 영역에 dots / count를 겹쳐두고(show-count 시 교체)
+       ========================================================= */
     .signal-display-chip {
       --wash: 0.08;
       --edge: 0.08;
@@ -270,16 +313,17 @@
       position: relative;
       overflow: hidden;
 
+      display: inline-flex;
+      align-items: center;
+      justify-content: center; /* ✅ 전체 중앙정렬 */
+
       border-radius: 999px;
       border: 1px solid rgba(0,0,0,var(--edge));
       background:
         radial-gradient(120px 120px at 22% 25%, rgba(255,255,255,0.40), transparent 65%),
-        linear-gradient(120deg,
-          rgba(168,63,50,var(--wash)),
-          rgba(0,0,0,0.01)
-        );
+        linear-gradient(120deg, rgba(168,63,50,var(--wash)), rgba(0,0,0,0.01));
 
-      padding: 10px 12px;
+      padding: 10px 14px;
       font-size: 13px;
       font-weight: 900;
       letter-spacing: 0.08em;
@@ -302,25 +346,21 @@
     }
     .signal-display-chip:active { transform: scale(0.985); filter: brightness(0.99); }
 
-    /* ✅ 칩 패턴(기요셰 느낌) */
+    /* ✅ 칩 패턴 */
     .sig-pattern {
       position: absolute;
       inset: -35%;
       border-radius: 999px;
       background:
-        repeating-radial-gradient(circle at 50% 50%,
-          rgba(0,0,0,0.10) 0 1px,
-          transparent 1px 8px),
-        repeating-conic-gradient(from 0deg,
-          rgba(168,63,50,0.09) 0 6deg,
-          transparent 6deg 14deg);
+        repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,0.10) 0 1px, transparent 1px 8px),
+        repeating-conic-gradient(from 0deg, rgba(168,63,50,0.09) 0 6deg, transparent 6deg 14deg);
       opacity: 0.10;
       transform: rotate(12deg);
       mix-blend-mode: multiply;
       pointer-events: none;
     }
 
-    /* ✅ 칩 쉬머(프린팅 등장시 1회) */
+    /* ✅ 쉬머(프린팅 등장 시 1회) */
     .sig-sheen {
       position: absolute;
       inset: -40%;
@@ -345,73 +385,87 @@
       100% { transform: translateX(120%) rotate(8deg); opacity: 0.0; }
     }
 
-    /* ✅ 탭 시 잉크 번짐(짧게) */
+    /* ✅ 탭 시 잉크 번짐 */
     .sig-bloom {
       position: absolute;
       inset: -45%;
       border-radius: 999px;
-      background:
-        radial-gradient(circle at 45% 55%,
-          rgba(168,63,50,0.26),
-          rgba(168,63,50,0.00) 62%);
+      background: radial-gradient(circle at 45% 55%, rgba(168,63,50,0.26), rgba(168,63,50,0.00) 62%);
       opacity: 0;
       transform: scale(0.86);
       filter: blur(12px);
       pointer-events: none;
       mix-blend-mode: multiply;
     }
-    .signal-display-chip.ink-bloom .sig-bloom {
-      animation: inkBloom 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
+    .signal-display-chip.ink-bloom .sig-bloom { animation: inkBloom 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
     @keyframes inkBloom {
       0%   { opacity: 0.0; transform: scale(0.86); }
       55%  { opacity: 0.28; transform: scale(1.04); }
       100% { opacity: 0.0; transform: scale(1.10); }
     }
 
-    /* ✅ 종이 라벨 툴팁(count) */
-    .signal-display-chip::after {
-      content: attr(data-count) "회";
-      position: absolute;
-      top: -10px;
-      right: -8px;
-      padding: 7px 10px;
-      border-radius: 999px;
-
-      background: rgba(249,248,244,0.96);
-      border: 1px solid rgba(0,0,0,0.10);
-      color: rgba(26,26,26,0.92);
-
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 0.18em;
-
-      opacity: 0;
-      transform: translateY(8px) scale(0.98);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      pointer-events: none;
-
-      box-shadow:
-        0 16px 40px rgba(0,0,0,0.14),
-        inset 0 0 0 1px rgba(255,255,255,0.45);
-    }
-    .signal-display-chip.show-count::after {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    /* ✅ 텍스트 + 점(•) */
-    .sig-label { position: relative; z-index: 2; display: inline-block; transform: translateY(0.1px); }
-    .sig-dots {
+    /* ✅ (PATCH-1) 내부 구성: 키워드 + meta를 “한 덩어리로” 가운데 정렬 */
+    .sig-core {
       position: relative;
       z-index: 2;
       display: inline-flex;
       align-items: center;
-      margin-left: 9px;
+      justify-content: center;
+      gap: 10px; /* ✅ 균형 */
+      white-space: nowrap;
+    }
+    .sig-label {
+      display: inline-block;
+      transform: translateY(0.1px);
+    }
+
+    /* ✅ meta는 dots/count를 같은 자리(grid)에 겹쳐서 레이아웃 흔들림 최소화 */
+    .sig-meta {
+      display: grid;
+      place-items: center;
+      min-width: 42px; /* ✅ 균형감(너무 작으면 흔들림) */
+    }
+    .sig-meta > span { grid-area: 1 / 1; }
+
+    .sig-dots {
       font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.18em;
       opacity: 0.42;
+      transform: translateY(0);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ✅ count는 “종이 라벨” 질감이지만 칩 안에 들어가므로 절대 안 잘림 */
+    .sig-count {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(249,248,244,0.92);
+      border: 1px solid rgba(0,0,0,0.10);
+      color: rgba(26,26,26,0.92);
+
+      box-shadow:
+        0 14px 34px rgba(0,0,0,0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.45);
+
+      opacity: 0;
+      transform: translateY(2px) scale(0.985);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    /* ✅ show-count 상태에서 dots→count로 교체 */
+    .signal-display-chip.show-count .sig-dots {
+      opacity: 0;
+      transform: translateY(2px) scale(0.985);
+    }
+    .signal-display-chip.show-count .sig-count {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     /* ✅ 프린팅 순서 등장 */
@@ -429,16 +483,14 @@
       100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
-    .summary-pulse {
-      animation: summaryPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
+    .summary-pulse { animation: summaryPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
     @keyframes summaryPulse {
       0% { transform: translateY(0) scale(1); filter: blur(0); }
       45% { transform: translateY(-2px) scale(1.01); filter: blur(0); }
       100% { transform: translateY(0) scale(1); }
     }
 
-    /* ✅ (패치1-2) SIGNALS 섹션 숨김/표시 토글 애니메이션 */
+    /* ✅ SIGNALS 섹션 숨김/표시 토글 */
     #signals-summary[hidden] { display: none; }
     .signals-exit {
       opacity: 0;
@@ -460,7 +512,7 @@
     }
 
     /* =========================================================
-       ✅ Draft: 시그널(한글) 선택 UI (더 화려하게)
+       ✅ Draft: 시그널 선택 UI (기존 유지)
        ========================================================= */
     .signal-picker-deck {
       border: 1px solid rgba(0,0,0,0.07);
@@ -515,7 +567,6 @@
     }
     .signal-chip-btn:active { transform: scale(0.98); filter: brightness(0.985); }
 
-    /* 선택 표시 도트 */
     .signal-chip-btn::after {
       content: '';
       position: absolute;
@@ -531,7 +582,6 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.40);
     }
 
-    /* 쉬머 */
     .signal-chip-btn::before {
       content: '';
       position: absolute;
@@ -622,7 +672,7 @@
     .btn-ghost:active { transform: scale(0.96); filter: brightness(0.96); }
 
     /* =========================================================
-       ✅ (돈 쓴 느낌) SEAL OVERLAY (foil + emboss + wax ring)
+       ✅ (돈 쓴 느낌) SEAL OVERLAY (기존 유지)
        ========================================================= */
     #seal-overlay {
       opacity: 0;
@@ -851,10 +901,7 @@
       mix-blend-mode: overlay;
       pointer-events: none;
     }
-    @keyframes btnFoil {
-      0% { transform: translateX(-130%); }
-      100% { transform: translateX(130%); }
-    }
+    @keyframes btnFoil { 0% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
 
     .btn-lux-success {
       background-color: #1A1A1A !important;
@@ -887,6 +934,7 @@
       55% { opacity: 0.30; }
       100% { opacity: 0; transform: scale(1.14); }
     }
+
   </style>
 </head>
 
@@ -969,12 +1017,10 @@
           <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
         </div>
 
-        <!-- ✅ SIGNAL PICKER (한글, 최대 3개) -->
+        <!-- SIGNAL PICKER -->
         <div class="relative">
           <div class="flex items-baseline justify-between">
-            <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">
-              SIGNALS
-            </p>
+            <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">SIGNALS</p>
             <span id="signal-count" class="signal-count unified-font">0 / 3</span>
           </div>
 
@@ -989,7 +1035,7 @@
       <button id="submit-btn" onclick="finalizeRecord()" class="w-full btn-accent py-8 text-[11px] tracking-[0.8em] font-bold shadow-2xl">ARCHIVE DATA</button>
     </div>
 
-    <!-- ✅ SEAL OVERLAY -->
+    <!-- SEAL OVERLAY -->
     <div id="seal-overlay" class="absolute inset-0 z-[220] hidden items-center justify-center">
       <div class="seal-backdrop"></div>
       <div class="seal-stage">
@@ -1034,7 +1080,6 @@
     let currentRole = '';
     const PIN = "2026";
 
-    // ✅ SIGNALS (12개 / 표시 순서 자연스러운 흐름)
     const SIGNALS = [
       "경청", "공감", "친화력", "배려", "매너",
       "신뢰", "진정성", "책임감",
@@ -1042,11 +1087,9 @@
       "디테일", "트렌드"
     ];
     let selectedSignals = [];
-
-    // ✅ (패치1-2) SIGNALS 섹션 표시 상태(토글)
     let signalsVisible = true;
 
-    // ---------- PIN ----------
+    // PIN
     window.unlock = function() {
       if (document.getElementById('pin').value === PIN) {
         document.getElementById('pin-gate').style.opacity = '0';
@@ -1057,7 +1100,7 @@
       }
     }
 
-    // ---------- Draft open/close ----------
+    // Draft open/close
     window.openDraft = function() {
       document.getElementById('draft-overlay').classList.remove('hidden');
       setTimeout(() => document.getElementById('draft-box').classList.add('draft-active'), 50);
@@ -1074,7 +1117,7 @@
       el.classList.add('pill-active');
     }
 
-    // ---------- Signal picker render + toggle ----------
+    // Signal picker
     function updateSignalCount() {
       const el = document.getElementById('signal-count');
       if (!el) return;
@@ -1142,7 +1185,7 @@
       updateSignalCount();
     }
 
-    // ---------- SEAL overlay control ----------
+    // Seal overlay
     function openSeal(initials) {
       const overlay = document.getElementById('seal-overlay');
       const initEl = document.getElementById('seal-initials');
@@ -1178,7 +1221,7 @@
       }, 520);
     }
 
-    // ---------- Feed rendering (기존 기능 유지 + 상단 summary만 추가) ----------
+    // Feed rendering
     const q = query(collection(db, "archive"), orderBy("createdAt", "desc"));
 
     function buildSignalsSummaryHTML(totalRecords, signalPairs) {
@@ -1189,6 +1232,7 @@
             const wash = 0.07 + Math.min(0.14, (cnt - 1) * 0.04);
             const edge = 0.07 + Math.min(0.06, (cnt - 1) * 0.02);
             const gloss = 0.18 + Math.min(0.24, (cnt - 1) * 0.06);
+
             const dots = (cnt >= 3) ? "•••" : (cnt === 2) ? "••" : "•";
             const delay = (i * 0.08).toFixed(2);
 
@@ -1200,8 +1244,14 @@
                 <span class="sig-pattern" aria-hidden="true"></span>
                 <span class="sig-sheen" aria-hidden="true"></span>
                 <span class="sig-bloom" aria-hidden="true"></span>
-                <span class="sig-label">${sig}</span>
-                <span class="sig-dots" aria-hidden="true">${dots}</span>
+
+                <span class="sig-core">
+                  <span class="sig-label">${sig}</span>
+                  <span class="sig-meta" aria-hidden="true">
+                    <span class="sig-dots">${dots}</span>
+                    <span class="sig-count">${cnt}회</span>
+                  </span>
+                </span>
               </button>
             `;
           }).join('')
@@ -1220,7 +1270,9 @@
           </div>
 
           <div class="pl-4">
-            <div class="summary-hero unified-font">${pairText}</div>
+            <div class="summary-hero unified-font">
+              <span class="pair-focus"><span class="pair-text">${pairText}</span></span>
+            </div>
             <div class="signals-row">${chipsHtml}</div>
           </div>
         </div>
@@ -1274,24 +1326,26 @@
       reprintSignalChips();
     }
 
-    // ✅ chip tooltip + ink bloom (delegation)
+    // ✅ chip: show-count(내부에서 dots→n회로 교체) + ink bloom
     document.addEventListener('click', (e) => {
       const chip = e.target?.closest?.('.signal-display-chip');
       if (!chip) return;
       const summary = chip.closest('#signals-summary');
       if (!summary) return;
 
+      // show count (inside)
       summary.querySelectorAll('.signal-display-chip.show-count').forEach(el => el.classList.remove('show-count'));
       chip.classList.add('show-count');
       setTimeout(() => chip.classList.remove('show-count'), 1100);
 
+      // ink bloom
       chip.classList.remove('ink-bloom');
       void chip.offsetWidth;
       chip.classList.add('ink-bloom');
       setTimeout(() => chip.classList.remove('ink-bloom'), 320);
     });
 
-    // ✅ (패치1-2) SIGNALS 버튼: 스크롤/펄스 + 토글(숨김/다시표시)
+    // SIGNALS 버튼 토글
     window.focusSignals = function() {
       const feed = document.getElementById('feed');
       const summary = document.getElementById('signals-summary');
@@ -1299,7 +1353,6 @@
 
       const atTop = feed ? (feed.scrollTop < 60) : true;
 
-      // 1) 현재 숨겨진 상태면 → 보여주기
       if (!signalsVisible) {
         signalsVisible = true;
         showSignalsSummary();
@@ -1316,14 +1369,12 @@
         return;
       }
 
-      // 2) 보이는 상태에서, 이미 상단이면 → 숨기기(토글)
       if (atTop) {
         signalsVisible = false;
         hideSignalsSummary();
         return;
       }
 
-      // 3) 보이는 상태인데 아래쪽에 있으면 → 상단으로 이동 + 펄스
       if (feed) feed.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => {
         const s = document.getElementById('signals-summary');
@@ -1340,16 +1391,16 @@
 
       const docs = snapshot.docs.map(d => d.data());
 
-      // ✅ Top summary first
+      // Top summary first
       const totalRecords = docs.length;
       const sig = computeSignalsFromDocs(docs);
       feed.insertAdjacentHTML('beforeend', buildSignalsSummaryHTML(totalRecords, sig));
 
-      // ✅ 토글 상태 유지
+      // 토글 상태 유지
       const summary = document.getElementById('signals-summary');
       if (summary) summary.hidden = !signalsVisible;
 
-      // ✅ Existing record cards (레이아웃 유지 + 디자인 디테일만 추가)
+      // Existing record cards (레이아웃 유지, 워터마크 제거, 재질 분리)
       snapshot.forEach((doc) => {
         const data = doc.data();
         const html = `
@@ -1362,20 +1413,21 @@
                 </span>
               </div>
             </div>
+
             <p class="unified-font text-[18px] leading-relaxed text-[#1A1A1A] font-medium mb-6 pl-4 msg-reveal record-msg">${data.msg}</p>
+
             <div class="text-right">
               <p class="unified-font text-[15px] text-slate-500 pl-4 font-medium italic inline-flex items-center">
                 <span style="font-family: 'Pretendard', sans-serif; font-style: italic; font-size: 17px; opacity: 0.6; margin-right: 8px;">at</span> ${data.where}
               </p>
             </div>
-            <span class="record-watermark serif-font">ARCHIVE</span>
           </div>
         `;
         feed.insertAdjacentHTML('beforeend', html);
       });
     });
 
-    // ---------- Save process (기존 로직 유지 + signals 저장) ----------
+    // Save process
     window.finalizeRecord = async function() {
       const who = document.getElementById('d-who').value;
       const aff = document.getElementById('d-aff').value || '-';
@@ -1389,7 +1441,6 @@
       const draftOptions = document.getElementById('draft-options');
 
       try {
-        // 1) Seal UX start
         btn.innerText = "SEALING";
         btn.classList.add('btn-lux-loading');
 
@@ -1400,7 +1451,6 @@
 
         const minShow = new Promise(r => setTimeout(r, 820));
 
-        // 2) Firestore save
         const save = addDoc(collection(db, "archive"), {
           role: currentRole,
           who: who,
@@ -1413,7 +1463,6 @@
 
         await Promise.all([save, minShow]);
 
-        // 3) Success
         setSealStatus("ARCHIVED");
         btn.classList.remove('btn-lux-loading');
         btn.classList.add('btn-lux-success');
@@ -1422,7 +1471,6 @@
         await new Promise(r => setTimeout(r, 680));
         closeSeal();
 
-        // 4) Reset
         document.getElementById('d-who').value = '';
         document.getElementById('d-aff').value = '';
         document.getElementById('d-where').value = '';
@@ -1444,7 +1492,6 @@
         console.error("저장 실패: ", e);
         alert("아카이브 연결에 실패했습니다.");
 
-        // recover
         btn.classList.remove('btn-lux-loading');
         btn.classList.remove('btn-lux-success');
         btn.innerText = "ARCHIVE DATA";
