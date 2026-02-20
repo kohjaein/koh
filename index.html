@@ -154,6 +154,7 @@
     }
     @keyframes drawLineTall { to { height: 66px; } }
 
+    /* ✅ 너의추천(B): 포일 하이라이트는 "가끔만" */
     .summary-card::after {
       content: '';
       position: absolute;
@@ -167,12 +168,12 @@
       opacity: 0.0;
       pointer-events: none;
       mix-blend-mode: overlay;
-      animation: summaryFoil 8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      animation: summaryFoil 14s cubic-bezier(0.16, 1, 0.3, 1) infinite;
     }
     @keyframes summaryFoil {
       0%   { transform: translateX(-120%) rotate(8deg); opacity: 0.0; }
-      12%  { opacity: 0.38; }
-      24%  { transform: translateX(120%) rotate(8deg); opacity: 0.0; }
+      7%   { opacity: 0.36; }
+      14%  { transform: translateX(120%) rotate(8deg); opacity: 0.0; }
       100% { opacity: 0.0; transform: translateX(120%) rotate(8deg); }
     }
 
@@ -198,11 +199,23 @@
       margin-top: 16px;
     }
 
+    /* ✅ 너의추천(B):
+       - 2겹 그림자
+       - 내부 하이라이트 1px(=inset)
+       - 빈도=크기X → 농도/광택/점(•)
+       - 탭 시 잉크 번짐
+       - 툴팁은 종이 라벨
+       - 칩은 프린팅 순서로 등장
+    */
     .signal-display-chip {
       --wash: 0.08;
+      --edge: 0.08;
+      --gloss: 0.22;
+      --d: 0s;
+
       position: relative;
       border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,var(--edge));
       background:
         linear-gradient(120deg,
           rgba(168,63,50,var(--wash)),
@@ -213,38 +226,108 @@
       font-weight: 900;
       letter-spacing: 0.08em;
       color: rgba(26,26,26,0.92);
+
+      /* ✅ 2겹 그림자 */
       box-shadow:
-        0 16px 42px rgba(0,0,0,0.05),
-        inset 0 0 0 1px rgba(255,255,255,0.35);
+        0 6px 18px rgba(0,0,0,0.06),
+        0 22px 60px rgba(0,0,0,0.08),
+        inset 0 0 0 1px rgba(255,255,255,var(--gloss));
+
       backdrop-filter: blur(10px);
       -webkit-tap-highlight-color: transparent;
       cursor: pointer;
       user-select: none;
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .signal-display-chip:active { transform: scale(0.98); filter: brightness(0.98); }
 
+      transition:
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .signal-display-chip:active { transform: scale(0.985); filter: brightness(0.99); }
+
+    /* ✅ 잉크 번짐 레이어 */
+    .signal-display-chip::before {
+      content: '';
+      position: absolute;
+      inset: -40%;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 45% 55%,
+          rgba(168,63,50,0.22),
+          rgba(168,63,50,0.00) 62%);
+      opacity: 0;
+      transform: scale(0.86);
+      filter: blur(12px);
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+    .signal-display-chip.ink-bloom::before {
+      animation: inkBloom 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes inkBloom {
+      0%   { opacity: 0.0; transform: scale(0.86); }
+      55%  { opacity: 0.26; transform: scale(1.04); }
+      100% { opacity: 0.0; transform: scale(1.10); }
+    }
+
+    /* ✅ 종이 라벨 툴팁(=count) */
     .signal-display-chip::after {
-      content: attr(data-count) "×";
+      content: attr(data-count) "회";
       position: absolute;
       top: -10px;
       right: -8px;
-      padding: 6px 8px;
+      padding: 7px 10px;
       border-radius: 999px;
-      background: rgba(26,26,26,0.92);
-      color: #F9F8F4;
+
+      background: rgba(249,248,244,0.96);
+      border: 1px solid rgba(0,0,0,0.10);
+      color: rgba(26,26,26,0.92);
+
       font-size: 10px;
       font-weight: 900;
       letter-spacing: 0.18em;
+
       opacity: 0;
       transform: translateY(8px) scale(0.98);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
-      box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+
+      box-shadow:
+        0 16px 40px rgba(0,0,0,0.14),
+        inset 0 0 0 1px rgba(255,255,255,0.45);
     }
     .signal-display-chip.show-count::after {
       opacity: 1;
       transform: translateY(0) scale(1);
+    }
+
+    /* ✅ 칩 내부 텍스트 + 점(•) */
+    .sig-label {
+      display: inline-block;
+      transform: translateY(0.1px);
+    }
+    .sig-dots {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 9px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      opacity: 0.42;
+    }
+
+    /* ✅ 프린팅 순서 등장 */
+    .signal-print {
+      opacity: 0;
+      transform: translateY(10px) scale(0.99);
+      filter: blur(10px);
+      animation: chipPrint 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: var(--d);
+      will-change: transform, opacity, filter;
+    }
+    @keyframes chipPrint {
+      0%   { opacity: 0; transform: translateY(10px) scale(0.99); filter: blur(10px); }
+      62%  { opacity: 1; transform: translateY(-1px) scale(1.01); filter: blur(1.5px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
     .summary-pulse {
@@ -668,7 +751,7 @@
           <input type="text" id="d-aff" class="live-input text-slate-900 w-full font-bold text-xl" placeholder="ex. 대보">
         </div>
 
-        <!-- ✅ NEW: SIGNAL PICKER (한글, 최대 3개) -->
+        <!-- ✅ SIGNAL PICKER (한글, 최대 3개) -->
         <div class="relative">
           <p class="text-[14px] text-slate-400 font-bold mb-3 tracking-widest uppercase unified-font">
             SIGNALS (최대 3개 · 선택)
@@ -727,11 +810,12 @@
     let currentRole = '';
     const PIN = "2026";
 
-    // ✅ NEW: Signals (한글)
+    // ✅ SIGNALS (사용자 지정 12개 / 표시 순서 "자연스럽게" 재배치)
     const SIGNALS = [
-      "정리력", "센스", "신뢰", "배려",
-      "추진력", "디테일", "스토리", "속도",
-      "안정감", "결단력", "인사이트", "팔로업"
+      "경청", "공감", "친화력", "배려", "매너",
+      "신뢰", "진정성", "책임감",
+      "추진력", "문제해결",
+      "디테일", "트렌드"
     ];
     let selectedSignals = [];
 
@@ -763,7 +847,7 @@
       el.classList.add('pill-active');
     }
 
-    // ---------- NEW: Signal picker render + toggle ----------
+    // ---------- Signal picker render + toggle ----------
     function renderSignalPicker() {
       const wrap = document.getElementById('signal-picker');
       if (!wrap) return;
@@ -797,7 +881,6 @@
       }
 
       if (selectedSignals.length >= 3) {
-        // 고급스럽게: 알럿 대신 살짝 흔들리고 힌트만 표시
         el.classList.add('signal-denied');
         setTimeout(() => el.classList.remove('signal-denied'), 420);
         showSignalHint();
@@ -815,12 +898,11 @@
       if (hint) hint.classList.remove('show');
     }
 
-    // ---------- NEW: Focus signals (bottom button) ----------
+    // ---------- Focus signals (bottom button) ----------
     window.focusSignals = function() {
       const feed = document.getElementById('feed');
       if (feed) feed.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // summary pulse
       setTimeout(() => {
         const s = document.getElementById('signals-summary');
         if (!s) return;
@@ -874,8 +956,22 @@
 
       const chipsHtml = top5.length
         ? top5.map(([sig, cnt], i) => {
+            // ✅ 너의추천(B): 빈도 표현은 "크기" 대신 농도/광택 + 점(•) 1~3개
             const wash = 0.07 + Math.min(0.14, (cnt - 1) * 0.04);
-            return `<button type="button" class="signal-display-chip unified-font" style="--wash:${wash.toFixed(2)}" data-count="${cnt}">${sig}</button>`;
+            const edge = 0.07 + Math.min(0.06, (cnt - 1) * 0.02);
+            const gloss = 0.18 + Math.min(0.24, (cnt - 1) * 0.06);
+            const dots = (cnt >= 3) ? "•••" : (cnt === 2) ? "••" : "•";
+            const delay = (i * 0.08).toFixed(2);
+
+            return `
+              <button type="button"
+                class="signal-display-chip signal-print unified-font"
+                style="--wash:${wash.toFixed(2)}; --edge:${edge.toFixed(2)}; --gloss:${gloss.toFixed(2)}; --d:${delay}s;"
+                data-count="${cnt}">
+                <span class="sig-label">${sig}</span>
+                <span class="sig-dots" aria-hidden="true">${dots}</span>
+              </button>
+            `;
           }).join('')
         : `<span class="unified-font text-[13px] font-bold opacity-40">아직 시그널이 없습니다. (기록 작성 시 1~3개 선택)</span>`;
 
@@ -910,23 +1006,30 @@
 
       const top2 = sorted.slice(0, 2).map(x => x[0]);
       const pairText =
-        top2.length >= 2 ? `${top2[0]} / ${top2[1]}` :
+        top2.length >= 2 ? `${top2[0]} · ${top2[1]}` :
         top2.length === 1 ? `${top2[0]}` : `—`;
 
       const top5 = sorted.slice(0, 5);
       return { pairText, top5 };
     }
 
-    // chip tooltip (delegation)
+    // ✅ chip tooltip + ink bloom (delegation)
     document.addEventListener('click', (e) => {
       const chip = e.target?.closest?.('.signal-display-chip');
       if (!chip) return;
       const summary = chip.closest('#signals-summary');
       if (!summary) return;
 
+      // show count (paper label)
       summary.querySelectorAll('.signal-display-chip.show-count').forEach(el => el.classList.remove('show-count'));
       chip.classList.add('show-count');
       setTimeout(() => chip.classList.remove('show-count'), 1100);
+
+      // ink bloom (restartable)
+      chip.classList.remove('ink-bloom');
+      void chip.offsetWidth;
+      chip.classList.add('ink-bloom');
+      setTimeout(() => chip.classList.remove('ink-bloom'), 320);
     });
 
     onSnapshot(q, (snapshot) => {
@@ -997,7 +1100,7 @@
           aff: aff,
           where: where,
           msg: msg,
-          signals: [...selectedSignals],   // ✅ NEW
+          signals: [...selectedSignals],
           createdAt: serverTimestamp()
         });
 
