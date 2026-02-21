@@ -147,19 +147,27 @@
     .btn-accent { background-color: var(--accent); color: white; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
     .btn-accent:active { transform: scale(0.95); filter: brightness(0.9); }
 
-    /* ✅ (요청) NEW RECORD 더 투명하게 */
+    /* ✅ NEW RECORD: 다시 불투명 + 사각형(패딩) 20% 정도 축소(글자 크기/정렬 유지) */
     .btn-accent-glass{
+      /* 불투명(opaque) */
       background:
         radial-gradient(180px 180px at 18% 24%, rgba(255,255,255,0.22), transparent 62%),
         linear-gradient(120deg, rgba(0,0,0,0.14), rgba(255,255,255,0.06)),
-        rgba(168,63,50,0.62) !important; /* ← 기존 0.82 → 0.62 */
+        rgba(168,63,50,1) !important;
+
+      /* 크기(패딩) 약 20% 축소: 기존 px-16/py-6(4rem/1.5rem) → 3.2rem/1.2rem */
+      padding: 1.2rem 3.2rem !important;
+
       border: 1px solid rgba(255,255,255,0.22);
       box-shadow:
         0 26px 80px rgba(0,0,0,0.22),
         0 12px 30px rgba(168,63,50,0.18),
         inset 0 0 0 1px rgba(255,255,255,0.16);
+
+      /* 투명도는 없지만 질감은 유지 */
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
+
       color: rgba(255,255,255,0.96) !important;
       text-shadow:
         0 1px 0 rgba(0,0,0,0.18),
@@ -1231,6 +1239,7 @@
       <main id="feed" class="flex-1 overflow-y-auto px-6 py-12 space-y-12 no-scrollbar pb-60"></main>
 
       <div class="absolute bottom-12 left-0 w-full flex justify-center z-50 px-6">
+        <!-- ✅ NEW RECORD: 클래스 유지(글자/정렬 동일), .btn-accent-glass에서 불투명+20% 축소 처리 -->
         <button onclick="openDraft()"
                 class="btn-accent btn-accent-glass serif-font px-16 py-6 rounded-none text-[10px] tracking-[0.5em] shadow-2xl slide-up uppercase">
           NEW RECORD
